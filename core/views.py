@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-
-from django.contrib.auth.decorators import login_required, user_passes_test
+from uuid import uuid1
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponseRedirect
 from django.shortcuts import  render, get_object_or_404
+
+from core.helper import embigo_default_rights, embigo_main_space
 from core.models import Space, SpaceUser
 from django.contrib.auth import authenticate, login, logout
 
@@ -43,3 +47,16 @@ def signin(request):
 def signout(request):
     logout(request)
     return render(request, 'signin.html')
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(), user=new_user)
+            new_space_user.save()
+            return HttpResponseRedirect("/")
+    else:
+        form = UserCreationForm()
+    context = {'form': form}
+    return render(request, 'register.html', context)
