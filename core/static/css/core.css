@@ -31,9 +31,18 @@ button, input, textarea {
 }
 	.header .content {
 		height: 70px;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		    -ms-flex-align: center;
+		        align-items: center;
+		-webkit-box-pack: justify;
+		-webkit-justify-content: space-between;
+		    -ms-flex-pack: justify;
+		        justify-content: space-between;
 	}
 	.header_logo {
 		font-size: 35px;
@@ -43,8 +52,14 @@ button, input, textarea {
 		color: #D35959;
 	}
 	.header_user {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
 		display: flex;
-		align-items: center;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		    -ms-flex-align: center;
+		        align-items: center;
 	}
 		.header_user strong {
 			margin-right: 20px;
@@ -65,7 +80,7 @@ button, input, textarea {
 
 .current-space {
 	background: #fff;
-	width: 50%;]
+	width: 50%;
 	overflow: hidden;
 	border-radius: 5px;
 	border: 1px solid #E8E8E8;
@@ -75,18 +90,30 @@ button, input, textarea {
 		background: #DAEECE;
 		padding: 10px 20px;
 		border-bottom: 1px solid #C4E1B2;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
 		display: flex;
-		align-items: center;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		    -ms-flex-align: center;
+		        align-items: center;
 	}
 	.current-space i {
-		flex: 0 0 auto;
+		-webkit-box-flex: 0;
+		-webkit-flex: 0 0 auto;
+		    -ms-flex: 0 0 auto;
+		        flex: 0 0 auto;
 		font-size: 28px;
 		margin-right: 15px;
 	}
 	.current-space h1 {
 		font-size: 24px;
 		margin: 0;
-		flex: 1 1 auto;
+		-webkit-box-flex: 1;
+		-webkit-flex: 1 1 auto;
+		    -ms-flex: 1 1 auto;
+		        flex: 1 1 auto;
 	}
 		.current-space h1 span {
 			display: block;
@@ -113,11 +140,13 @@ button, input, textarea {
 @-webkit-keyframes initSignIn{
 	from {
 		opacity: 0;
-		transform: translate3d(0, 10px, 0);
+		-webkit-transform: translate3d(0, 10px, 0);
+		        transform: translate3d(0, 10px, 0);
 	}
 	to {
 		opacity: 1;
-		transform: translate3d(0, 0px, 0);
+		-webkit-transform: translate3d(0, 0px, 0);
+		        transform: translate3d(0, 0px, 0);
 	}
 }
 .form-signin {
@@ -141,9 +170,19 @@ button, input, textarea {
 		margin-bottom: 20px;
 	}
 	.form-signin form {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
 		display: flex;
-		flex-direction: column;
-		align-items: stretch;
+		-webkit-box-orient: vertical;
+		-webkit-box-direction: normal;
+		-webkit-flex-direction: column;
+		    -ms-flex-direction: column;
+		        flex-direction: column;
+		-webkit-box-align: stretch;
+		-webkit-align-items: stretch;
+		    -ms-flex-align: stretch;
+		        align-items: stretch;
 	}
 	.form-signin input{
 		width: 100%;
