@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from core.views import index, space, signout, signi
+from core.views import index, space, signout, signin
 
 urlpatterns = [
     url(r'^$', index, name="index"),
