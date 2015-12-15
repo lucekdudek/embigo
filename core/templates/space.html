@@ -1,11 +1,31 @@
 {% extends "base.html" %}
 
 {% block core %}
-	<a href="">Wróć</a>
-	<div class="current-space">
-		<h1>{{ space.name }}</h1>
-	    <a>{{ space.description }}</a>
+	<a href="/{{ space.parent.uid }}" class="btn">Wróć{% if space.parent %} do {{ space.parent }}{% endif %}</a><br><br>
+	<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
+		<div class="current-space_head">
+			{% if space.type == 1 %}
+				<i class="fa fa-folder-o"></i>
+				<h1><span>Przestrzeń</span>
+			{% elif space.type == 2 %}
+				<i class="fa fa-comments-o"></i>
+				<h1><span>Kanał</span>
+			{% elif space.type == 3 %}
+				<i class="fa fa-comment-o"></i>
+				<h1><span>Wiadomość prywatna</span>
+			{% else %}
+				<h1>
+			{% endif %}
+				{{ space.name }}
+			</h1>
+		</div>
+	    <p>{{ space.description }}</p>
     </div>
-    <a>{{ space.status }}</a>
-    <a>{{ space.parent }}</a>
+    {% if space_list %}
+        {% for space in space_list %}
+			<a href="/{{ space.uid }}">{{ space.name }}</a>
+        {% endfor %}
+    {% else %}
+		<a>No spaces are available.</a>
+	{% endif %}
 {% endblock %}

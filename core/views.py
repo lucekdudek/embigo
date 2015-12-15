@@ -18,8 +18,9 @@ def index(request):
 
 def space(request, space_id):
     space = get_object_or_404(Space, pk=space_id)
+    space_list = Space.objects.filter(parent=space_id)
     if user_is_space_user(request.user, space):
-        context = {'space': space}
+        context = {'space': space, 'space_list': space_list}
         return render(request, 'space.html', context)
     else:
         return HttpResponseRedirect("/")
