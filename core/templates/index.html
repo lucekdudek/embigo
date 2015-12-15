@@ -5,7 +5,7 @@
         {% if space_list %}
             {% for space in space_list %}
 				<a href="/{{ space.uid }}">{{ space.name }}</a>
-			{% endfor %}
+            {% endfor %}
         {% else %}
 			<a>No spaces are available.</a>
 		{% endif %}
