@@ -5,12 +5,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import  render, get_object_or_404
 
-from core.helper import embigo_default_rights, embigo_main_space
+from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user
 from core.models import Space, SpaceUser
 from django.contrib.auth import authenticate, login, logout
-
-def user_is_space_user(user, space):
-    return SpaceUser.objects.get(space=space) in SpaceUser.objects.filter(user=user)
 
 @login_required(login_url='/out/')
 def index(request):
@@ -25,7 +22,7 @@ def space(request, space_id):
         context = {'space': space}
         return render(request, 'space.html', context)
     else:
-        return index(request)
+        return HttpResponseRedirect("/")
 
 def signin(request):
     username = request.POST.get('username')
@@ -34,7 +31,7 @@ def signin(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return index(request)
+            return HttpResponseRedirect("/")
         else:
             errormessage = "Użytkownik jest nieaktywny."
             context = {'errormessage': errormessage}

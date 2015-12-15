@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from core.models import Space
+from core.models import Space, SpaceUser
 
 
 def embigo_default_rights():
@@ -7,3 +7,12 @@ def embigo_default_rights():
 
 def embigo_main_space():
     return Space.objects.get(uid="00000000-0000-0000-0000-000000000000")
+
+def user_is_space_user(user, space):
+    try:
+        su = SpaceUser.objects.get(space=space, user=user)
+    except SpaceUser.DoesNotExist:
+        pass
+    except SpaceUser.MultipleObjectsReturned:
+        pass
+    return True if 'su' in locals() else False
