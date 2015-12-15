@@ -1,14 +1,10 @@
 {% extends "base.html" %}
 
 {% block core %}
+    {% if errormessage %}
+		<p>{{ errormessage }}</p>
+	{% endif %}
     {% if user.is_authenticated %}
-        {% if space_list %}
-            {% for space in space_list %}
-				<a href="/{{ space.uid }}">{{ space.name }}</a>
-			{% endfor %}
-        {% else %}
-			<a>No spaces are available.</a>
-		{% endif %}
         <form method="post" action="{% url 'signout' %}">
             {% csrf_token %}
             <input type="submit" value="Wyloguj, {{ user.username }}" />
