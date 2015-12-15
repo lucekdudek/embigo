@@ -10,15 +10,18 @@
             <input type="submit" value="Wyloguj, {{ user.username }}" />
         </form>
     {% else %}
-	    <form method="post" action="{% url 'signin' %}">
-	        {% csrf_token %}
-			<div>
-			    <input type="text" placeholder="login" name="username" />
-			</div>
-			<div>
-				<input type="password" placeholder="hasło" name="password" />
-			</div>
-				<input type="submit" value="Zaloguj" />
-		</form>
+    	<div class="form-signin">
+			<a href="" class="form-signin_logo">embigo</a>
+		    <form method="post" action="{% url 'signin' %}">
+		        {% csrf_token %}
+				<div>
+				    <input type="text" placeholder="Login" name="username" />
+				</div>
+				<div>
+					<input type="password" placeholder="Hasło" name="password" />
+				</div>
+					<input type="submit" value="Zaloguj" class="btn"/>
+			</form>
+		</div>
     {% endif %}
 {% endblock %}

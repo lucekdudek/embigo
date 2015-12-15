@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block core %}
-    <a>Hello from {{ space.name }}!</a>
+	<a href="">Wróć</a>
+	<div class="current-space">
+		<h1>{{ space.name }}</h1>
+	    <a>{{ space.description }}</a>
+    </div>
+    <a>{{ space.status }}</a>
+    <a>{{ space.parent }}</a>
 {% endblock %}

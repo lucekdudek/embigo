@@ -9,12 +9,8 @@
         {% else %}
 			<a>No spaces are available.</a>
 		{% endif %}
-        <form method="post" action="{% url 'signout' %}">
-            {% csrf_token %}
-            <input type="submit" value="Wyloguj, {{ user.username }}" />
-        </form>
     {% else %}
-	    <form method="post" action="{% url 'signin' %}">
+	    <form method="post" action="{% url 'signin' %}" class="form-signin">
 	        {% csrf_token %}
 			<div>
 			    <input type="text" placeholder="login" name="username" />
@@ -22,7 +18,7 @@
 			<div>
 				<input type="password" placeholder="hasło" name="password" />
 			</div>
-				<input type="submit" value="Zaloguj" />
-		</form>
+			<input type="submit" value="Zaloguj" class="btn"/>
+		</form>		
     {% endif %}
 {% endblock %}

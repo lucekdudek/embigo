@@ -2,14 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Embigo</title>
 
-    <link href="/static/core.css" rel="stylesheet">
-
-    <script src="/static/core.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Fira+Sans:400,700italic,500&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href="/static/css/normalize.css" rel="stylesheet">
+    <link href="/static/css/core.css" rel="stylesheet">
 </head>
 <body>
-    {% block core %}{% endblock %}
+	{% if user.is_authenticated %}
+	<div class="header">
+		<div class="content">
+			<a href="" class="header_logo">embigo</a>
+				<div class="header_user">
+					<strong>{{ user.username }}</strong>
+			        <form method="post" action="{% url 'signout' %}">
+			            {% csrf_token %}
+			            <input type="submit" value="Wyloguj" class="btn"/>
+			        </form>
+			    </div>
+		</div>
+	</div>
+	{% endif %}
+	<div class="main">
+		<div class="content">
+    		{% block core %}{% endblock %}
+		</div>
+	</div>
     <script src="/static/core.js"></script>
 </body>
 </html>
