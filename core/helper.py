@@ -2,7 +2,7 @@
 from core.models import Space, SpaceUser
 
 def embigo_default_rights():
-    return "00000000"
+    return "010000000000"
 
 def embigo_main_space():
     return Space.objects.get(uid="00000000-0000-0000-0000-000000000000")
