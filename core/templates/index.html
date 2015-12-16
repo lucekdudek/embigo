@@ -10,15 +10,6 @@
 			<a>No spaces are available.</a>
 		{% endif %}
     {% else %}
-	    <form method="post" action="{% url 'signin' %}" class="form-signin">
-	        {% csrf_token %}
-			<div>
-			    <input type="text" placeholder="login" name="username" />
-			</div>
-			<div>
-				<input type="password" placeholder="hasło" name="password" />
-			</div>
-			<input type="submit" value="Zaloguj" class="btn"/>
-		</form>		
+	    {% include "forms/form_signin.html" %}
     {% endif %}
 {% endblock %}

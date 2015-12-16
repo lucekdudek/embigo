@@ -17,9 +17,11 @@ def index(request):
     return render(request, 'index.html', context)
 
 def space(request, space_id):
+    user = request.user
     space = get_object_or_404(Space, pk=space_id)
-    space_list = Space.objects.filter(parent=space_id)
-    if user_is_space_user(request.user, space):
+    if user_is_space_user(user, space):
+        space_list = Space.objects.filter(parent=space_id)
+        space_list = [s for s in space_list if user_is_space_user(user=user, space=s)]
         context = {'space': space, 'space_list': space_list}
         return render(request, 'space.html', context)
     else:

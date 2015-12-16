@@ -5,23 +5,11 @@
 		<p>{{ errormessage }}</p>
 	{% endif %}
     {% if user.is_authenticated %}
-        <form method="post" action="{% url 'signout' %}">
-            {% csrf_token %}
-            <input type="submit" value="Wyloguj, {{ user.username }}" />
-        </form>
+        {% include "forms/form_signout.html" %}
     {% else %}
-    	<div class="form-signin">
-			<a href="" class="form-signin_logo">embigo</a>
-		    <form method="post" action="{% url 'signin' %}">
-		        {% csrf_token %}
-				<div>
-				    <input type="text" placeholder="Login" name="username" />
-				</div>
-				<div>
-					<input type="password" placeholder="Hasło" name="password" />
-				</div>
-					<input type="submit" value="Zaloguj" class="btn"/>
-			</form>
-		</div>
+        <div class="form-signin">
+            <a href="" class="form-signin_logo">embigo</a>
+    	    {% include "forms/form_signin.html" %}
+        </div>
     {% endif %}
 {% endblock %}
