@@ -14,6 +14,11 @@
 	</div>
 	<div class="view-space">
 		<div class="view-space_current">
+			<ul class="breadcrumbs">
+			{% for space in space.get_path %}
+				<li><a href="/{{ space.uid }}">{{ space.name }}</a><i class="fa fa-chevron-right"></i></li>
+			{% endfor %}
+			</ul>
 			<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
 				<div class="current-space_head">
 					{% if space.type == 1 %}
@@ -47,55 +52,8 @@
 		    		{% endfor %}
 			    </div>
 		    	<div class="messages_form" id="messageForm">
-		    		<form action="{% url 'new_message' %}" method="POST" id="post-form">
-    					{% csrf_token %}
-		    			<textarea name="content" placeholder="Dodaj komentarz..."></textarea>
-		    			<input type="hidden" name="space" value="{{ space.uid }}">
-		    			<div class="text-right">
-		    				<input type="submit" value="Wyślij" class="btn">
-		    			</div>
-		    		</forn>
+	    			{% include "forms/form_new_message.html" %}
 		    	</div>
-		    	<script type="text/javascript">
-		    		$(function(){
-		    			var form = $('#messageForm'),
-		    				btnSubmit = $('.btn', form),
-		    				content = $('textarea[name="content"]'),
-		    				space = $('input[name="space"]');
-
-			    		function new_message() {
-			    		    $.ajax({
-			    		        url : "/new_message/",
-			    		        type : "POST", 
-			    		        data : { 'space':  space.val(), 'content': content.val() },
-
-			    		        success : function(data) {
-									content.val('');
-			    		            var s = '<div class="messages-item messages-item--new">';
-			    		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
-			    		            s += '<p>'+data.content+'</p>';
-			    		            s += '</div>';
-			    		            $('.messages_list').removeClass('messages_list--empty');
-			    		            $('.messages_list #mCSB_1_container').prepend(s);
-			    		        },
-
-			    		        error : function(xhr,errmsg,err) {
-			    		            console.log(xhr.status + ": " + xhr.responseText);
-			    		        }
-			    		    });
-			    		};
-			    		form.on('submit', function(event){
-			    		    event.preventDefault();
-			    		    form.removeClass('is-error');
-			    		    if(content.val()!=''){
-			    		    	new_message();
-			    		    }else{
-			    		    	form.addClass('is-error');
-			    		    }
-			    		});
-			            $(".messages_list").mCustomScrollbar();
-		    		});
-		    	</script>
 		    </div>
 		</div>
 		<div class="view-space_subspaces">
@@ -121,6 +79,7 @@
 	    </div>
 		<div class="view-space_channels">
 			<h2>Kanały</h2>
+			<div class="list-space">
 			{% if channels %}
 		        {% for channel in channels %}
 					<a href="/{{ space.uid }}">{{ channel.name }}</a>
@@ -128,6 +87,8 @@
 		    {% else %}
 				Brak
 			{% endif %}
+			</div>
 		</div>
 	</h1>
+	<script src="/static/js/new_message.js"></script>
 {% endblock %}

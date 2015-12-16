@@ -1,5 +1,5 @@
 body {
-	background: #F6F6F6;
+	background: #3C3C3C;
 	font-family: 'Fira Sans', sans-serif;
 }
 button, input, textarea {
@@ -12,7 +12,7 @@ button, input, textarea {
 }
 
 .btn {
-	background: #D35959;
+	background: #A39B76;
 	color: #fff;
 	font-size: 16px;
 	line-height: 38px;
@@ -24,14 +24,14 @@ button, input, textarea {
 	text-transform: uppercase;
 }
 	.btn:hover {
-		background: #C75151;
+		background: #7E7758;
 	}
 	.btn i {
 		margin-right: 10px;
 	}
 
 .header {
-	background: #f0f0f0;
+	background: #F7E27B;
 }
 	.header .content {
 		height: 70px;
@@ -53,7 +53,7 @@ button, input, textarea {
 		font-weight: 700;
 		font-style: italic;
 		text-decoration: none;
-		color: #D35959;
+		color: #3E3E3E;
 	}
 	.header_user {
 		display: -webkit-box;
@@ -100,14 +100,13 @@ button, input, textarea {
 	background: #fff;
 	overflow: hidden;
 	border-radius: 5px;
-	border: 1px solid #E8E8E8;
 	height: 300px;
 	margin-bottom: 20px;
 }
 	.current-space_head {
-		background: #DAEECE;
+		background: #F7E27B;
 		padding: 10px 20px;
-		border-bottom: 1px solid #C4E1B2;
+		border-bottom: 1px solid #C6AF3E;
 		display: -webkit-box;
 		display: -webkit-flex;
 		display: -ms-flexbox;
@@ -137,7 +136,7 @@ button, input, textarea {
 			display: block;
 			font-size: 11px;
 			font-weight: 400;
-			color: #85A96F;
+			color: #A59131;
 			margin-bottom: 0px;
 			text-transform: uppercase;
 		}
@@ -154,17 +153,55 @@ button, input, textarea {
 		font-size: 14px;
 		line-height: 24px;
 	}
-.list-space {
+.breadcrumbs {
+	list-style: none;
+	padding: 0;
+	color: #fff;
+	margin: 0;
+	display: block;
+	overflow: hidden;
+	height: 22px;
+	font-size: 14px;
 	margin-bottom: 20px;
 }
+	.breadcrumbs li {
+		display: inline-block;
+		float: left;
+	}
+	.breadcrumbs a {
+		color: #F3F3F3;
+		text-decoration: none;
+	}
+		.breadcrumbs a:hover {
+			color: #F7E27B;
+		}
+	.breadcrumbs i {
+		font-size: 10px;
+		vertical-align: middle;
+		margin: 0 10px;
+	}
+
+.list-space {
+	margin-bottom: 20px;
+	background: #515151;
+    padding: 10px;
+    border-radius: 5px;
+	color: #9F9F9F;
+/*    border: 1px solid #000;
+*/}
+	.list-space--other {
+		background: transparent;
+		padding: 0 10px;
+		border: 0;
+	}
 	.list-space--other .list-space_item {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
 	.list-space_item {
-		background: #DAEECE;
-		border: 1px solid #C4E1B2;
+		background: #F7E27B;
+		border: 1px solid #C2AD48;
 		border-radius: 5px;
 		padding: 10px 20px;
 		display: block;
@@ -175,14 +212,14 @@ button, input, textarea {
 		margin-bottom: 10px;
 	}
 		.list-space_item:hover {
-			background: #CFE7C1;
+			background: #E5D16F;
 		}
 		.list-space_item:last-child {
 			margin-bottom: 0;
 		}
 		.list-space_item--archive {
 			background: #D7D7D7;
-			border-color: #C3C3C3;
+			border-color: #ADADAD;
 		}
 			.list-space_item--archive:hover {
 				background: #CCCCCC;
@@ -204,10 +241,10 @@ button, input, textarea {
 	}
 }
 .form-signin {
-	background: #fff;
+	background: #F7E27B;
 	margin: 220px auto 0;
 	width: 350px;
-	border: 1px solid #E8E8E8;
+	border: 1px solid #F000000
 	border-radius: 10px;
 	padding: 30px;
 	box-sizing: border-box;
@@ -218,7 +255,7 @@ button, input, textarea {
 		font-weight: 700;
 		font-style: italic;
 		text-decoration: none;
-		color: #D35959;
+		color: #3E3E3E;
 		display: block;
 		text-align: center;
 		margin-bottom: 20px;
@@ -243,12 +280,12 @@ button, input, textarea {
 	}
 	.form-signin input:not([type="submit"]){
 		background: #F6F6F6;
-		border: 1px solid #E8E8E8;
 		border-radius: 5px;
 		margin-bottom: 20px;
 		line-height: 38px;
 		box-sizing: border-box;
 		padding: 0 20px;
+		border: 0;
 	}
 
 .view-space {
@@ -275,7 +312,7 @@ button, input, textarea {
 		font-size: 18px;
 	    font-weight: 500;
 	    margin: 0 0 20px;
-	    color: #656565;
+	    color: #F3F3F3;
 	}
 
 
@@ -290,7 +327,6 @@ button, input, textarea {
 		}
 	.messages_form textarea {
 		background: #fff;
-		border: 1px solid #E8E8E8;
 		border-radius: 5px;
 		padding: 20px;
 		width: 100%;
@@ -323,7 +359,6 @@ button, input, textarea {
 		}
 	.messages-item {
 		background: #fff;
-		border: 1px solid #E8E8E8;
 		border-radius: 5px;
 		padding: 20px;
 		margin-bottom: 15px;
