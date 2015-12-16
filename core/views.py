@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid1
-from datetime import datetime
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect, HttpResponse
@@ -102,12 +102,12 @@ def new_message(request):
         context = {}
 
         space = Space.objects.get(uid=request.POST.get('space'))
-        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, data=datetime.now())
+        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, data=timezone.now())
         message.save()
         
         context['result'] = 'Create post successful!'
         context['content'] = message.content
-        context['date'] = message.data.strftime('%B %d, %Y %I:%M %p')
+        context['date'] = ""
         context['user'] = message.user.username
     else:
         context = {"nothing to see": "this isn't happening"}
