@@ -15,6 +15,13 @@ class Space(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True)
     def __str__(self):
         return "%s"%(self.name)
+    def get_path(self):
+        paths = []
+        parent=self.parent
+        while parent!=None:
+            paths.append(parent)
+            parent=parent.parent
+        return paths[::-1]
 
 class SpaceUser(models.Model):
     class Meta():

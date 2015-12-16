@@ -27,7 +27,7 @@ def space(request, space_id):
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
             return HttpResponseRedirect("/out")
-        space_list = Space.objects.filter(parent=space_id)
+        space_list = Space.objects.filter(parent=space_id).order_by('-status')
         channels = [s for s in space_list if space_is_channel(space=s)]
         conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]
         own_spaces = [s for s in space_list if space_is_space(space=s) and user_is_space_user(user=user, space=s)]
