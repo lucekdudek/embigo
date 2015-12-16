@@ -16,10 +16,7 @@
 			<a href="" class="header_logo">embigo</a>
 				<div class="header_user">
 					<strong>{{ user.username }}</strong>
-			        <form method="post" action="{% url 'signout' %}">
-			            {% csrf_token %}
-			            <input type="submit" value="Wyloguj" class="btn"/>
-			        </form>
+			        {% include "forms/form_signout.html" %}
 			    </div>
 		</div>
 	</div>
