@@ -26,6 +26,9 @@ button, input, textarea {
 	.btn:hover {
 		background: #C75151;
 	}
+	.btn i {
+		margin-right: 10px;
+	}
 
 .header {
 	background: #f0f0f0;
