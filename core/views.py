@@ -10,6 +10,8 @@ from core.helper import embigo_default_rights, embigo_main_space, user_is_space_
 from core.models import Space, SpaceUser, Message
 from django.contrib.auth import authenticate, login, logout
 
+import json
+
 @login_required(login_url='/out/')
 def index(request):
     space_users_list = SpaceUser.objects.filter(user=request.user)
@@ -23,7 +25,8 @@ def space(request, space_id):
     if user_is_space_user(user, space):
         space_list = Space.objects.filter(parent=space_id)
         space_list = [s for s in space_list if user_is_space_user(user=user, space=s)]
-        context = {'space': space, 'space_list': space_list}
+        message_list = Message.objects.filter(space=space_id, user=user).order_by('-data')
+        context = {'space': space, 'space_list': space_list, 'message_list': message_list}
         return render(request, 'space.html', context)
     else:
         return HttpResponseRedirect("/")
@@ -62,23 +65,21 @@ def register(request):
     context = {'form': form}
     return render(request, 'register.html', context)
 
-def new_Message(request):
+def new_message(request):
     if request.method == 'POST':
         context = {}
 
-        # message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=request.space, data=datetime.now())
-        # message.save()
-        #
-        # context['result'] = 'Create post successful!'
-        # context['content'] = message.content
-        # context['data'] = message.data.strftime('%B %d, %Y %I:%M %p')
-        # context['user'] = message.user.username
-
+        space = Space.objects.get(uid=request.POST.get('space'))
+        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, data=datetime.now())
+        message.save()
+        
         context['result'] = 'Create post successful!'
-        context['content'] = "treść wiadomości"
-        context['data'] = datetime.now().strftime('%B %d, %Y %I:%M %p')
-        context['user'] = "imie uzytkownika"
-
+        context['content'] = message.content
+        context['date'] = message.data.strftime('%B %d, %Y %I:%M %p')
+        context['user'] = message.user.username
     else:
         context = {"nothing to see": "this isn't happening"}
-    return HttpResponse(context)
+    return HttpResponse(
+            json.dumps(context),
+            content_type="application/json"
+        )

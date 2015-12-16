@@ -38,4 +38,4 @@ class Message(models.Model):
     space = models.ForeignKey(Space, null=True, blank=True)
     user = models.ForeignKey(User, blank=True, null=True)
     def __str__(self):
-        return "%s"%(self.content[:10])
+        return "%s"%(self.content)

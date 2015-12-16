@@ -24,33 +24,65 @@
 			    <p>{{ space.description }}</p>
 		    </div>
 		    <div class="messages">
-				<h2>Komentarze / Brak komentarzy</h2>
-		    	<div class="messages_form">
-		    		<forn>
-		    			<textarea placeholder="Dodaj komentarz..."></textarea>
+				<h2>{% if message_list %}Komentarze{% else %}Brak komentarzy{% endif %}</h2>
+		    	<div class="messages_form" id="messageForm">
+		    		<form action="{% url 'new_message' %}" method="POST" id="post-form">
+    					{% csrf_token %}
+		    			<textarea name="content" placeholder="Dodaj komentarz..."></textarea>
+		    			<input type="hidden" name="space" value="{{ space.uid }}">
 		    			<div class="text-right">
 		    				<input type="submit" value="Wyślij" class="btn">
 		    			</div>
 		    		</forn>
 		    	</div>
-		    	<div class="messages-item">
-		    		<strong class="messages-item_user">Admin</strong><span class="messages-item_date">16.12.2015 10:50 / Dzisiaj / Wczoraj</span>
-		    		<p>
-		    			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		    		</p>
-		    	</div>
-		    	<div class="messages-item">
-		    		<strong class="messages-item_user">Admin</strong><span class="messages-item_date">16.12.2015 10:50 / Dzisiaj / Wczoraj</span>
-		    		<p>
-		    			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		    		</p>
-		    	</div>
-		    	<div class="messages-item">
-		    		<strong class="messages-item_user">Admin</strong><span class="messages-item_date">16.12.2015 10:50 / Dzisiaj / Wczoraj</span>
-		    		<p>
-		    			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		    		</p>
-		    	</div>
+		    	<div class="messages_list">
+		    		{% for message in message_list %}
+				    	<div class="messages-item">
+				    		<strong class="messages-item_user">{{ message.user }}</strong>
+				    		<span class="messages-item_date">{{ message.data }}</span>
+				    		<p>
+				    			{{ message.content }}
+				    		</p>
+				    	</div>
+		    		{% endfor %}
+			    </div>
+		    	<script type="text/javascript">
+		    		$(function(){
+		    			var form = $('#messageForm'),
+		    				btnSubmit = $('.btn', form),
+		    				content = $('textarea[name="content"]'),
+		    				space = $('input[name="space"]');
+
+			    		function new_message() {
+			    		    $.ajax({
+			    		        url : "/new_message/",
+			    		        type : "POST", 
+			    		        data : { 'space':  space.val(), 'content': content.val() },
+
+			    		        success : function(data) {
+			    		            var s = '<div class="messages-item messages-item--new">';
+			    		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
+			    		            s += '<p>'+data.content+'</p>';
+			    		            s += '</div>';
+			    		            $('.messages_list').prepend(s);
+			    		        },
+
+			    		        error : function(xhr,errmsg,err) {
+			    		            console.log(xhr.status + ": " + xhr.responseText);
+			    		        }
+			    		    });
+			    		};
+			    		form.on('submit', function(event){
+			    		    event.preventDefault();
+			    		    form.removeClass('is-error');
+			    		    if(content.val()!=''){
+			    		    	new_message();
+			    		    }else{
+			    		    	form.addClass('is-error');
+			    		    }
+			    		});
+		    		});
+		    	</script>
 		    </div>
 		</div>
 		<div class="view-space_subspaces">

@@ -8,6 +8,9 @@
     <link href='https://fonts.googleapis.com/css?family=Fira+Sans:400,700italic,500&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href="/static/css/normalize.css" rel="stylesheet">
     <link href="/static/css/core.css" rel="stylesheet">
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/core.js"></script>
 </head>
 <body>
 	{% if user.is_authenticated %}
@@ -26,6 +29,5 @@
     		{% block core %}{% endblock %}
 		</div>
 	</div>
-    <script src="/static/core.js"></script>
 </body>
 </html>
