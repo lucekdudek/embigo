@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid1
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user
-from core.models import Space, SpaceUser
+from core.models import Space, SpaceUser, Message
 from django.contrib.auth import authenticate, login, logout
 
 @login_required(login_url='/out/')
@@ -60,3 +61,24 @@ def register(request):
         form = UserCreationForm()
     context = {'form': form}
     return render(request, 'register.html', context)
+
+def new_Message(request):
+    if request.method == 'POST':
+        context = {}
+
+        # message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=request.space, data=datetime.now())
+        # message.save()
+        #
+        # context['result'] = 'Create post successful!'
+        # context['content'] = message.content
+        # context['data'] = message.data.strftime('%B %d, %Y %I:%M %p')
+        # context['user'] = message.user.username
+
+        context['result'] = 'Create post successful!'
+        context['content'] = "treść wiadomości"
+        context['data'] = datetime.now().strftime('%B %d, %Y %I:%M %p')
+        context['user'] = "imie uzytkownika"
+
+    else:
+        context = {"nothing to see": "this isn't happening"}
+    return HttpResponse(context)
