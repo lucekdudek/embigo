@@ -16,11 +16,9 @@ import json
 
 @login_required(login_url='/out/')
 def index(request):
-    space_users_list = SpaceUser.objects.filter(user=request.user)
-    space_list = [su.space for su in space_users_list]
-    context = {'space_list': space_list}
-    return render(request, 'index.html', context)
+    return HttpResponseRedirect("/00000000-0000-0000-0000-000000000000")
 
+@login_required(login_url='/')
 def space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
