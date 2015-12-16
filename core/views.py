@@ -18,22 +18,17 @@ import json
 def index(request):
     return HttpResponseRedirect("/00000000-0000-0000-0000-000000000000")
 
-@login_required(login_url='/')
+@login_required(login_url='/out')
 def space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     if user_is_space_user(user, space):
-        try:
-            space_user = SpaceUser.objects.get(space=space, user=user)
-        except SpaceUser.DoesNotExist:
-            pass
-        except SpaceUser.MultipleObjectsReturned:
-            pass
+        space_user = get_space_user(user, space)
         space_list = Space.objects.filter(parent=space_id)
         channels = [s for s in space_list if space_is_channel(space=s)]
         conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]
         own_spaces = [s for s in space_list if space_is_space(space=s) and user_is_space_user(user=user, space=s)]
-        other_spaces = [s for s in space_list if space_is_space(space=s) and user_can(SEE_UNDERSPACES, get_space_user(user=user, space=s) )]
+        other_spaces = [s for s in space_list if space_is_space(space=s) and user_can(SEE_UNDERSPACES, space_user)]
         collaborators = SpaceUser.objects.filter(space=space) if user_can(SEE_USERS, space_user) else []
         messages = Message.objects.filter(space=space).order_by('-data') if user_can(SEE_MESSAGES, space_user) else []
         can_add_message = user_can(ADD_MESSAGE, space_user)
