@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
+import json
 from uuid import uuid1
-from django.utils import timezone
+
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
+from django.utils import timezone
 
-from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, space_is_channel, \
-    space_is_conversation, space_is_space, user_can, get_space_user
-from core.rights import *
+from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, space_is_channel, space_is_conversation, space_is_space, user_can, get_space_user
 from core.models import Space, SpaceUser, Message
-from django.contrib.auth import authenticate, login, logout
+from core.rights import *
 
-import json
 
 @login_required(login_url='/out/')
 def index(request):
@@ -23,7 +23,10 @@ def space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     if user_is_space_user(user, space):
-        space_user = get_space_user(user, space)
+        try:
+            space_user = get_space_user(user, space)
+        except SpaceUser.DoesNotExist:
+            return HttpResponseRedirect("/out")
         space_list = Space.objects.filter(parent=space_id)
         channels = [s for s in space_list if space_is_channel(space=s)]
         conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]

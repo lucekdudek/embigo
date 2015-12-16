@@ -17,22 +17,17 @@ def user_is_space_user(user, space):
     return True if 'su' in locals() else False
 
 def space_is_space(space):
-    if space.type == 1: return True
+    return True if space.type == 1 else False
 
 def space_is_channel(space):
-    if space.type == 2: return True
+    return True if space.type == 2 else False
 
 def space_is_conversation(space):
-    if space.type == 3: return True
+    return True if space.type == 3 else False
 
 def user_can(right, space_user):
     if space_user != None:
         return int(space_user.rights[right])
 
 def get_space_user(user, space):
-    try:
-        return SpaceUser.objects.get(space=space, user=user)
-    except SpaceUser.DoesNotExist:
-        pass
-    except SpaceUser.MultipleObjectsReturned:
-        pass
+    return SpaceUser.objects.get(space=space, user=user)
