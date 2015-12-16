@@ -154,10 +154,42 @@ button, input, textarea {
 		font-size: 14px;
 		line-height: 24px;
 	}
-.list-space {}
-	.list-space-item {
-
+.list-space {
+	margin-bottom: 20px;
+}
+	.list-space--other .list-space_item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
+	.list-space_item {
+		background: #DAEECE;
+		border: 1px solid #C4E1B2;
+		border-radius: 5px;
+		padding: 10px 20px;
+		display: block;
+		text-decoration: none;
+		color: #000;
+		font-weight: 500;
+		font-size: 16px;
+		margin-bottom: 10px;
+	}
+		.list-space_item:hover {
+			background: #CFE7C1;
+		}
+		.list-space_item:last-child {
+			margin-bottom: 0;
+		}
+		.list-space_item--archive {
+			background: #D7D7D7;
+			border-color: #C3C3C3;
+		}
+			.list-space_item--archive:hover {
+				background: #CCCCCC;
+			}
+		.list-space_item i {
+			margin-left: 20px;
+		}
 
 @-webkit-keyframes initSignIn{
 	from {
@@ -230,12 +262,14 @@ button, input, textarea {
 	.view-space_channels {
 		flex: 0 0 auto;
 		width: 25%;
-		margin-left: 30px;
+		padding-left: 30px;
+		box-sizing: border-box;
 	}
 	.view-space_subspaces {
 		flex: 0 0 auto;
 		width: 25%;
-		margin-left: 30px;
+		padding-left: 30px;
+		box-sizing: border-box;
 	}
 	.view-space h2 {
 		font-size: 18px;
