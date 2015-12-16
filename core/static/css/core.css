@@ -5,8 +5,9 @@ body {
 button, input, textarea {
 	outline: 0;
 }
+.text-right { text-align: right; }
 .content {
-	max-width: 1000px;
+	max-width: 1100px;
 	margin: 0 auto;
 }
 
@@ -80,11 +81,11 @@ button, input, textarea {
 
 .current-space {
 	background: #fff;
-	width: 50%;
 	overflow: hidden;
 	border-radius: 5px;
 	border: 1px solid #E8E8E8;
 	height: 300px;
+	margin-bottom: 20px;
 }
 	.current-space_head {
 		background: #DAEECE;
@@ -135,6 +136,10 @@ button, input, textarea {
 		margin: 0;
 		font-size: 14px;
 		line-height: 24px;
+	}
+.list-space {}
+	.list-space-item {
+
 	}
 
 @-webkit-keyframes initSignIn{
@@ -195,4 +200,73 @@ button, input, textarea {
 		line-height: 38px;
 		box-sizing: border-box;
 		padding: 0 20px;
+	}
+
+.view-space {
+	display: flex;
+	justify-content: space-between;
+}
+	.view-space_current {
+		flex: 0 0 auto;
+		width: 50%;
+	}
+	.view-space_channels {
+		flex: 0 0 auto;
+		width: 25%;
+		margin-left: 30px;
+	}
+	.view-space_subspaces {
+		flex: 0 0 auto;
+		width: 25%;
+		margin-left: 30px;
+	}
+	.view-space h2 {
+		font-size: 18px;
+	    font-weight: 500;
+	    margin: 0 0 20px;
+	    color: #656565;
+	}
+
+.messages {}
+	.messages_form {
+		margin-bottom: 20px;
+	}
+	.messages_form textarea {
+		background: #fff;
+		border: 1px solid #E8E8E8;
+		border-radius: 5px;
+		padding: 20px;
+		width: 100%;
+		display: block;
+		font-size: 14px;
+		resize: none;
+		height: 120px;
+		box-sizing: border-box;
+	}
+	.messages_form .btn {
+		margin-top: 15px;
+	}
+	.messages-item {
+		background: #fff;
+		border: 1px solid #E8E8E8;
+		border-radius: 5px;
+		padding: 20px;
+		margin-bottom: 15px;
+	}
+	.messages-item_user {
+		color: #282828;
+		font-size: 16px;
+		margin-right: 20px;
+		vertical-align: middle;
+	}
+	.messages-item_date {
+		font-size: 12px;
+		color: #B9B9B9;
+		vertical-align: middle;
+	}
+	.messages-item p {
+		font-size: 14px;
+		line-height: 20px;
+		color: #6B6B6B;
+		margin: 10px 0 0;
 	}
