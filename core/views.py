@@ -29,6 +29,7 @@ def space(request, space_id):
         conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]
         own_spaces = [s for s in space_list if space_is_space(space=s) and user_is_space_user(user=user, space=s)]
         other_spaces = [s for s in space_list if space_is_space(space=s) and user_can(SEE_UNDERSPACES, space_user)]
+        other_spaces = [s for s in other_spaces if s not in own_spaces]
         collaborators = SpaceUser.objects.filter(space=space) if user_can(SEE_USERS, space_user) else []
         messages = Message.objects.filter(space=space).order_by('-data') if user_can(SEE_MESSAGES, space_user) else []
         can_add_message = user_can(ADD_MESSAGE, space_user)
