@@ -6,7 +6,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 
-from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user
+from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, space_is_channel, \
+    space_is_conversation, space_is_space, user_can, get_space_user
+from core.rights import *
 from core.models import Space, SpaceUser, Message
 from django.contrib.auth import authenticate, login, logout
 
@@ -23,10 +25,46 @@ def space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     if user_is_space_user(user, space):
+        try:
+            space_user = SpaceUser.objects.get(space=space, user=user)
+        except SpaceUser.DoesNotExist:
+            pass
+        except SpaceUser.MultipleObjectsReturned:
+            pass
         space_list = Space.objects.filter(parent=space_id)
-        space_list = [s for s in space_list if user_is_space_user(user=user, space=s)]
-        message_list = Message.objects.filter(space=space_id, user=user).order_by('-data')
-        context = {'space': space, 'space_list': space_list, 'message_list': message_list}
+        channels = [s for s in space_list if space_is_channel(space=s)]
+        conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]
+        own_spaces = [s for s in space_list if space_is_space(space=s) and user_is_space_user(user=user, space=s)]
+        other_spaces = [s for s in space_list if space_is_space(space=s) and user_can(SEE_UNDERSPACES, get_space_user(user=user, space=s) )]
+        collaborators = SpaceUser.objects.filter(space=space) if user_can(SEE_USERS, space_user) else []
+        messages = Message.objects.filter(space=space).order_by('-data') if user_can(SEE_MESSAGES, space_user) else []
+        can_add_message = user_can(ADD_MESSAGE, space_user)
+        can_create_space = user_can(CREATE_SPACE, space_user)
+        can_create_channel = user_can(CREATE_CHANNEL, space_user)
+        can_create_conversation = user_can(CREATE_CONVERSATION, space_user)
+        can_edit_space = user_can(EDIT_SPACE, space_user)
+        can_archive_space = user_can(ARCHIVE_SPACE, space_user)
+        can_delete_space = user_can(DELETE_SPACE, space_user)
+        can_add_user = user_can(ADD_USER, space_user)
+        can_edit_user_rights = user_can(EDIT_RIGHTS, space_user)
+        context = {
+            'space': space,
+            'own_spaces': own_spaces,
+            'other_spaces': other_spaces,
+            'channels': channels,
+            'conversations': conversations,
+            'collaborators': collaborators,
+            'messages': messages,
+            'can_add_message': can_add_message,
+            'can_create_space': can_create_space,
+            'can_create_channel': can_create_channel,
+            'can_create_conversation': can_create_conversation,
+            'can_edit_space': can_edit_space,
+            'can_archive_space': can_archive_space,
+            'can_delete_space': can_delete_space,
+            'can_add_user:': can_add_user,
+            'can_edit_user_rights': can_edit_user_rights,
+        }
         return render(request, 'space.html', context)
     else:
         return HttpResponseRedirect("/")

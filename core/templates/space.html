@@ -36,7 +36,7 @@
 		    		</forn>
 		    	</div>
 		    	<div class="messages_list">
-		    		{% for message in message_list %}
+		    		{% for message in messages %}
 				    	<div class="messages-item">
 				    		<strong class="messages-item_user">{{ message.user }}</strong>
 				    		<span class="messages-item_date">{{ message.data }}</span>
@@ -87,8 +87,8 @@
 		</div>
 		<div class="view-space_subspaces">
 			<h2>Podprzestrzenie</h2>
-		    {% if space_list %}
-		        {% for space in space_list %}
+		    {% if own_spaces %}
+		        {% for space in own_spaces %}
 					<a href="/{{ space.uid }}">{{ space.name }}</a>
 		        {% endfor %}
 		    {% else %}
