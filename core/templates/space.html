@@ -24,18 +24,8 @@
 			    <p>{{ space.description }}</p>
 		    </div>
 		    <div class="messages">
-				<h2>{% if message_list %}Komentarze{% else %}Brak komentarzy{% endif %}</h2>
-		    	<div class="messages_form" id="messageForm">
-		    		<form action="{% url 'new_message' %}" method="POST" id="post-form">
-    					{% csrf_token %}
-		    			<textarea name="content" placeholder="Dodaj komentarz..."></textarea>
-		    			<input type="hidden" name="space" value="{{ space.uid }}">
-		    			<div class="text-right">
-		    				<input type="submit" value="Wyślij" class="btn">
-		    			</div>
-		    		</forn>
-		    	</div>
-		    	<div class="messages_list">
+				<h2>{% if messages %}Komentarze{% else %}Brak komentarzy{% endif %}</h2>
+		    	<div class="messages_list {% if not messages %}messages_list--empty{% endif %}">
 		    		{% for message in messages %}
 				    	<div class="messages-item">
 				    		<strong class="messages-item_user">{{ message.user }}</strong>
@@ -46,6 +36,16 @@
 				    	</div>
 		    		{% endfor %}
 			    </div>
+		    	<div class="messages_form" id="messageForm">
+		    		<form action="{% url 'new_message' %}" method="POST" id="post-form">
+    					{% csrf_token %}
+		    			<textarea name="content" placeholder="Dodaj komentarz..."></textarea>
+		    			<input type="hidden" name="space" value="{{ space.uid }}">
+		    			<div class="text-right">
+		    				<input type="submit" value="Wyślij" class="btn">
+		    			</div>
+		    		</forn>
+		    	</div>
 		    	<script type="text/javascript">
 		    		$(function(){
 		    			var form = $('#messageForm'),
@@ -65,7 +65,8 @@
 			    		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
 			    		            s += '<p>'+data.content+'</p>';
 			    		            s += '</div>';
-			    		            $('.messages_list').prepend(s);
+			    		            $('.messages_list').removeClass('messages_list--empty');
+			    		            $('.messages_list #mCSB_1_container').prepend(s);
 			    		        },
 
 			    		        error : function(xhr,errmsg,err) {
@@ -82,6 +83,7 @@
 			    		    	form.addClass('is-error');
 			    		    }
 			    		});
+			            $(".messages_list").mCustomScrollbar();
 		    		});
 		    	</script>
 		    </div>

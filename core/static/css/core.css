@@ -236,9 +236,7 @@ button, input, textarea {
 	to { opacity: 1; }
 }
 .messages {}
-	.messages_form {
-		margin-bottom: 20px;
-	}
+	.messages_form {}
 		.messages_form.is-error textarea {
 			border-color: #ff0000;
 		}
@@ -257,6 +255,30 @@ button, input, textarea {
 	.messages_form .btn {
 		margin-top: 15px;
 	}
+	.messages_list {
+		max-height: 323px;
+		overflow: hidden;
+		margin-bottom: 20px;
+	}
+		.messages_list--empty {
+			margin-bottom: 0;
+		}
+		.messages_list .mCSB_draggerContainer {
+			opacity: 0;
+		}
+			.messages_list:hover .mCSB_draggerContainer {
+				opacity: 1;
+			}
+		.messages_list .mCSB_inside > .mCSB_container {
+			margin-right: 0;
+		}
+		.messages_list .mCSB_scrollTools .mCSB_draggerRail {
+			background-color: rgba(169, 169, 169, 0.4);
+			width: 8px;
+		}
+		.messages_list .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+			background-color: rgba(255, 255, 255, 0.75);
+		}
 	.messages-item {
 		background: #fff;
 		border: 1px solid #E8E8E8;
@@ -264,6 +286,9 @@ button, input, textarea {
 		padding: 20px;
 		margin-bottom: 15px;
 	}
+		.messages-item:last-child {
+			margin-bottom: 0;
+		}
 		.messages-item--new {
 			animation: initMessage 1s;
 		}
