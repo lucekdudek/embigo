@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block core %}
-	<a href="/{{ space.parent.uid }}" class="btn">Wróć{% if space.parent %} do {{ space.parent }}{% endif %}</a><br><br>
+	{% if space.parent %}<a href="/{{ space.parent.uid }}" class="btn"><i class="fa fa-chevron-left"></i> {{ space.parent }}</a>{% endif %}<br><br>
 	<div class="view-space">
 		<div class="view-space_current">
 			<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
@@ -60,6 +60,7 @@
 			    		        data : { 'space':  space.val(), 'content': content.val() },
 
 			    		        success : function(data) {
+									content.val('');
 			    		            var s = '<div class="messages-item messages-item--new">';
 			    		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
 			    		            s += '<p>'+data.content+'</p>';
@@ -87,16 +88,35 @@
 		</div>
 		<div class="view-space_subspaces">
 			<h2>Podprzestrzenie</h2>
-		    {% if own_spaces %}
-		        {% for space in own_spaces %}
-					<a href="/{{ space.uid }}">{{ space.name }}</a>
-		        {% endfor %}
-		    {% else %}
-				<a>No spaces are available.</a>
-			{% endif %}
+			<div class="list-spaces">
+				Moje<br>
+			    {% if own_spaces %}
+			        {% for space in own_spaces %}
+						<a href="/{{ space.uid }}" class="list-spaces_item {% if space.status == 2 %}list-spaces_item--archive{% endif %}">{{ space.name }}</a>
+			        {% endfor %}
+			    {% else %}
+					Brak
+				{% endif %}
+				<br>
+				Pozostałe<br>
+				{% if other_spaces %}
+			        {% for space in other_spaces %}
+						<a href="/{{ space.uid }}">{{ space.name }}</a>
+			        {% endfor %}
+			    {% else %}
+					Brak
+				{% endif %}
+			</div>
 	    </div>
 		<div class="view-space_channels">
 			<h2>Kanały</h2>
+			{% if channels %}
+		        {% for channel in channels %}
+					<a href="/{{ space.uid }}">{{ channel.name }}</a>
+		        {% endfor %}
+		    {% else %}
+				Brak
+			{% endif %}
 		</div>
 	</h1>
 {% endblock %}
