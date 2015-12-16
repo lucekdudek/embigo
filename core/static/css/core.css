@@ -82,6 +82,20 @@ button, input, textarea {
 		padding: 30px 0;
 	}
 
+.top-bar {
+	min-height: 40px;
+	margin-bottom: 30px;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	justify-content: space-between;
+}
+
 .current-space {
 	background: #fff;
 	overflow: hidden;
@@ -263,12 +277,6 @@ button, input, textarea {
 		.messages_list--empty {
 			margin-bottom: 0;
 		}
-		.messages_list .mCSB_draggerContainer {
-			opacity: 0;
-		}
-			.messages_list:hover .mCSB_draggerContainer {
-				opacity: 1;
-			}
 		.messages_list .mCSB_inside > .mCSB_container {
 			margin-right: 0;
 		}
