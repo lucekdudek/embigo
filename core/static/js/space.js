@@ -97,6 +97,7 @@ $(function(){
 		        success : function(data) {
 		        	if(data){
 		        		closePopup('#popupNewSpace');
+		        		if($('#mySubspaces').hasClass('list-space--empty')) $('#mySubspaces').removeClass('list-space--empty').text('');
 		        		$('#mySubspaces').append('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
 		        		name.val('');
 		        		description.val('');
@@ -135,6 +136,7 @@ $(function(){
 		        success : function(data) {
 		        	if(data){
 		        		closePopup('#popupNewChannel');
+		        		if($('#myChannels').hasClass('list-space--empty')) $('#myChannels').removeClass('list-space--empty').text('');
 		        		$('#myChannels').append('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
 		        		name.val('');
 		        		description.val('');
