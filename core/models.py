@@ -15,6 +15,7 @@ class Space(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True)
     def __str__(self):
         return "%s"%(self.name)
+
     def get_path(self):
         paths = []
         parent=self.parent
@@ -22,6 +23,15 @@ class Space(models.Model):
             paths.append(parent)
             parent=parent.parent
         return paths[::-1]
+
+    def is_space(self):
+        return True if self.type == 1 else False
+
+    def is_channel(self):
+        return True if self.type == 2 else False
+
+    def is_conversation(self):
+        return True if self.type == 3 else False
 
 class SpaceUser(models.Model):
     class Meta():
@@ -31,8 +41,12 @@ class SpaceUser(models.Model):
     rights = models.CharField(max_length=32, null=True, blank=True)
     space = models.ForeignKey(Space, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True)
+
     def __str__(self):
         return "%s z %s"%(self.user.username, self.space.name)
+
+    def can(self, right):
+        return int(self.rights[right])
 
 class Message(models.Model):
     class Meta():
