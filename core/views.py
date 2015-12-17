@@ -125,6 +125,7 @@ def edit_space(request):
         space = Space.objects.get(uid=request.POST.get('space'))
         space.name = request.POST.get('name')
         space.description = request.POST.get('description')
+        space.status = request.POST.get('status')
         space.save()
         
         context = 1

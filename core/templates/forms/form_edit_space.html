@@ -6,6 +6,12 @@
 	<div>
 		<textarea name="description">{{ space.description }}</textarea>
 	</div>
+	<div>
+		<select name="status">
+			<option value="1" {% if space.status == 1 %}selected{% endif %}>Aktywna</option>
+			<option value="2" {% if space.status == 2 %}selected{% endif %}>Zarchiwizowana</option>
+		</select>
+	</div>
 	<input type="hidden" name="space" value="{{ space.uid }}">
 	<div class="text-right">
 		<input type="submit" value="Zapisz" class="btn">

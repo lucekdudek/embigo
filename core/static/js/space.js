@@ -43,19 +43,25 @@ $(function(){
 			btnSubmit = $('.btn', form),
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
+			status = $('select[name="status"]', form),
 			space = $('input[name="space"]', form);
 
 		function new_message() {
 		    $.ajax({
 		        url : "/edit_space/",
 		        type : "POST", 
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
+		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'status': status.val() },
 
 		        success : function(data) {
 		        	if(data){
 		        		closePopup('#popupEditSpace');
 		        		$('.current-space h1').text(name.val());
 		        		$('.current-space p').text(description.val());
+		        		if(status.val()==2){
+		        			$(".current-space").addClass("current-space--archive");
+		        		}else{
+		        			$(".current-space").removeClass("current-space--archive");
+		        		}
 		        	}
 		        },
 

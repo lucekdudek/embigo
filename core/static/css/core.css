@@ -143,9 +143,9 @@ button, input, textarea {
 	}
 		.current-space--archive .current-space_head {
 			background: #D7D7D7;
-			border-color: #C3C3C3;
+			border-color: #A7A7A7;
 		}
-		.current-space--archive h1 span {
+		.current-space--archive .current-space_type {
 			color: #888888;
 		}
 	.current-space p {
@@ -436,7 +436,7 @@ button, input, textarea {
 		margin: 10px 0 20px;
 		font-size: 24px;	
 	}
-	.popup input:not([type="submit"]), .popup textarea {
+	.popup input:not([type="submit"]), .popup textarea, .popup select {
 	    background: #F6F6F6;
 	    border-radius: 5px;
 	    margin-bottom: 20px;
@@ -446,6 +446,16 @@ button, input, textarea {
 	    border: 1px solid #DCDCDC;
 	    width: 100%;
 	}
+	.popup textarea {
+		line-height: 24px;
+		padding: 12px 20px;
+	}
+	.popup select {
+		line-height: 40px;
+		height: 40px;
+		display: block;
+	}
+
 #popupEditSpace textarea {
 	height: 200px;
 	resize: none;
