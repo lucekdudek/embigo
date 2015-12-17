@@ -23,18 +23,18 @@
 				<div class="current-space_head">
 					{% if space.type == 1 %}
 						<i class="fa fa-folder-o"></i>
-						<h1><span>Przestrzeń</span>
+						<div><span class="current-space_type">Przestrzeń</span>
 					{% elif space.type == 2 %}
 						<i class="fa fa-comments-o"></i>
-						<h1><span>Kanał</span>
+						<div><span class="current-space_type">Kanał</span>
 					{% elif space.type == 3 %}
 						<i class="fa fa-comment-o"></i>
-						<h1><span>Wiadomość prywatna</span>
+						<div><span class="current-space_type">Rozmowa prywatna</span>
 					{% else %}
-						<h1>
+						<div>
 					{% endif %}
-						{{ space.name }}
-					</h1>
+						<h1>{{ space.name }}</h1>
+					</div>
 				</div>
 			    <p>{{ space.description }}</p>
 		    </div>

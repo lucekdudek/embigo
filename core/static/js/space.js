@@ -52,7 +52,11 @@ $(function(){
 		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
 
 		        success : function(data) {
-		        	console.log(data);
+		        	if(data){
+		        		closePopup('#popupEditSpace');
+		        		$('.current-space h1').text(name.val());
+		        		$('.current-space p').text(description.val());
+		        	}
 		        },
 
 		        error : function(xhr,errmsg,err) {
