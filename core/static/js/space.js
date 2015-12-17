@@ -73,7 +73,7 @@ $(function(){
 		form.on('submit', function(event){
 		    event.preventDefault();
 		    form.removeClass('is-error');
-		    if(name.val()!='' && description.val()!=''){
+		    if(name.val()!=''){
 		    	new_message();
 		    }else{
 		    	form.addClass('is-error');
@@ -112,7 +112,7 @@ $(function(){
 		form.on('submit', function(event){
 		    event.preventDefault();
 		    form.removeClass('is-error');
-		    if(name.val()!='' && description.val()!=''){
+		    if(name.val()!=''){
 		    	new_message();
 		    }else{
 		    	form.addClass('is-error');
@@ -151,12 +151,18 @@ $(function(){
 		form.on('submit', function(event){
 		    event.preventDefault();
 		    form.removeClass('is-error');
-		    if(name.val()!='' && description.val()!=''){
+		    if(name.val()!=''){
 		    	new_message();
 		    }else{
 		    	form.addClass('is-error');
 		    }
 		});
+	});
+
+	var initBreadcrumbs = (function(){
+		if($('.breadcrumbs ul').prop('scrollWidth')>$('.breadcrumbs').width()){
+			$('.breadcrumbs').addClass('breadcrumbs--hide');
+		}
 	});
 
 	var openPopup = function(popup){
@@ -171,7 +177,7 @@ $(function(){
 		});
 	};
 
-
+	initBreadcrumbs();
 	initMessageForm();
 	initNewSpaceForm();
 	initNewChannelForm();

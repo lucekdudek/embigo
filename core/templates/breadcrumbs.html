@@ -1,6 +1,8 @@
-<ul class="breadcrumbs">
+<div class="breadcrumbs">
+	<ul>
 {% for space in space.get_path %}
-	<li><a href="/{{ space.uid }}">{{ space.name }}</a><i class="fa fa-chevron-right"></i></li>
+		<li><a href="/{{ space.uid }}">{{ space.name }}</a><i class="fa fa-chevron-right"></i></li>
 {% endfor %}
-	<li class="breadcrumbs_current">{{ space.name }}</li>
-</ul>
+		<li class="breadcrumbs_current">{{ space.name }}</li>
+	</ul>
+</div>
