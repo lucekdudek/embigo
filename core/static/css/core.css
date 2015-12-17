@@ -5,6 +5,9 @@ body {
 button, input, textarea {
 	outline: 0;
 }
+form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error select {
+	border-color: #ff0000;
+}
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .content {
@@ -181,6 +184,9 @@ button, input, textarea {
 		vertical-align: middle;
 		margin: 0 10px;
 	}
+	.breadcrumbs_current {
+		color: #F7E27B;
+	}
 
 .list-space {
 	margin-bottom: 20px;
@@ -337,9 +343,6 @@ button, input, textarea {
 }
 .messages {}
 	.messages_form {}
-		.messages_form.is-error textarea {
-			border-color: #ff0000;
-		}
 	.messages_form textarea {
 		background: #fff;
 		border-radius: 5px;
@@ -452,14 +455,11 @@ button, input, textarea {
 	.popup textarea {
 		line-height: 24px;
 		padding: 12px 20px;
+		height: 200px;
+		resize: none;
 	}
 	.popup select {
 		line-height: 40px;
 		height: 40px;
 		display: block;
 	}
-
-#popupEditSpace textarea {
-	height: 200px;
-	resize: none;
-}

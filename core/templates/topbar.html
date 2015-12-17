@@ -1,0 +1,11 @@
+<div class="top-bar">
+	<div>
+		{% if space.parent %}<a href="/{{ space.parent.uid }}" class="btn"><i class="fa fa-chevron-left"></i> {{ space.parent }}</a>{% endif %}
+		<a href="" class="btn" id="btnEditSpace"><i class="fa fa-pencil"></i>Edytuj</a>
+	</div>
+	<div>
+		<a href="" class="btn">Zmień uprawnienia</a>
+		{% if space.type != 2 %}<a href="" class="btn" id="btnNewSpace"><i class="fa fa-plus"></i>przestrzeń</a>{% endif %}
+		<a href="" class="btn"><i class="fa fa-plus"></i>kanał</a>
+	</div>
+</div>

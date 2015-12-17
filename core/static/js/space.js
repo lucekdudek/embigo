@@ -1,7 +1,7 @@
 $(function(){
 
 	var initMessageForm = (function(){
-		var form = $('#messageForm'),
+		var form = $('#messageForm form'),
 			btnSubmit = $('.btn', form),
 			content = $('textarea[name="content"]', form),
 			space = $('input[name="space"]', form);
@@ -39,7 +39,7 @@ $(function(){
 	});
 
 	var initEditForm = (function(){
-		var form = $('#editForm'),
+		var form = $('#editForm form'),
 			btnSubmit = $('.btn', form),
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
@@ -82,7 +82,7 @@ $(function(){
 	});
 
 	var initNewSpaceForm = (function(){
-		var form = $('#newSpaceForm'),
+		var form = $('#newSpaceForm form'),
 			btnSubmit = $('.btn', form),
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
@@ -98,6 +98,8 @@ $(function(){
 		        	if(data){
 		        		closePopup('#popupNewSpace');
 		        		$('#mySubspaces').append('<a href="/'+data.space+'" class="list-space_item ">'+name.val()+'</a>');
+		        		name.val('');
+		        		description.val('');
 		        	}
 		        },
 
