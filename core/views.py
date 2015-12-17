@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
 
-from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, space_is_channel, space_is_conversation, space_is_space, user_can, get_space_user
+from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user
 from core.models import Space, SpaceUser, Message
 from core.rights import *
 
@@ -28,24 +28,24 @@ def space(request, space_id):
         except SpaceUser.DoesNotExist:
             return HttpResponseRedirect("/out")
         space_list = Space.objects.filter(parent=space_id).order_by('-status')
-        own_channels = [s for s in space_list if space_is_channel(space=s) and user_is_space_user(user=user, space=s)]
-        other_channels = [s for s in space_list if space_is_channel(space=s)]
+        own_channels = [s for s in space_list if s.is_channel() and user_is_space_user(user=user, space=s)]
+        other_channels = [s for s in space_list if s.is_channel()]
         other_channels = [s for s in other_channels if s not in own_channels]
-        conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]
-        own_spaces = [s for s in space_list if space_is_space(space=s) and user_is_space_user(user=user, space=s)]
-        other_spaces = [s for s in space_list if space_is_space(space=s) and user_can(SEE_UNDERSPACES, space_user)]
+        conversations = [s for s in space_list if s.is_conversation() and user_is_space_user(user=user, space=s)]
+        own_spaces = [s for s in space_list if s.is_space() and user_is_space_user(user=user, space=s)]
+        other_spaces = [s for s in space_list if s.is_space() and space_user.can(SEE_UNDERSPACES)]
         other_spaces = [s for s in other_spaces if s not in own_spaces]
-        collaborators = SpaceUser.objects.filter(space=space) if user_can(SEE_USERS, space_user) else []
-        messages = Message.objects.filter(space=space).order_by('-data') if user_can(SEE_MESSAGES, space_user) else []
-        can_add_message = user_can(ADD_MESSAGE, space_user)
-        can_create_space = user_can(CREATE_SPACE, space_user)
-        can_create_channel = user_can(CREATE_CHANNEL, space_user)
-        can_create_conversation = user_can(CREATE_CONVERSATION, space_user)
-        can_edit_space = user_can(EDIT_SPACE, space_user)
-        can_archive_space = user_can(ARCHIVE_SPACE, space_user)
-        can_delete_space = user_can(DELETE_SPACE, space_user)
-        can_add_user = user_can(ADD_USER, space_user)
-        can_edit_user_rights = user_can(EDIT_RIGHTS, space_user)
+        collaborators = SpaceUser.objects.filter(space=space) if space_user.can(SEE_USERS) else []
+        messages = Message.objects.filter(space=space).order_by('-data') if space_user.can(SEE_MESSAGES) else []
+        can_add_message = space_user.can(ADD_MESSAGE)
+        can_create_space = space_user.can(CREATE_SPACE)
+        can_create_channel = space_user.can(CREATE_CHANNEL)
+        can_create_conversation = space_user.can(CREATE_CONVERSATION)
+        can_edit_space = space_user.can(EDIT_SPACE)
+        can_archive_space = space_user.can(ARCHIVE_SPACE)
+        can_delete_space = space_user.can(DELETE_SPACE)
+        can_add_user = space_user.can(ADD_USER)
+        can_edit_user_rights = space_user.can(EDIT_RIGHTS)
         context = {
             'space': space,
             'own_spaces': own_spaces,
