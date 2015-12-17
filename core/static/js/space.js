@@ -81,6 +81,42 @@ $(function(){
 		});
 	});
 
+	var initNewSpaceForm = (function(){
+		var form = $('#newSpaceForm'),
+			btnSubmit = $('.btn', form),
+			name = $('input[name="name"]', form),
+			description = $('textarea[name="description"]', form),
+			space = $('input[name="space"]', form);
+
+		function new_message() {
+		    $.ajax({
+		        url : "/new_space/",
+		        type : "POST", 
+		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
+
+		        success : function(data) {
+		        	if(data){
+		        		closePopup('#popupNewSpace');
+		        		$('#mySubspaces').append('<a href="/'+data.space+'" class="list-space_item ">'+name.val()+'</a>');
+		        	}
+		        },
+
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		form.on('submit', function(event){
+		    event.preventDefault();
+		    form.removeClass('is-error');
+		    if(name.val()!='' && description.val()!=''){
+		    	new_message();
+		    }else{
+		    	form.addClass('is-error');
+		    }
+		});
+	});
+
 	var openPopup = function(popup){
 		$('.popup-bg').fadeIn(function(){
 			$(popup).fadeIn();
@@ -95,6 +131,7 @@ $(function(){
 
 
 	initMessageForm();
+	initNewSpaceForm();
 	initEditForm();
 
 	$('.popup_btn-close').on('click',function(){
@@ -105,5 +142,10 @@ $(function(){
 		event.preventDefault();
 		openPopup('#popupEditSpace');
 	})
+	$('#btnNewSpace').on('click', function(event){
+		event.preventDefault();
+		openPopup('#popupNewSpace');
+	})
+
     $(".messages_list").mCustomScrollbar();
 });
