@@ -503,6 +503,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	width: 100%;
 	height: 100%;
 	display: none;
+	z-index: 2;
 }
 	.popup {
 		background: #fff;
@@ -516,6 +517,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		top: 100px;
 		box-shadow: 0 0 10px rgb(167, 151, 73);
 		display: none;
+		z-index: 3;
 	}
 	.popup_btn-close {
 		background: transparent;
