@@ -1,0 +1,66 @@
+<div class="view-space view-space--channel">
+	<div class="view-space_current">
+		<ul class="breadcrumbs">
+		{% for space in space.get_path %}
+			<li><a href="/{{ space.uid }}">{{ space.name }}</a><i class="fa fa-chevron-right"></i></li>
+		{% endfor %}
+		</ul>
+		<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
+			<div class="current-space_head">
+				{% if space.type == 1 %}
+					<i class="fa fa-folder-o"></i>
+					<div><span class="current-space_type">Przestrzeń</span>
+				{% elif space.type == 2 %}
+					<i class="fa fa-comments-o"></i>
+					<div><span class="current-space_type">Kanał</span>
+				{% elif space.type == 3 %}
+					<i class="fa fa-comment-o"></i>
+					<div><span class="current-space_type">Rozmowa prywatna</span>
+				{% else %}
+					<div>
+				{% endif %}
+					<h1>{{ space.name }}</h1>
+				</div>
+			</div>
+		    <p>{{ space.description }}</p>
+	    </div>
+	    <div class="messages">
+			<h2>{% if messages %}Wiadomości{% else %}Brak wiadomości{% endif %}</h2>
+	    	<div class="messages_list {% if not messages %}messages_list--empty{% endif %}">
+	    		{% for message in messages %}
+			    	<div class="messages-item">
+			    		<strong class="messages-item_user">{{ message.user }}</strong>
+			    		<span class="messages-item_date">{{ message.data }}</span>
+			    		<p>
+			    			{{ message.content }}
+			    		</p>
+			    	</div>
+	    		{% endfor %}
+		    </div>
+	    	<div class="messages_form" id="messageForm">
+    			{% include "forms/form_new_message.html" %}
+	    	</div>
+	    </div>
+	</div>
+	<div class="view-space_channels">
+		<h2>Kanały</h2>
+		<div class="list-space">
+		    {% if own_channels %}
+		        {% for space in own_channels %}
+					<a href="/{{ space.uid }}" class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">{{ space.name }}</a>
+		        {% endfor %}
+		    {% else %}
+				Brak
+			{% endif %}
+		</div>
+		<div class="list-space list-space--other">
+			{% if other_channels %}
+		        {% for space in other_channels %}
+					<a href="/{{ space.uid }}" class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">{{ space.name }}<i class="fa fa-sign-in"></i></a>
+		        {% endfor %}
+		    {% else %}
+				Brak
+			{% endif %}
+		</div>
+	</div>
+</div>

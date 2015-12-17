@@ -1,6 +1,6 @@
 <form action="{% url 'new_message' %}" method="POST">
 	{% csrf_token %}
-	<textarea name="content" placeholder="Dodaj komentarz..."></textarea>
+	<textarea name="content" placeholder="{% if space.type == 1 %}Dodaj komentarz...{% else %}Dodaj wiadomość...{% endif %}"></textarea>
 	<input type="hidden" name="space" value="{{ space.uid }}">
 	<div class="text-right">
 		<input type="submit" value="Wyślij" class="btn">

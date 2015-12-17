@@ -326,6 +326,9 @@ button, input, textarea {
 	    margin: 0 0 20px;
 	    color: #F3F3F3;
 	}
+	.view-space--channel .view-space_current {
+		width: 75%;
+	}
 
 
 @-webkit-keyframes initMessage{
