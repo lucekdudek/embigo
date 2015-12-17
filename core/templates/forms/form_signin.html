@@ -1,11 +1,6 @@
 <form method="post" action="{% url 'signin' %}">
     {% csrf_token %}
-    <div>
-        <input type="text" placeholder="Login" name="username" />
-    </div>
-    <div>
-        <input type="password" placeholder="Hasło" name="password" />
-    </div>
+    {{ form.as_p }}
     <input type="submit" value="Zaloguj" class="btn"/>
 	<div class="text-right"><a href="/register">Zarejestruj się</a></div>
 </form>

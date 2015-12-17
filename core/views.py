@@ -4,7 +4,7 @@ from uuid import uuid1
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
@@ -14,11 +14,11 @@ from core.models import Space, SpaceUser, Message
 from core.rights import *
 
 
-@login_required(login_url='/out/')
+@login_required(login_url='/in/')
 def index(request):
     return HttpResponseRedirect("/00000000-0000-0000-0000-000000000000")
 
-@login_required(login_url='/out')
+@login_required(login_url='/in')
 def space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
@@ -71,27 +71,36 @@ def space(request, space_id):
 
 def signin(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect("/")
-            else:
-                errormessage = "Użytkownik jest nieaktywny."
-                context = {'errormessage': errormessage}
-                return render(request, 'signin.html', context)
-        else:
-            errormessage = "Wystąpił błąd autoryzacji."
-            context = {'errormessage': errormessage}
-            return render(request, 'signin.html', context)
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return HttpResponseRedirect("/")
     else:
-        return render(request, 'signin.html')
+        form = AuthenticationForm()
+    context = {'form': form}
+    return render(request, 'signin.html', context)
+    #     username = request.POST.get('username')
+    #     password = request.POST.get('password')
+    #     user = authenticate(username=username, password=password)
+    #     if user is not None:
+    #         if user.is_active:
+    #             login(request, user)
+    #             return HttpResponseRedirect("/")
+    #         else:
+    #             errormessage = "Użytkownik jest nieaktywny."
+    #             context = {'errormessage': errormessage}
+    #             return render(request, 'signin.html', context)
+    #     else:
+    #         errormessage = "Wystąpił błąd autoryzacji."
+    #         context = {'errormessage': errormessage}
+    #         return render(request, 'signin.html', context)
+    # else:
+    #     return render(request, 'signin.html')
+
 
 def signout(request):
     logout(request)
-    return render(request, 'signin.html')
+    return HttpResponseRedirect("/")
 
 def register(request):
     if request.method == 'POST':
