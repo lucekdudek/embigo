@@ -9,7 +9,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone
 
-from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user
+from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
+    owner_default_rights
 from core.models import Space, SpaceUser, Message
 from core.rights import *
 
@@ -130,7 +131,7 @@ def new_space(request):
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
         space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=1, status=1, parent=spaceUid)
         space.save()
-        spaceUser = SpaceUser(uid=uuid1(), rights="111111111111", space=space, user=request.user)
+        spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=space, user=request.user)
         spaceUser.save()
         context = {'result':'Success', 'space': str(space.uid)}
     else:
