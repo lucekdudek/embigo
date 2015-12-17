@@ -118,3 +118,19 @@ def new_message(request):
             json.dumps(context),
             content_type="application/json"
         )
+
+def edit_space(request):
+    if request.method == 'POST':
+
+        space = Space.objects.get(uid=request.POST.get('space'))
+        space.name = request.POST.get('name')
+        space.description = request.POST.get('description')
+        space.save()
+        
+        context = 1
+    else:
+        context = 0
+    return HttpResponse(
+            json.dumps(context),
+            content_type="application/json"
+        )

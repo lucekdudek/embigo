@@ -4,7 +4,7 @@
 	<div class="top-bar">
 		<div>
 			{% if space.parent %}<a href="/{{ space.parent.uid }}" class="btn"><i class="fa fa-chevron-left"></i> {{ space.parent }}</a>{% endif %}
-			<a href="" class="btn"><i class="fa fa-pencil"></i>Edytuj</a>
+			<a href="" class="btn" id="btnEditSpace"><i class="fa fa-pencil"></i>Edytuj</a>
 		</div>
 		<div>
 			<a href="" class="btn">Zmień uprawnienia</a>
@@ -89,6 +89,14 @@
 			{% endif %}
 			</div>
 		</div>
-	</h1>
-	<script src="/static/js/new_message.js"></script>
+	</div>
+	<div class="popup-bg"></div>
+	<div class="popup" id="popupEditSpace">
+		<button class="popup_btn-close">Zamknij</button>
+		<h2>Edytuj przestrzeń</h2>
+		<div id="editForm">
+			{% include "forms/form_edit_space.html" %}
+		</div>
+	</div>
+	<script src="/static/js/space.js"></script>
 {% endblock %}

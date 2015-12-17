@@ -1,0 +1,13 @@
+<form action="{% url 'edit_space' %}" method="POST">
+	{% csrf_token %}
+	<div>
+		<input type="text" name="name" value="{{ space.name }}">
+	</div>
+	<div>
+		<textarea name="description">{{ space.description }}</textarea>
+	</div>
+	<input type="hidden" name="space" value="{{ space.uid }}">
+	<div class="text-right">
+		<input type="submit" value="Zapisz" class="btn">
+	</div>
+</form>
