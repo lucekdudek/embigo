@@ -28,7 +28,9 @@ def space(request, space_id):
         except SpaceUser.DoesNotExist:
             return HttpResponseRedirect("/out")
         space_list = Space.objects.filter(parent=space_id).order_by('-status')
-        channels = [s for s in space_list if space_is_channel(space=s)]
+        own_channels = [s for s in space_list if space_is_channel(space=s) and user_is_space_user(user=user, space=s)]
+        other_channels = [s for s in space_list if space_is_channel(space=s)]
+        other_channels = [s for s in other_channels if s not in own_channels]
         conversations = [s for s in space_list if space_is_conversation(space=s) and user_is_space_user(user=user, space=s)]
         own_spaces = [s for s in space_list if space_is_space(space=s) and user_is_space_user(user=user, space=s)]
         other_spaces = [s for s in space_list if space_is_space(space=s) and user_can(SEE_UNDERSPACES, space_user)]
@@ -48,7 +50,8 @@ def space(request, space_id):
             'space': space,
             'own_spaces': own_spaces,
             'other_spaces': other_spaces,
-            'channels': channels,
+            'own_channels': own_channels,
+            'other_channels': other_channels,
             'conversations': conversations,
             'collaborators': collaborators,
             'messages': messages,
@@ -67,21 +70,24 @@ def space(request, space_id):
         return HttpResponseRedirect("/")
 
 def signin(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect("/")
+            else:
+                errormessage = "Użytkownik jest nieaktywny."
+                context = {'errormessage': errormessage}
+                return render(request, 'signin.html', context)
         else:
-            errormessage = "Użytkownik jest nieaktywny."
+            errormessage = "Wystąpił błąd autoryzacji."
             context = {'errormessage': errormessage}
             return render(request, 'signin.html', context)
     else:
-        errormessage = "Wystąpił błąd autoryzacji."
-        context = {'errormessage': errormessage}
-        return render(request, 'signin.html', context)
+        return render(request, 'signin.html')
 
 def signout(request):
     logout(request)
@@ -102,36 +108,22 @@ def register(request):
 
 def new_message(request):
     if request.method == 'POST':
-        context = {}
-
         space = Space.objects.get(uid=request.POST.get('space'))
         message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, data=timezone.now())
         message.save()
-        
-        context['result'] = 'Create post successful!'
-        context['content'] = message.content
-        context['date'] = ""
-        context['user'] = message.user.username
+        context = {'result':'Success', 'content':message.content,'user': message.user.username}
     else:
-        context = {"nothing to see": "this isn't happening"}
-    return HttpResponse(
-            json.dumps(context),
-            content_type="application/json"
-        )
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
 
 def edit_space(request):
     if request.method == 'POST':
-
         space = Space.objects.get(uid=request.POST.get('space'))
         space.name = request.POST.get('name')
         space.description = request.POST.get('description')
         space.status = request.POST.get('status')
         space.save()
-        
-        context = 1
+        context = True
     else:
-        context = 0
-    return HttpResponse(
-            json.dumps(context),
-            content_type="application/json"
-        )
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
