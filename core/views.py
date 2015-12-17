@@ -17,10 +17,39 @@ from core.rights import *
 
 @login_required(login_url='/in/')
 def index(request):
+    """
+    homepage
+    redirect start space
+    """
     return HttpResponseRedirect("/00000000-0000-0000-0000-000000000000")
 
 @login_required(login_url='/in')
 def space(request, space_id):
+    """
+    Display a space
+
+    **Context**
+        'space': this space
+        'own_spaces': list of login user's spaces
+        'other_spaces': list of login user's spaces witch user can see
+        'own_channels': list of login user's channels
+        'other_channels': list of login user's channels witch user can see
+        'conversations': list of login user's conversations
+        'collaborators': list of space's users
+        'messages': list of space's messages
+        'can_add_message': rights flag
+        'can_create_space': rights flag
+        'can_create_channel': rights flag
+        'can_create_conversation': rights flag
+        'can_edit_space': rights flag
+        'can_archive_space': rights flag
+        'can_delete_space': rights flag
+        'can_add_user:': rights flag
+        'can_edit_user_rights': rights flag
+
+    **Template:**
+    :template:`space.html`
+    """
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     if user_is_space_user(user, space):
@@ -71,6 +100,15 @@ def space(request, space_id):
         return HttpResponseRedirect("/")
 
 def signin(request):
+    """
+    Display form for login
+
+    **Context**
+        login form
+
+    **Template:**
+    :template:`signin.html`
+    """
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -100,10 +138,22 @@ def signin(request):
 
 
 def signout(request):
+    """
+    Log out and redirect to homepage
+    """
     logout(request)
     return HttpResponseRedirect("/")
 
 def register(request):
+    """
+    Display form for registration
+
+    **Context**
+        registration form
+
+    **Template:**
+    :template:`register.html`
+    """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -117,6 +167,15 @@ def register(request):
     return render(request, 'register.html', context)
 
 def new_message(request):
+    """
+    Display form for message
+
+    **Context**
+        message form
+
+    **Template:**
+    :template:`form_new_message.html`
+    """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
         message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, data=timezone.now())
@@ -127,6 +186,15 @@ def new_message(request):
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 def new_space(request):
+    """
+    Display form for space
+
+    **Context**
+        space form
+
+    **Template:**
+    :template:`form_new_space.html`
+    """
     if request.method == 'POST':
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
         space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=1, status=1, parent=spaceUid)
@@ -139,6 +207,15 @@ def new_space(request):
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 def edit_space(request):
+    """
+    Display form for edit space
+
+    **Context**
+        edit space form
+
+    **Template:**
+    :template:`form_edit_space.html`
+    """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
         space.name = request.POST.get('name')
