@@ -138,6 +138,18 @@ def new_space(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+def new_channel(request):
+    if request.method == 'POST':
+        spaceUid = Space.objects.get(uid=request.POST.get('space'))
+        space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=2, status=1, parent=spaceUid)
+        space.save()
+        spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=space, user=request.user)
+        spaceUser.save()
+        context = {'result':'Success', 'space': str(space.uid)}
+    else:
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
 def edit_space(request):
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))

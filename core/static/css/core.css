@@ -188,6 +188,10 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		color: #F7E27B;
 	}
 
+@-webkit-keyframes initSpace{
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
 .list-space {
 	margin-bottom: 20px;
 	background: #515151;
@@ -223,6 +227,9 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		}
 		.list-space_item:last-child {
 			margin-bottom: 0;
+		}
+		.list-space_item--new {
+			animation: initMessage 1s;
 		}
 		.list-space_item--archive {
 			background: #D7D7D7;
