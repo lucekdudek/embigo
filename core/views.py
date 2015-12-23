@@ -57,6 +57,7 @@ def space(request, space_id):
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
             return HttpResponseRedirect("/out")
+        space_users = SpaceUser.objects.filter(space=space)
         space_list = Space.objects.filter(parent=space_id).order_by('-status')
         own_channels = [s for s in space_list if s.is_channel() and user_is_space_user(user=user, space=s)]
         other_channels = [s for s in space_list if s.is_channel()]
@@ -78,6 +79,7 @@ def space(request, space_id):
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
         context = {
             'space': space,
+            'space_users': space_users,
             'own_spaces': own_spaces,
             'other_spaces': other_spaces,
             'own_channels': own_channels,

@@ -105,14 +105,53 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 
 .current-space {
 	background: #fff;
-	overflow: hidden;
 	border-radius: 5px;
 	margin-bottom: 20px;
+	position: relative;
 }
+	.current-space_users {
+		position: absolute;
+		top: 0;
+		right: 100%;
+		margin-right: 15px;
+	}
+		.current-space_avatar {
+			width: 35px;
+		    height: 35px;
+		    display: block;
+		    border-radius: 50px;
+		    background: rgb(247, 125, 123);
+		    color: #3C3C3C;
+		    line-height: 39px;
+		    font-weight: 700;
+		    cursor: pointer;
+		    margin-bottom: 8px;
+		    float: right;
+		    clear: both;
+		    overflow: hidden;
+		    white-space: nowrap;
+		    box-sizing: border-box;
+		    transition: width 0.3s ease-out;
+		}
+			.current-space_avatar strong {
+				font-size: 22px;
+				vertical-align: middle;
+				display: inline-block;
+				width: 35px;
+				text-align: center;
+			}
+			.current-space_avatar span {
+				font-size: 14px;
+				font-weight: 400;
+				vertical-align: middle;
+				margin-right: 15px;
+			}
+
 	.current-space_head {
 		background: #F7E27B;
 		padding: 10px 20px;
 		border-bottom: 1px solid #C6AF3E;
+		border-radius: 5px 5px 0 0;
 		display: -webkit-box;
 		display: -webkit-flex;
 		display: -ms-flexbox;

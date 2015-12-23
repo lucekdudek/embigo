@@ -3,6 +3,13 @@
 	<div class="view-space_current">
 		{% include "./breadcrumbs.html" %}
 		<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
+			{% if collaborators %}
+				<div class="current-space_users">
+					{% for su in space_users %}					
+						<div class="current-space_avatar"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
+		    		{% endfor %}
+				</div>
+			{% endif %}
 			<div class="current-space_head">
 				{% if space.type == 1 %}
 					<i class="fa fa-folder-o"></i>
