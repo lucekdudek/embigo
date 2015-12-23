@@ -26,6 +26,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	display: inline-block;
 	text-decoration: none;
 	text-transform: uppercase;
+	vertical-align: middle;
 }
 	.btn:hover {
 		background: #7E7758;
@@ -33,6 +34,14 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	.btn i {
 		margin-right: 10px;
 	}
+	.btn--icon {
+		padding: 0 15px;
+		font-size: 20px;
+	}
+		.btn--icon i {
+			margin-right: 0;
+			text-shadow: 0px 0px 1px #000;
+		}
 
 .header {
 	background: #F7E27B;
@@ -102,6 +111,15 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	    -ms-flex-pack: justify;
 	        justify-content: space-between;
 }
+	.top-bar > div {
+		display: flex;
+	}
+	.top-bar > div:first-child a {
+		margin-right: 8px;
+	}
+	.top-bar > div:last-child a {
+		margin-left: 8px;
+	}
 
 .current-space {
 	background: #fff;

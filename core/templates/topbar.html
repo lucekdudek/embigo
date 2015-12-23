@@ -1,16 +1,19 @@
 <div class="top-bar">
-	<div>
+	<div class="text-left">
 		{% if space.parent %}<a href="/{{ space.parent.uid }}" class="btn"><i class="fa fa-chevron-left"></i> {{ space.parent }}</a>{% endif %}
 
 		{% if can_edit_space %}
-			<a href="" class="btn" id="btnEditSpace"><i class="fa fa-pencil"></i>Edytuj</a>
+			<a href="" class="btn btn--icon" id="btnEditSpace"><i class="fa fa-pencil"></i></a>
 		{% endif %}
-	</div>
-	<div>
+
+		<a href="" class="btn btn--icon"><i class="fa fa-user-plus"></i></a>
 		{% if can_edit_user_rights %}
-			<a href="" class="btn">Zmień uprawnienia</a>
+			<a href="" class="btn btn--icon"><i class="fa fa-users"></i></a>
 		{% endif %}
-		
+		<a href="" class="btn btn--icon"><i class="fa fa-archive"></i></a>
+		<a href="" class="btn btn--icon"><i class="fa fa-trash"></i></a>
+	</div>
+	<div class="text-right">
 		{% if can_create_space %}
 			{% if space.type != 2 %}<a href="" class="btn" id="btnNewSpace"><i class="fa fa-plus"></i>przestrzeń</a>{% endif %}
 		{% endif %}
