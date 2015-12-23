@@ -16,10 +16,12 @@ $(function(){
 					content.val('');
 		            var s = '<div class="messages-item messages-item--new">';
 		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
+		            s += '<button class="messages-item_btn-delete" data-uid="'+data.uid+'"><i class="fa fa-times"></i></button>';
 		            s += '<p>'+data.content+'</p>';
 		            s += '</div>';
 		            $('.messages_list').removeClass('messages_list--empty');
 		            $('.messages_list #mCSB_1_container').prepend(s);
+		            initDeleteMessageForm();
 		        },
 
 		        error : function(xhr,errmsg,err) {
@@ -35,6 +37,34 @@ $(function(){
 		    }else{
 		    	form.addClass('is-error');
 		    }
+		});
+	});
+
+	var initDeleteMessageForm = (function(){
+		var btns = $('.messages-item_btn-delete');
+
+		function delete_message(uid, item) {
+		    $.ajax({
+		        url : "/delete_message/",
+		        type : "POST", 
+		        data : { 'message': uid },
+
+		        success : function(data) {
+					if(data){
+						item.on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(){
+							$(this).remove();
+						});
+						item.addClass('messages-item--delete');
+					}
+		        },
+
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		btns.on('click', function(event){
+		    delete_message($(this).attr('data-uid'), $(this).parent());
 		});
 	});
 
@@ -179,6 +209,7 @@ $(function(){
 
 	initBreadcrumbs();
 	initMessageForm();
+	initDeleteMessageForm();
 	initNewSpaceForm();
 	initNewChannelForm();
 	initEditForm();

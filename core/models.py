@@ -2,6 +2,8 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone, formats
+import datetime
 
 class Space(models.Model):
     class Meta():
@@ -58,5 +60,17 @@ class Message(models.Model):
     file = models.CharField(max_length=255, null=True, blank=True)
     space = models.ForeignKey(Space, null=True, blank=True)
     user = models.ForeignKey(User, blank=True, null=True)
+
+    def get_date_for_message(self):
+        sub = (timezone.localtime(timezone.now()) - self.data).days
+        if sub == 0:
+            return "Dzisiaj"
+        elif sub == 1:
+            return "Wczoraj"
+        elif sub < 4:
+            return str(sub)+" dni temu"
+        else:
+            return self.data
+
     def __str__(self):
         return "%s"%(self.content)
