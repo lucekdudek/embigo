@@ -4,13 +4,15 @@ $(function(){
 		var form = $('#messageForm form'),
 			btnSubmit = $('.btn', form),
 			content = $('textarea[name="content"]', form),
-			space = $('input[name="space"]', form);
+			space = $('input[name="space"]', form),
+			file = $('input[name="file"]', form);
+
 
 		function new_message() {
 		    $.ajax({
 		        url : "/new_message/",
 		        type : "POST", 
-		        data : { 'space':  space.val(), 'content': content.val() },
+		        data : { 'space':  space.val(), 'content': content.val(), 'file':file.val() },
 
 		        success : function(data) {
 					content.val('');

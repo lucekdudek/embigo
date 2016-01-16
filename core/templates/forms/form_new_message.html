@@ -1,10 +1,12 @@
-<form action="{% url 'new_message' %}" method="POST">
+<form action="{% url 'new_message' %}" method="POST" enctype="multipart/form-data">
 	{% csrf_token %}
 	<textarea name="content" placeholder="{% if space.type == 1 %}Dodaj komentarz...{% else %}Dodaj wiadomość...{% endif %}"></textarea>
 	<input type="hidden" name="space" value="{{ space.uid }}">
 	<div class="text-right">
 		<!-- Fake attachment button -->
-		<a href="" style="color: #fff; font-size: 24px; vertical-align: middle; margin-right: 10px;"><i class="fa fa-paperclip"></i></a>
+		<a href="" style="color: #fff; font-size: 24px; vertical-align: middle; margin-right: 10px;"><i class="fa fa-paperclip"></i>
+            <input type="file" name="file">
+        </a>
 		<!-- -->
 		<input type="submit" value="Wyślij" class="btn">
 	</div>

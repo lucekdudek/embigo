@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone, formats
 
+from core.forms import FileForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights
 from core.models import Space, SpaceUser, Message
@@ -67,7 +68,7 @@ def space(request, space_id):
         other_spaces = [s for s in space_list if s.is_space() and space_user.can(SEE_UNDERSPACES)]
         other_spaces = [s for s in other_spaces if s not in own_spaces]
         collaborators = SpaceUser.objects.filter(space=space) if space_user.can(SEE_USERS) else []
-        messages = Message.objects.filter(space=space).order_by('-data') if space_user.can(SEE_MESSAGES) else []
+        messages = Message.objects.filter(space=space).order_by('-date') if space_user.can(SEE_MESSAGES) else []
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
         can_create_channel = space_user.can(CREATE_CHANNEL)
@@ -180,7 +181,9 @@ def new_message(request):
     """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
-        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, data=timezone.now())
+        print(request.FILES)
+        print(request.POST.get)
+        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, date=timezone.now(), file=request.FILES['file'])
         message.save()
         context = {'result':'Success', 'uid': str(message.uid), 'content':message.content,'user': message.user.username, 'date': 'Dzisiaj'}
     else:
@@ -258,3 +261,23 @@ def edit_space(request):
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+def signin(request):
+    """
+    Display form for login
+
+    **Context**
+        login form
+
+    **Template:**
+    :template:`signin.html`
+    """
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return HttpResponseRedirect("/")
+    else:
+        form = AuthenticationForm()
+    context = {'form': form}
+    return render(request, 'signin.html', context)

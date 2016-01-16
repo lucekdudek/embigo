@@ -56,13 +56,13 @@ class Message(models.Model):
         verbose_name_plural = "komentarze"
     uid = models.CharField(primary_key=True, max_length=64)
     content = models.CharField(max_length=255, null=True, blank=True)
-    data = models.DateTimeField(auto_now_add=True, blank=True)
-    file = models.CharField(max_length=255, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
     space = models.ForeignKey(Space, null=True, blank=True)
     user = models.ForeignKey(User, blank=True, null=True)
+    file = models.FileField(upload_to='', null=True, blank=True)
 
     def get_date_for_message(self):
-        sub = (timezone.localtime(timezone.now()) - self.data).days
+        sub = (timezone.localtime(timezone.now()) - self.date).days
         if sub == 0:
             return "Dzisiaj"
         elif sub == 1:
@@ -70,7 +70,10 @@ class Message(models.Model):
         elif sub < 4:
             return str(sub)+" dni temu"
         else:
-            return self.data
+            return self.date
 
     def __str__(self):
         return "%s"%(self.content)
+
+
+
