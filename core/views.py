@@ -180,9 +180,9 @@ def new_message(request):
     """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
-        print(request.FILES)
-        print(request.POST.get)
-        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, date=timezone.now(), file=request.FILES['file'])
+        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, date=timezone.now())
+        if request.FILES:
+            message.file = request.FILES['file']
         message.save()
         context = {'result':'Success', 'uid': str(message.uid), 'content':message.content,'user': message.user.username, 'date': 'Dzisiaj'}
     else:
