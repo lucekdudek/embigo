@@ -9,10 +9,21 @@ $(function(){
 
 
 		function new_message() {
-		    $.ajax({
+			var formData = new FormData();
+			formData.append('content', content.val());
+			formData.append('space', space.val());
+			formData.append('file', file.prop('files')[0]);
+			
+			console.log(file.prop('files')[0]);
+			
+			$.ajax({
 		        url : "/new_message/",
 		        type : "POST", 
-		        data : { 'space':  space.val(), 'content': content.val(), 'file':file.val() },
+				cache: false,
+       			dataType: 'json',
+				processData: false,
+				contentType: false,
+		        data : formData,
 
 		        success : function(data) {
 					content.val('');

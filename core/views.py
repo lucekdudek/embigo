@@ -9,7 +9,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone, formats
 
-from core.forms import FileForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights
 from core.models import Space, SpaceUser, Message
