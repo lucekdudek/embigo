@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone, formats
 import datetime
+from django.conf import settings
 
 class Space(models.Model):
     class Meta():
@@ -71,6 +72,9 @@ class Message(models.Model):
             return str(sub)+" dni temu"
         else:
             return self.date
+			
+    def get_filepath(self):
+        return settings.MEDIA_URL+self.file.name
 
     def __str__(self):
         return "%s"%(self.content)

@@ -14,8 +14,6 @@ $(function(){
 			formData.append('space', space.val());
 			formData.append('file', file.prop('files')[0]);
 			
-			console.log(file.prop('files')[0]);
-			
 			$.ajax({
 		        url : "/new_message/",
 		        type : "POST", 
@@ -31,6 +29,7 @@ $(function(){
 		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
 		            s += '<button class="messages-item_btn-delete" data-uid="'+data.uid+'"><i class="fa fa-times"></i></button>';
 		            s += '<p>'+data.content+'</p>';
+					s += '<br><img src="/media/'+file.prop('files')[0].name+'">';
 		            s += '</div>';
 		            $('.messages_list').removeClass('messages_list--empty');
 		            $('.messages_list #mCSB_1_container').prepend(s);
