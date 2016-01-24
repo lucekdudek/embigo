@@ -5,14 +5,16 @@ $(function(){
 			btnSubmit = $('.btn', form),
 			content = $('textarea[name="content"]', form),
 			space = $('input[name="space"]', form),
-			file = $('input[name="file"]', form);
+			file = $('input[name="file"]', form),
+			fileSpan = $('.file-input span', form),
+			active = false;
 
 
 		function new_message() {
 			var formData = new FormData();
 			formData.append('content', content.val());
 			formData.append('space', space.val());
-			formData.append('file', file.prop('files')[0]);
+			if(file.prop('files')[0]) formData.append('file', file.prop('files')[0]);
 			
 			$.ajax({
 		        url : "/new_message/",
@@ -24,16 +26,27 @@ $(function(){
 		        data : formData,
 
 		        success : function(data) {
-					content.val('');
 		            var s = '<div class="messages-item messages-item--new">';
 		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
 		            s += '<button class="messages-item_btn-delete" data-uid="'+data.uid+'"><i class="fa fa-times"></i></button>';
 		            s += '<p>'+data.content+'</p>';
-					s += '<br><img src="/media/'+file.prop('files')[0].name+'">';
+					if(file.prop('files')[0]){
+						var name = file.prop('files')[0].name,
+							extension = name.split(".")[1];
+						if(extension=='png' || extension=='jpg' || extension=='bmp'){
+							s += '<br><img src="/media/'+file.prop('files')[0].name+'">';
+						}else {
+							s += '<i class="fa fa-file-o"></i> '+name;
+						}
+					}
 		            s += '</div>';
 		            $('.messages_list').removeClass('messages_list--empty');
 		            $('.messages_list #mCSB_1_container').prepend(s);
+					content.val('');
+					file.val('');
+					fileSpan.text('');
 		            initDeleteMessageForm();
+					active = false;
 		        },
 
 		        error : function(xhr,errmsg,err) {
@@ -44,8 +57,9 @@ $(function(){
 		form.on('submit', function(event){
 		    event.preventDefault();
 		    form.removeClass('is-error');
-		    if(content.val()!=''){
-		    	new_message();
+		    if(content.val()!='' && !active){
+		    	active = true;
+				new_message();
 		    }else{
 		    	form.addClass('is-error');
 		    }
@@ -88,7 +102,7 @@ $(function(){
 			status = $('select[name="status"]', form),
 			space = $('input[name="space"]', form);
 
-		function new_message() {
+		function edit_space() {
 		    $.ajax({
 		        url : "/edit_space/",
 		        type : "POST", 
@@ -116,7 +130,7 @@ $(function(){
 		    event.preventDefault();
 		    form.removeClass('is-error');
 		    if(name.val()!=''){
-		    	new_message();
+		    	edit_space();
 		    }else{
 		    	form.addClass('is-error');
 		    }
@@ -130,7 +144,7 @@ $(function(){
 			description = $('textarea[name="description"]', form),
 			space = $('input[name="space"]', form);
 
-		function new_message() {
+		function new_space() {
 		    $.ajax({
 		        url : "/new_space/",
 		        type : "POST", 
@@ -155,7 +169,7 @@ $(function(){
 		    event.preventDefault();
 		    form.removeClass('is-error');
 		    if(name.val()!=''){
-		    	new_message();
+		    	new_space();
 		    }else{
 		    	form.addClass('is-error');
 		    }
@@ -169,7 +183,7 @@ $(function(){
 			description = $('textarea[name="description"]', form),
 			space = $('input[name="space"]', form);
 
-		function new_message() {
+		function new_channel() {
 		    $.ajax({
 		        url : "/new_channel/",
 		        type : "POST", 
@@ -194,7 +208,7 @@ $(function(){
 		    event.preventDefault();
 		    form.removeClass('is-error');
 		    if(name.val()!=''){
-		    	new_message();
+		    	new_channel();
 		    }else{
 		    	form.addClass('is-error');
 		    }
@@ -265,6 +279,14 @@ $(function(){
 
 	$('.popup_btn-close').on('click',function(){
 		closePopup('#'+$(this).parent().prop('id'));
+	});
+	$('.file-input').on('click',function(){
+		var btn = $(this).find('.file-input_btn'),
+			span = $(this).find('span');
+			
+		btn.on('change',function(event){
+			span.text($('.file-input input').val());
+		});
 	});
 
 	$('#btnEditSpace').on('click', function(event){

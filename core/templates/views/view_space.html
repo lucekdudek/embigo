@@ -41,9 +41,15 @@
 			    		<p>
 			    			{{ message.content }}
 			    		</p>
-						<br>
-						<img src="{{ message.get_filepath }}">
-			    	</div>
+						{% if message.file %}
+							<br>
+							{% if message.check_if_image %}
+								<img src="{{ message.get_filepath }}">
+							{% else %}
+								<i class="fa fa-file-o"></i> <a href="{{ message.get_filepath }}">{{ message.file.name }}</a>
+			    			{% endif %}
+						{% endif %}
+					</div>
 	    		{% endfor %}
 		    </div>
 	    	<div class="messages_form" id="messageForm">
