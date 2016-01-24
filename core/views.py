@@ -209,6 +209,7 @@ def new_space(request):
     :template:`form_new_space.html`
     """
     if request.method == 'POST':
+        print(request.POST.getlist('new_space_users'))
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
         space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=1, status=1, parent=spaceUid)
         space.save()
@@ -236,6 +237,28 @@ def new_channel(request):
         spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=channel, user=request.user)
         spaceUser.save()
         context = {'result':'Success', 'space': str(channel.uid)}
+    else:
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+def new_conversation(request):
+    """
+    Display form for conversation
+
+    **Context**
+        conversation form
+
+    **Template:**
+    :template:`form_new_conversation.html`
+    """
+    if request.method == 'POST':
+        print(request.POST.get('space'))
+        # spaceUid = Space.objects.get(uid=request.POST.get('space'))
+        # conversation = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=2, status=1, parent=spaceUid)
+        # conversation.save()
+        # spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=conversation, user=request.user)
+        # spaceUser.save()
+        # context = {'result':'Success', 'space': str(conversation.uid)}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")

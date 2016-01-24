@@ -6,6 +6,14 @@
 	<div>
 		<textarea name="description" placeholder="Opis przestrzeni"></textarea>
 	</div>
+
+    {% for su in space_users %}
+        <div>
+            {{ su.user.username }}
+            <input type=checkbox name='new_space_users' value='{{ su }}' id='{{ su }}'>
+        </div>
+    {% endfor %}
+
 	<input type="hidden" name="space" value="{{ space.uid }}">
 	<div class="text-right">
 		<input type="submit" value="Zapisz" class="btn">

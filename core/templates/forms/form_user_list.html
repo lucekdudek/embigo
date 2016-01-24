@@ -1,0 +1,6 @@
+{% for su in space_users %}
+    <div>
+        {{ su.user.username }}
+        <input type=checkbox name='new_space_users' value='{{ su }}' id='{{ su }}'>
+    </div>
+{% endfor %}

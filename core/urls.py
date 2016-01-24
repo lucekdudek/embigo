@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^new_message/$', new_message, name="new_message"),
     url(r'^delete_message/$', delete_message, name="delete_message"),
     url(r'^new_space/$', new_space, name="new_space"),
+    url(r'^new_conversation/$', new_space, name="new_conversation"),
     url(r'^edit_space/$', edit_space, name="edit_space"),
     url(r'^new_channel/$', new_channel, name="new_channel"),
     url(r'(?P<space_id>[0-9a-z-]+)/$', space, name="space"),
