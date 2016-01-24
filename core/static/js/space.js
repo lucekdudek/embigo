@@ -1,5 +1,8 @@
 $(function(){
 
+	/**
+	 * Tworzy message
+	 */
 	var initMessageForm = (function(){
 		var form = $('#messageForm form'),
 			btnSubmit = $('.btn', form),
@@ -66,6 +69,9 @@ $(function(){
 		});
 	});
 
+	/**
+	 * Usuwa message
+	 */
 	var initDeleteMessageForm = (function(){
 		var btns = $('.messages-item_btn-delete');
 
@@ -94,6 +100,9 @@ $(function(){
 		});
 	});
 
+	/**
+	 * Edytuje space
+	 */
 	var initEditForm = (function(){
 		var form = $('#editForm form'),
 			btnSubmit = $('.btn', form),
@@ -137,18 +146,27 @@ $(function(){
 		});
 	});
 
+	/**
+	 * Tworzy nowy space
+	 */
 	var initNewSpaceForm = (function(){
 		var form = $('#newSpaceForm form'),
 			btnSubmit = $('.btn', form),
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
-			space = $('input[name="space"]', form);
+			space = $('input[name="space"]', form),
+			users = $('input[name="new_space_users"]', form);
 
 		function new_space() {
+			var checkedUsers = [];
+			users.each(function(){
+				if($(this).prop('checked')) checkedUsers.push($(this).val());
+			});
+			
 		    $.ajax({
 		        url : "/new_space/",
 		        type : "POST", 
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
+		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'new_space_users': checkedUsers },
 
 		        success : function(data) {
 		        	if(data){
@@ -176,6 +194,9 @@ $(function(){
 		});
 	});
 
+	/**
+	 * Tworzy nowy kanał
+	 */
 	var initNewChannelForm = (function(){
 		var form = $('#newChannelForm form'),
 			btnSubmit = $('.btn', form),
@@ -214,7 +235,10 @@ $(function(){
 		    }
 		});
 	});
-
+	
+	/**
+	 * Koloruje userów
+	 */
 	var initUsers = (function(){
     	function getRandomInt(min, max) {
     	    return Math.floor(Math.random() * (max - min + 1)) + min;

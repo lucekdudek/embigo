@@ -209,7 +209,7 @@ def new_space(request):
     :template:`form_new_space.html`
     """
     if request.method == 'POST':
-        print(request.POST.getlist('new_space_users'))
+        print(request.POST.getlist('new_space_users[]'))
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
         space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=1, status=1, parent=spaceUid)
         space.save()
