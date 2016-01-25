@@ -195,6 +195,38 @@ $(function(){
 	});
 
 	/**
+	 * Usuwa space
+	 * nie podpięa
+	 */
+	var initDeleteSpaceForm = (function(){
+		var btns = $('.space-item_btn-delete');
+
+		function delete_space(uid, item) {
+		    $.ajax({
+		        url : "/delete_space/",
+		        type : "POST",
+		        data : { 'space': uid },
+
+		        success : function(data) {
+					if(data){
+						item.on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(){
+							$(this).remove();
+						});
+						item.addClass('space-item--delete');
+					}
+		        },
+
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		btns.on('click', function(event){
+		    delete_space($(this).attr('data-uid'), $(this).parent());
+		});
+	});
+
+	/**
 	 * Tworzy nowy kanał
 	 */
 	var initNewChannelForm = (function(){

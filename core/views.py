@@ -223,6 +223,15 @@ def new_space(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+def delete_space(request):
+    if request.method == 'POST':
+        space = Space.objects.get(uid=request.POST.get('space'))
+        space.delete()
+        context = True
+    else:
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
 def new_channel(request):
     """
     Display form for channel
