@@ -7,7 +7,7 @@
 		<textarea name="description" placeholder="Opis przestrzeni"></textarea>
 	</div>
 
-    {% for su in space_users %}
+    {% for su in collaborators %}
 	    {% if su.user != request.user %}
             <div>
                 {{ su.user.username }}
