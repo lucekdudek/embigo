@@ -1,0 +1,13 @@
+<form action="{% url 'new_conversation' %}" method="POST">
+	{% csrf_token %}
+	<div>
+		<input type="text" name="name" placeholder="Tytuł">
+	</div>
+    <div>
+		<textarea name="content" placeholder="Wiadomość"></textarea>
+	</div>
+	<input type="hidden" name="space" value="{{ space.uid }}">
+	<div class="text-right">
+		<input type="submit" value="Wyślij" class="btn">
+	</div>
+</form>
