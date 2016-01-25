@@ -155,7 +155,7 @@ $(function(){
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
 			space = $('input[name="space"]', form),
-			users = $('input[name="new_space_users"]', form);
+			users = $('input[name="new_space_users_id"]', form);
 
 		function new_space() {
 			var checkedUsers = [];
