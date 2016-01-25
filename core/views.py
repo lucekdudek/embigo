@@ -5,12 +5,13 @@ from uuid import uuid1
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.utils import timezone, formats
 
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
-    owner_default_rights
+    owner_default_rights, user_default_rights
 from core.models import Space, SpaceUser, Message
 from core.rights import *
 
@@ -209,12 +210,14 @@ def new_space(request):
     :template:`form_new_space.html`
     """
     if request.method == 'POST':
-        print(request.POST.getlist('new_space_users[]'))
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
         space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=1, status=1, parent=spaceUid)
         space.save()
         spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=space, user=request.user)
         spaceUser.save()
+        for user_id in request.POST.getlist('new_space_users_id[]'):
+            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
+            spaceUser.save()
         context = {'result':'Success', 'space': str(space.uid)}
     else:
         context = None

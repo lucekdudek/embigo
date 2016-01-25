@@ -8,10 +8,12 @@
 	</div>
 
     {% for su in space_users %}
-        <div>
-            {{ su.user.username }}
-            <input type=checkbox name='new_space_users' value='{{ su }}' id='{{ su }}'>
-        </div>
+	    {% if su.user != request.user %}
+            <div>
+                {{ su.user.username }}
+                <input type=checkbox name='new_space_users_id' value={{ su.user.id }} id={{ su }}>
+            </div>
+        {% endif %}
     {% endfor %}
 
 	<input type="hidden" name="space" value="{{ space.uid }}">

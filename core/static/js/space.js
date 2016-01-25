@@ -166,7 +166,7 @@ $(function(){
 		    $.ajax({
 		        url : "/new_space/",
 		        type : "POST", 
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'new_space_users': checkedUsers },
+		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'new_space_users_id': checkedUsers },
 
 		        success : function(data) {
 		        	if(data){

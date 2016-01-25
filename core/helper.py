@@ -13,6 +13,12 @@ def owner_default_rights():
     """
     return "111111111111"
 
+def user_default_rights():
+    """
+    :return: rights of normal user of space
+    """
+    return "111100011011"
+
 def embigo_main_space():
     """
     :return: star space
