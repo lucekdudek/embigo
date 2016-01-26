@@ -253,7 +253,7 @@ def add_collaborators(request):
         for user_id in request.POST.getlist('new_collaborators_id[]'):
             spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
             spaceUser.save()
-        context = {'result':'Success'}
+        context = {'result':'Success', 'firstLetter': 'A', 'user': 'Adam'}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")

@@ -30,5 +30,12 @@
 			{% include "forms/form_new_channel.html" %}
 		</div>
 	</div>
+	<div class="popup" id="popupAddCollaborators">
+		<button class="popup_btn-close">Zamknij</button>
+		<h2>Dodaj użytkowników</h2>
+		<div id="addCollaboratorsForm">
+			{% include "forms/form_add_collaborators.html" %}
+		</div>
+	</div>
 	<script src="/static/js/space.js"></script>
 {% endblock %}

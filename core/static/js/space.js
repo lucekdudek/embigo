@@ -235,6 +235,45 @@ $(function(){
 		    }
 		});
 	});
+
+	/**
+	 * Tworzy nowy kanał
+	 */
+	var initAddCollaborators = (function(){
+		var form = $('#addCollaboratorsForm form'),
+			btnSubmit = $('.btn', form),
+			space = $('input[name="space"]', form),
+			users = $('input[name="new_collaborators_id"]', form);
+
+		function add_collaborators() {
+			var checkedUsers = [];
+			users.each(function(){
+				if($(this).prop('checked')) checkedUsers.push($(this).val());
+			});
+			
+		    $.ajax({
+		        url : "/add_collaborators/",
+		        type : "POST", 
+		        data : { 'space':  space.val(), 'new_collaborators_id': checkedUsers },
+
+		        success : function(data) {
+		        	if(data){
+		        		closePopup('#popupAddCollaborators');
+						$('.current-space_users').append('<div class="current-space_avatar"><strong>'+data.firstLetter+'</strong><span>'+data.user+'</span></div>');
+						initUsers();
+		        	}
+		        },
+
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		form.on('submit', function(event){
+		    event.preventDefault();
+			add_collaborators();
+		});
+	});
 	
 	/**
 	 * Koloruje userów
@@ -299,6 +338,7 @@ $(function(){
 	initNewSpaceForm();
 	initNewChannelForm();
 	initEditForm();
+	initAddCollaborators();
 	initUsers();
 
 	$('.popup_btn-close').on('click',function(){
@@ -341,6 +381,10 @@ $(function(){
 	$('#btnNewChannel').on('click', function(event){
 		event.preventDefault();
 		openPopup('#popupNewChannel');
+	})
+	$('#btnAddCollaborators').on('click', function(event){
+		event.preventDefault();
+		openPopup('#popupAddCollaborators');
 	})
 
     $(".messages_list").mCustomScrollbar();

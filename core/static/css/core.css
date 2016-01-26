@@ -737,3 +737,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 				margin-left: 20px;
 				min-width: 140px;
 			}
+			
+	#popupAddCollaborators .checkbox-wrapper {
+		margin-bottom: 5px;
+	}
