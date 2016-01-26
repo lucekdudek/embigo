@@ -253,6 +253,22 @@ def new_channel(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+def enter_channel(request):
+    """
+    Add login user to chanel as SpaceUser
+
+    **Context**
+        endter chanel button
+    """
+    if request.method == 'POST':
+        channel = Space.objects.get(uid=request.POST.get('channel_id'))
+        spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=channel, user=request.user)
+        spaceUser.save()
+        return HttpResponseRedirect("/%s"%(channel.uid))
+    else:
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
 def new_conversation(request):
     """
     Display form for conversation
