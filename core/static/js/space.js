@@ -312,6 +312,23 @@ $(function(){
 			span.text($('.file-input input').val());
 		});
 	});
+	
+	$('.checkbox-wrapper').on('click', function(){
+		var t = $(this).find('input');
+		if(t.prop('checked')){
+			t.prop('checked', false);
+			$(this).removeClass('is-active');
+		}else {
+			t.prop('checked', true);
+			$(this).addClass('is-active');
+		}
+	});
+
+	$('.checkbox-wrapper').each(function(){
+		if($(this).find('input').prop('checked')){
+			$(this).addClass('is-active');
+		}
+	});
 
 	$('#btnEditSpace').on('click', function(event){
 		event.preventDefault();

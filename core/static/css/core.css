@@ -45,6 +45,52 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		-webkit-appearance: none;
 		cursor: pointer;
 	}
+	
+.checkbox-wrapper {
+	display: flex;
+}
+	.checkbox-wrapper_input {
+		width: 15px;
+		height: 15px;
+		overflow: hidden;
+		border: 1px solid #DCDCDC;
+		background: #F6F6F6;
+		margin-right: 10px;
+		border-radius: 5px;
+		cursor: pointer;
+		position: relative;
+		transition: all 0.3s ease;
+	}
+		.checkbox-wrapper_input input {
+			display: none;
+		}
+		.checkbox-wrapper label {
+			font-size: 15px;
+			color: #3C3C3C;
+		}
+	.checkbox-wrapper_input:after {
+		background: url('../img/tick.png') no-repeat;
+		display: block;
+		content: ' ';
+		width: 15px;
+		height: 15px;
+		position: absolute;
+		top: -5px;
+		left: 0;
+		opacity: 0;
+		transition: all 0.3s ease;
+	}
+	.checkbox-wrapper_input:hover {
+		border: 1px solid #B7B7B7;
+	}
+	.checkbox-wrapper.is-active .checkbox-wrapper_input:after {
+		opacity: 1;
+		top: 0px;
+	}
+	.checkbox-wrapper.is-active .checkbox-wrapper_input {
+		border: 1px solid #C6AF3E;
+		background: #F7E27B;
+	}
 
 .text-center { text-align: center; }
 .text-right { text-align: right; }
