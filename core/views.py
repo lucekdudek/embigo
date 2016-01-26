@@ -240,9 +240,9 @@ def archive_space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     if user_is_space_user(user, space):
-        space.status=2
+        space.status=(2 if space.status==1 else 1)
         space.save()
-        return HttpResponseRedirect("/%s"%(space.parent.uid))
+        return HttpResponseRedirect("../")
     else:
         return HttpResponseRedirect("/")
 
