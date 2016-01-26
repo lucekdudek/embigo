@@ -5,11 +5,12 @@
 		{% if can_edit_space %}
 			<a href="" class="btn btn--icon" id="btnEditSpace"><i class="fa fa-pencil"></i></a>
 		{% endif %}
-
-		<a href="" class="btn btn--icon" id="btnAddCollaborators"><i class="fa fa-user-plus"></i></a>
-		{% if can_edit_user_rights %}
+        {% if can_add_user %}
+            <a href="" class="btn btn--icon" id="btnAddCollaborators"><i class="fa fa-user-plus"></i></a>
+        {% endif %}
+		<!--{% if can_edit_user_rights %}
 			<a href="" class="btn btn--icon"><i class="fa fa-users"></i></a>
-		{% endif %}
+		{% endif %}-->
 		{% if can_archive_space %}
 			<a href="./archive_space/1" class="btn btn--icon"><i class="fa fa-archive"></i></a>
 		{% endif %}

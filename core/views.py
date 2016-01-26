@@ -104,7 +104,7 @@ def space(request, space_id):
             'can_edit_space': can_edit_space,
             'can_archive_space': can_archive_space,
             'can_delete_space': can_delete_space,
-            'can_add_user:': can_add_user,
+            'can_add_user': can_add_user,
             'can_edit_user_rights': can_edit_user_rights,
         }
         return render(request, 'space.html', context)
@@ -370,7 +370,6 @@ def edit_space(request):
         space = Space.objects.get(uid=request.POST.get('space'))
         space.name = request.POST.get('name')
         space.description = request.POST.get('description')
-        space.status = request.POST.get('status')
         space.save()
         context = True
     else:
