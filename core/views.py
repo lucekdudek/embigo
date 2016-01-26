@@ -254,8 +254,9 @@ def delete_space(request):
     """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
+        parent=space.parent
         space.delete()
-        context = True
+        return HttpResponseRedirect("/%s"%(parent.uid))
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
