@@ -718,3 +718,22 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		height: 40px;
 		display: block;
 	}
+	
+	#popupNewSpace {
+		width: 550px;
+	}
+		#popupNewSpace .popup_container {
+			display: flex;
+			justify-content: space-between;
+		}
+		#popupNewSpace .popup_container > div {
+			flex: 1 1 auto;
+		}
+		.popup_users-list {
+			flex: 0 0 auto !important;
+		}
+			.popup_users-list .checkbox-wrapper {
+    			margin-bottom: 5px;
+				margin-left: 20px;
+				min-width: 140px;
+			}
