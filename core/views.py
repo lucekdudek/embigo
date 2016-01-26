@@ -76,8 +76,9 @@ def space(request, space_id):
             except SpaceUser.DoesNotExist:
                 parent_user = None
             if parent_user and parent_user.can(SEE_USERS):
-                #space_user_users = [s.user for s in collaborators]
+                space_user_users = [s.user for s in collaborators]
                 parent_collaborators = SpaceUser.objects.filter(space=space.parent)
+                parent_collaborators = [pc for pc in parent_collaborators if pc.user not in space_user_users]
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
         can_create_channel = space_user.can(CREATE_CHANNEL)
