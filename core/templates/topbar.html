@@ -10,8 +10,13 @@
 		{% if can_edit_user_rights %}
 			<a href="" class="btn btn--icon"><i class="fa fa-users"></i></a>
 		{% endif %}
-		<a href="" class="btn btn--icon"><i class="fa fa-archive"></i></a>
-		<a href="" class="btn btn--icon" id="btnDeleteSpace" data-uid="{{ space.uid }}"><i class="fa fa-trash"></i></a>
+		{% if can_archive_space %}
+			<a href="" class="btn btn--icon"><i class="fa fa-archive"></i></a>
+		{% endif %}
+		{% if can_delete_space %}
+			<a href="" class="btn btn--icon" id="btnDeleteSpace" data-uid="{{ space.uid }}"><i class="fa fa-trash"></i></a>
+		{% endif %}
+		
 	</div>
 	<div class="text-right">
 		{% if can_create_space %}
