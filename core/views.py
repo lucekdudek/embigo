@@ -239,7 +239,8 @@ def archive_space(request, space_id):
     """
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
-    if user_is_space_user(user, space):
+    spaceUser = SpaceUser.objects.get(user=user, space=space)
+    if user_is_space_user(user, space) and spaceUser.can(ARCHIVE_SPACE):
         space.status=(2 if space.status==1 else 1)
         space.save()
         return HttpResponseRedirect("../")
@@ -256,7 +257,8 @@ def delete_space(request, space_id):
     """
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
-    if user_is_space_user(user, space):
+    spaceUser = SpaceUser.objects.get(user=user, space=space)
+    if user_is_space_user(user, space) and spaceUser.can(DELETE_SPACE):
         parent=space.parent
         space.delete()
         return HttpResponseRedirect("/%s"%(parent.uid))
@@ -296,8 +298,8 @@ def enter_channel(request, space_id, channel_id):
     space = get_object_or_404(Space, pk=space_id)
     if user_is_space_user(user, space):
         channel = Space.objects.get(uid=channel_id)
-        spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=channel, user=request.user)
-        spaceUser.save()
+        new_spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=channel, user=request.user)
+        new_spaceUser.save()
         return HttpResponseRedirect("/%s"%(channel_id))
     else:
         return HttpResponseRedirect("/")
