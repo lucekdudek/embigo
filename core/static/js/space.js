@@ -195,34 +195,6 @@ $(function(){
 	});
 
 	/**
-	 * Usuwa space
-	 * nie podpięa
-	 */
-	var initDeleteSpaceForm = (function(){
-		var btn = $('#btnDeleteSpace'),
-			uid = btn.attr('data-uid');
-
-		function delete_space(uid, item) {
-		    $.ajax({
-		        url : "/delete_space/",
-		        type : "POST",
-		        data : { 'space': uid },
-
-		        success : function(data) {
-					
-		        },
-
-		        error : function(xhr,errmsg,err) {
-		            console.log(xhr.status + ": " + xhr.responseText);
-		        }
-		    });
-		};
-		btn.on('click', function(event){
-		    delete_space($(this).attr('data-uid'), $(this).parent());
-		});
-	});
-
-	/**
 	 * Tworzy nowy kanał
 	 */
 	var initNewChannelForm = (function(){
@@ -324,7 +296,6 @@ $(function(){
 	initBreadcrumbs();
 	initMessageForm();
 	initDeleteMessageForm();
-	initDeleteSpaceForm();
 	initNewSpaceForm();
 	initNewChannelForm();
 	initEditForm();
