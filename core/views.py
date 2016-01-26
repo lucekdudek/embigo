@@ -191,6 +191,12 @@ def new_message(request):
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 def delete_message(request):
+    """
+    delete message
+
+    **Context**
+        delete button
+    """
     if request.method == 'POST':
         message = Message.objects.get(uid=request.POST.get('message'))
         message.delete()
@@ -223,7 +229,29 @@ def new_space(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+def archive_space(request):
+    """
+    change status to archive
+
+    **Context**
+        achive button
+    """
+    if request.method == 'POST':
+        space = Space.objects.get(uid=request.POST.get('space'))
+        space.status=2
+        space.save()
+        context = True
+    else:
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
 def delete_space(request):
+    """
+    delete space
+
+    **Context**
+        delete button
+    """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
         space.delete()
