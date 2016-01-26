@@ -199,7 +199,8 @@ $(function(){
 	 * nie podpięa
 	 */
 	var initDeleteSpaceForm = (function(){
-		var btns = $('.space-item_btn-delete');
+		var btn = $('#btnDeleteSpace'),
+			uid = btn.attr('data-uid');
 
 		function delete_space(uid, item) {
 		    $.ajax({
@@ -208,12 +209,7 @@ $(function(){
 		        data : { 'space': uid },
 
 		        success : function(data) {
-					if(data){
-						item.on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(){
-							$(this).remove();
-						});
-						item.addClass('space-item--delete');
-					}
+					
 		        },
 
 		        error : function(xhr,errmsg,err) {
@@ -221,7 +217,7 @@ $(function(){
 		        }
 		    });
 		};
-		btns.on('click', function(event){
+		btn.on('click', function(event){
 		    delete_space($(this).attr('data-uid'), $(this).parent());
 		});
 	});
