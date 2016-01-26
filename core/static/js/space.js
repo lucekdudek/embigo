@@ -328,6 +328,7 @@ $(function(){
 	initBreadcrumbs();
 	initMessageForm();
 	initDeleteMessageForm();
+	initDeleteSpaceForm();
 	initNewSpaceForm();
 	initNewChannelForm();
 	initEditForm();
