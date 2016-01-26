@@ -1,0 +1,15 @@
+<form action="{% url 'add_collaborators' %}" method="POST">
+	{% csrf_token %}
+    {% for su in parent_collaborators %}
+	    {% if su.user != request.user %}
+			<div class="checkbox-wrapper">
+				<div class="checkbox-wrapper_input"><input type="checkbox" name="new_collaborators_id" value="{{ su.user.id }}" id="{{ su }}"></div>
+				<label> {{ su.user.username }}</label>
+			</div>
+        {% endif %}
+    {% endfor %}
+	<input type="hidden" name="space" value="{{ space.uid }}">
+	<div class="text-right">
+		<input type="submit" value="Dodaj" class="btn">
+	</div>
+</form>

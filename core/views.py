@@ -69,6 +69,14 @@ def space(request, space_id):
         other_spaces = [s for s in other_spaces if s not in own_spaces]
         collaborators = SpaceUser.objects.filter(space=space) if space_user.can(SEE_USERS) else []
         messages = Message.objects.filter(space=space).order_by('-date') if space_user.can(SEE_MESSAGES) else []
+        parent_collaborators = []
+        if space.parent:
+            try:
+                parent_user = SpaceUser.objects.get(space=space.parent, user=user)
+            except SpaceUser.DoesNotExist:
+                parent_user = None
+            if parent_user and parent_user.can(SEE_USERS):
+                parent_collaborators = SpaceUser.objects.filter(space=space.parent)
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
         can_create_channel = space_user.can(CREATE_CHANNEL)
@@ -87,6 +95,7 @@ def space(request, space_id):
             'other_channels': other_channels,
             'conversations': conversations,
             'collaborators': collaborators,
+            'parent_collaborators': parent_collaborators,
             'messages': messages,
             'can_add_message': can_add_message,
             'can_create_space': can_create_space,
@@ -225,6 +234,26 @@ def new_space(request):
             spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
             spaceUser.save()
         context = {'result':'Success', 'space': str(space.uid)}
+    else:
+        context = None
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+def add_collaborators(request):
+    """
+    Display form for adding collaborators
+
+    **Context**
+        add collaborators form
+
+    **Template:**
+    :template:`form_collaborators.html`
+    """
+    if request.method == 'POST':
+        space = Space.objects.get(uid=request.POST.get('space'))
+        for user_id in request.POST.getlist('new_collaborators_id[]'):
+            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
+            spaceUser.save()
+        context = {'result':'Success'}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
