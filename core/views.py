@@ -229,21 +229,22 @@ def new_space(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
-def archive_space(request):
+@login_required(login_url='/in')
+def archive_space(request, space_id):
     """
     change status to archive
 
     **Context**
         achive button
     """
-    if request.method == 'POST':
-        space = Space.objects.get(uid=request.POST.get('space'))
+    user = request.user
+    space = get_object_or_404(Space, pk=space_id)
+    if user_is_space_user(user, space):
         space.status=2
         space.save()
-        context = True
+        return HttpResponseRedirect("/%s"%(space.parent.uid))
     else:
-        context = None
-    return HttpResponse(json.dumps(context), content_type="application/json")
+        return HttpResponseRedirect("/")
 
 @login_required(login_url='/in')
 def delete_space(request, space_id):
