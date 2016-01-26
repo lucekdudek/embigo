@@ -237,10 +237,12 @@ $(function(){
 		var form = $('#addCollaboratorsForm form'),
 			btnSubmit = $('.btn', form),
 			space = $('input[name="space"]', form),
-			users = $('input[name="new_collaborators_id"]', form);
+			users = $('input[name="new_collaborators_id"]', form),
+			usersNames = $('.checkbox-wrapper label', form);
 
 		function add_collaborators() {
 			var checkedUsers = [];
+				
 			users.each(function(){
 				if($(this).prop('checked')) checkedUsers.push($(this).val());
 			});
@@ -253,7 +255,11 @@ $(function(){
 		        success : function(data) {
 		        	if(data){
 		        		closePopup('#popupAddCollaborators');
-						$('.current-space_users').append('<div class="current-space_avatar"><strong>'+data.firstLetter+'</strong><span>'+data.user+'</span></div>');
+						$.each(checkedUsers, function(index){
+							var name = usersNames.eq(index).text();
+							$('.checkbox-wrapper', form).eq(index).remove();
+							$('.current-space_users').append('<div class="current-space_avatar"><strong>'+name.substr(1,1)+'</strong><span>'+name+'</span></div>');
+						});
 						initUsers();
 		        	}
 		        },
