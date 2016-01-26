@@ -39,7 +39,7 @@ $(function(){
 						if(extension=='png' || extension=='jpg' || extension=='bmp'){
 							s += '<br><img src="/media/'+file.prop('files')[0].name+'">';
 						}else {
-							s += '<i class="fa fa-file-o"></i> '+name;
+							s += '<br><i class="fa fa-file-o"></i> '+name;
 						}
 					}
 		            s += '</div>';
@@ -241,10 +241,14 @@ $(function(){
 			usersNames = $('.checkbox-wrapper label', form);
 
 		function add_collaborators() {
-			var checkedUsers = [];
+			var checkedUsers = [],
+				checkedUsersId = [];
 				
-			users.each(function(){
-				if($(this).prop('checked')) checkedUsers.push($(this).val());
+			users.each(function(index){
+				if($(this).prop('checked')){
+					checkedUsers.push($(this).val());
+					checkedUsersId.push(index);
+				}
 			});
 			
 		    $.ajax({
@@ -255,10 +259,13 @@ $(function(){
 		        success : function(data) {
 		        	if(data){
 		        		closePopup('#popupAddCollaborators');
-						$.each(checkedUsers, function(index){
-							var name = usersNames.eq(index).text();
-							$('.checkbox-wrapper', form).eq(index).remove();
+						$.each(checkedUsersId, function(index){
+							var name = usersNames.eq(checkedUsersId[index]).text();
+							$('.checkbox-wrapper', form).eq(checkedUsersId[index]).css('display','none');
 							$('.current-space_users').append('<div class="current-space_avatar"><strong>'+name.substr(1,1)+'</strong><span>'+name+'</span></div>');
+						});
+						users.each(function(index){
+							$(this).prop('checked', false);
 						});
 						initUsers();
 		        	}
