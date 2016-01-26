@@ -76,6 +76,7 @@ def space(request, space_id):
             except SpaceUser.DoesNotExist:
                 parent_user = None
             if parent_user and parent_user.can(SEE_USERS):
+                #space_user_users = [s.user for s in collaborators]
                 parent_collaborators = SpaceUser.objects.filter(space=space.parent)
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
@@ -253,7 +254,7 @@ def add_collaborators(request):
         for user_id in request.POST.getlist('new_collaborators_id[]'):
             spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
             spaceUser.save()
-        context = {'result':'Success', 'firstLetter': 'A', 'user': 'Adam'}
+        context = {'result':'Success'}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
