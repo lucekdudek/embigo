@@ -289,8 +289,8 @@ def delete_space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     spaceUser = SpaceUser.objects.get(user=user, space=space)
-    if user_is_space_user(user, space) and spaceUser.can(DELETE_SPACE):
-        parent=space.parent
+    parent=space.parent
+    if user_is_space_user(user, space) and spaceUser.can(DELETE_SPACE) and parent!=None:
         space.delete()
         return HttpResponseRedirect("/%s"%(parent.uid))
     else:
