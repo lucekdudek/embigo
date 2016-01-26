@@ -104,7 +104,7 @@ def space(request, space_id):
             'can_edit_space': can_edit_space,
             'can_archive_space': can_archive_space,
             'can_delete_space': can_delete_space,
-            'can_add_user:': can_add_user,
+            'can_add_user': can_add_user,
             'can_edit_user_rights': can_edit_user_rights,
         }
         return render(request, 'space.html', context)
