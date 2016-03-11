@@ -22,10 +22,13 @@ def index(request):
     homepage
     redirect start space
     """
-    return HttpResponseRedirect("/00000000-0000-0000-0000-000000000000")
+    if request.get_full_path() == '/00000000-0000-0000-0000-000000000000/':
+        return HttpResponseRedirect("/")
+    else:
+        return space(request)
 
 @login_required(login_url='/in')
-def space(request, space_id):
+def space(request, space_id='00000000-0000-0000-0000-000000000000'):
     """
     Display a space
 
@@ -127,7 +130,7 @@ def signin(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect('/')
     else:
         form = AuthenticationForm()
     context = {'form': form}
@@ -392,7 +395,7 @@ def signin(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect(request.GET.get("next"))
     else:
         form = AuthenticationForm()
     context = {'form': form}

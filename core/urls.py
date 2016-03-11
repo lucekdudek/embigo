@@ -6,6 +6,7 @@ from core.views import index, space, signout, signin, register, new_message, del
 
 urlpatterns = [
     url(r'^$', index, name="index"),
+    url(r'^00000000-0000-0000-0000-000000000000/$', index, name="index"),
     url(r'^in/$', signin, name="signin"),
     url(r'^out/$', signout, name="signout"),
     url(r'^register/$', register, name="register"),
