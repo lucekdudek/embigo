@@ -116,25 +116,25 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
     else:
         return HttpResponseRedirect("/")
 
-def signin(request):
-    """
-    Display form for login
-
-    **Context**
-        login form
-
-    **Template:**
-    :template:`signin.html`
-    """
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            login(request, form.get_user())
-            return HttpResponseRedirect('/')
-    else:
-        form = AuthenticationForm()
-    context = {'form': form}
-    return render(request, 'signin.html', context)
+# def signin(request):
+#     """
+#     Display form for login
+#
+#     **Context**
+#         login form
+#
+#     **Template:**
+#     :template:`signin.html`
+#     """
+#     if request.method == 'POST':
+#         form = AuthenticationForm(data=request.POST)
+#         if form.is_valid():
+#             login(request, form.get_user())
+#             return HttpResponseRedirect('/')
+#     else:
+#         form = AuthenticationForm()
+#     context = {'form': form}
+#     return render(request, 'signin.html', context)
     #     username = request.POST.get('username')
     #     password = request.POST.get('password')
     #     user = authenticate(username=username, password=password)
