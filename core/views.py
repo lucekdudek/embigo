@@ -27,7 +27,7 @@ def index(request):
     else:
         return space(request)
 
-@login_required(login_url='/in')
+@login_required(login_url='/in/')
 def space(request, space_id='00000000-0000-0000-0000-000000000000'):
     """
     Display a space
@@ -177,7 +177,7 @@ def register(request):
             new_user = form.save()
             new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(), user=new_user)
             new_space_user.save()
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect(request.GET.get("next","/"))
     else:
         form = UserCreationForm()
     context = {'form': form}
@@ -263,7 +263,7 @@ def add_collaborators(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
-@login_required(login_url='/in')
+@login_required(login_url='/in/')
 def archive_space(request, space_id):
     """
     change status to archive
@@ -281,7 +281,7 @@ def archive_space(request, space_id):
     else:
         return HttpResponseRedirect("/")
 
-@login_required(login_url='/in')
+@login_required(login_url='/in/')
 def delete_space(request, space_id):
     """
     delete space
@@ -320,7 +320,7 @@ def new_channel(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
-@login_required(login_url='/in')
+@login_required(login_url='/in/')
 def enter_channel(request, space_id, channel_id):
     """
     Add login user to chanel as SpaceUser
@@ -395,7 +395,7 @@ def signin(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return HttpResponseRedirect(request.GET.get("next"))
+            return HttpResponseRedirect(request.GET.get("next","/"))
     else:
         form = AuthenticationForm()
     context = {'form': form}
