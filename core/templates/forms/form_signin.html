@@ -1,6 +1,17 @@
 <form method="post" action="{% url 'signin' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% for f in form %}
+            <p>{{ f.label_tag }}
+            {{ f }}
+            {% if f.errors %}
+                <span class="error">{{ f.errors|striptags }}</span>
+            {% else %}
+                <span class="helptext">
+                    {{ f.help_text}}
+                </span>
+            {% endif %}
+            </p>
+    {% endfor %}
     <input type="submit" value="Zaloguj" class="btn"/>
 	<div class="text-right"><a href="/register/{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Zarejestruj się</a></div>
 </form>

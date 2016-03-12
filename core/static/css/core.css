@@ -45,7 +45,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		-webkit-appearance: none;
 		cursor: pointer;
 	}
-	
+
 .checkbox-wrapper {
 	display: flex;
 }
@@ -498,6 +498,9 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		padding: 5px 5px 0;
 		display: block;
 	}
+		.form-signin .helptext:empty {
+			padding: 0;
+		}
 	.form-signin .text-right {
 		margin-top: 10px;
 	}
@@ -510,12 +513,11 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		.form-signin .text-right  a:hover {
 			text-decoration: underline;
 		}
-	.form-signin .errorlist {
+	.form-signin .error {
 		color: #ff0000;
 		font-size: 12px;
-		list-style: none;
 		padding: 0;
-		margin: 0 0 20px;
+		margin: 10px 0 0;
 		text-align: center;
 		display: block;
 	}
@@ -695,7 +697,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	}
 	.popup h2 {
 		margin: 10px 0 20px;
-		font-size: 24px;	
+		font-size: 24px;
 	}
 	.popup input:not([type="submit"]), .popup textarea, .popup select {
 	    background: #F6F6F6;
@@ -718,7 +720,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		height: 40px;
 		display: block;
 	}
-	
+
 	#popupNewSpace {
 		width: 550px;
 	}
@@ -737,7 +739,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 				margin-left: 20px;
 				min-width: 140px;
 			}
-			
+
 	#popupAddCollaborators .checkbox-wrapper {
 		margin-bottom: 5px;
 	}

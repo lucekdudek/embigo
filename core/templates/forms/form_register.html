@@ -3,13 +3,14 @@
     {% for f in form %}
             <p>{{ f.label_tag }}
             {{ f }}
-            <span class="helptext">
+            <span class="helptext">{{ f.help_text}}</span>
             {% if f.errors %}
-                <font color="red">{{ f.errors|striptags }}</font>
+                <span class="error">
+                    {{ f.errors|striptags }}
+                </span>
             {% else %}
-                {{ f.help_text}}
             {% endif %}
-            </span></p>
+            </p>
     {% endfor %}
     <input type="submit" value="Stwórz konto" class="btn">
     <div class="text-right"><a href="/in/{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Powrót</a></div>
