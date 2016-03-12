@@ -7,6 +7,10 @@ import datetime
 from django.conf import settings
 import os.path
 
+class EmbigoUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    color = models.CharField(max_length=7, null=True, blank=True)
+
 class Space(models.Model):
     class Meta():
         verbose_name = "przestrzeń"

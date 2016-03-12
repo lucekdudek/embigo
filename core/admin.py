@@ -1,5 +1,20 @@
 from django.contrib import admin
-from core.models import Space, SpaceUser, Message
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from core.models import EmbigoUser, Space, SpaceUser, Message
+
+class EmbigoUserInLine(admin.StackedInline):
+    model = EmbigoUser
+    can_delete = False
+    verbose_name = ''
+    verbose_name_plural = 'Dane embigo'
+
+# Define a new User admin
+class UserAdmin(BaseUserAdmin):
+    inlines = (EmbigoUserInLine, )
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 admin.site.register(Space)
 admin.site.register(SpaceUser)
