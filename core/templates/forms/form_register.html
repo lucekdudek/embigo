@@ -1,6 +1,16 @@
 <form action="{% url 'register' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% for f in form %}
+            <p>{{ f.label_tag }}
+            {{ f }}
+            <span class="helptext">
+            {% if f.errors %}
+                <font color="red">{{ f.errors|striptags }}</font>
+            {% else %}
+                {{ f.help_text}}
+            {% endif %}
+            </span></p>
+    {% endfor %}
     <input type="submit" value="Stwórz konto" class="btn">
     <div class="text-right"><a href="/in/{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Powrót</a></div>
 </form>
