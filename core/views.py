@@ -4,12 +4,14 @@ from uuid import uuid1
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
+from django.template import RequestContext
 from django.utils import timezone, formats
 
+from core.forms import RegistrationForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights
 from core.models import Space, SpaceUser, Message
@@ -172,14 +174,14 @@ def register(request):
     :template:`register.html`
     """
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
             new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(), user=new_user)
             new_space_user.save()
-            return HttpResponseRedirect(request.GET.get("next","/"))
+            return HttpResponseRedirect(request.GET.get("next","/"), RequestContext(request))
     else:
-        form = UserCreationForm()
+        form = RegistrationForm()
     context = {'form': form}
     return render(request, 'register.html', context)
 
