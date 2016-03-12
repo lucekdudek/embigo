@@ -24,6 +24,26 @@ def index(request):
     homepage
     redirect start space
     """
+    try:
+        emgibo_space=Space.objects.get(uid='00000000-0000-0000-0000-000000000000')
+    except Space.DoesNotExist:
+        emgibo_space = Space(
+            uid='00000000-0000-0000-0000-000000000000',
+            name='embigo',
+            type=1,
+            status=1,
+        )
+        emgibo_space.save()
+    try:
+        get_space_user(request.user, emgibo_space)
+    except SpaceUser.DoesNotExist:
+        space_user = SpaceUser(
+            uid=uuid1(),
+            rights=embigo_default_rights(),
+            space=emgibo_space,
+            user=request.user,
+        )
+        space_user.save()
     if request.get_full_path() == '/00000000-0000-0000-0000-000000000000/':
         return HttpResponseRedirect("/")
     else:
@@ -118,43 +138,25 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
     else:
         return HttpResponseRedirect("/")
 
-# def signin(request):
-#     """
-#     Display form for login
-#
-#     **Context**
-#         login form
-#
-#     **Template:**
-#     :template:`signin.html`
-#     """
-#     if request.method == 'POST':
-#         form = AuthenticationForm(data=request.POST)
-#         if form.is_valid():
-#             login(request, form.get_user())
-#             return HttpResponseRedirect('/')
-#     else:
-#         form = AuthenticationForm()
-#     context = {'form': form}
-#     return render(request, 'signin.html', context)
-    #     username = request.POST.get('username')
-    #     password = request.POST.get('password')
-    #     user = authenticate(username=username, password=password)
-    #     if user is not None:
-    #         if user.is_active:
-    #             login(request, user)
-    #             return HttpResponseRedirect("/")
-    #         else:
-    #             errormessage = "Użytkownik jest nieaktywny."
-    #             context = {'errormessage': errormessage}
-    #             return render(request, 'signin.html', context)
-    #     else:
-    #         errormessage = "Wystąpił błąd autoryzacji."
-    #         context = {'errormessage': errormessage}
-    #         return render(request, 'signin.html', context)
-    # else:
-    #     return render(request, 'signin.html')
+def signin(request):
+    """
+    Display form for login
 
+    **Context**
+        login form
+
+    **Template:**
+    :template:`signin.html`
+    """
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return HttpResponseRedirect(request.GET.get("next","/"))
+    else:
+        form = AuthenticationForm()
+    context = {'form': form}
+    return render(request, 'signin.html', context)
 
 def signout(request):
     """
@@ -382,23 +384,3 @@ def edit_space(request):
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
-
-def signin(request):
-    """
-    Display form for login
-
-    **Context**
-        login form
-
-    **Template:**
-    :template:`signin.html`
-    """
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            login(request, form.get_user())
-            return HttpResponseRedirect(request.GET.get("next","/"))
-    else:
-        form = AuthenticationForm()
-    context = {'form': form}
-    return render(request, 'signin.html', context)
