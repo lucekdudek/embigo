@@ -1,6 +1,6 @@
-<form action="" method="post">
+<form action="{% url 'register' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Stwórz konto" class="btn">
-    <div class="text-right"><a href="/in">Powrót</a></div>
+    <div class="text-right"><a href="/in/{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Powrót</a></div>
 </form>
