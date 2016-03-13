@@ -8,8 +8,13 @@ from django.conf import settings
 import os.path
 
 class EmbigoUser(models.Model):
+    class Meta():
+        verbose_name = "użytkownik embigo"
+        verbose_name_plural = "użytkownicy embigo"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     color = models.CharField(max_length=7, null=True, blank=True)
+    def __str__(self):
+        return "%s"%(self.user.username)
 
 class Space(models.Model):
     class Meta():

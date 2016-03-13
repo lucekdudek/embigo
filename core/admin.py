@@ -6,8 +6,6 @@ from core.models import EmbigoUser, Space, SpaceUser, Message
 class EmbigoUserInLine(admin.StackedInline):
     model = EmbigoUser
     can_delete = False
-    verbose_name = ''
-    verbose_name_plural = 'Dane embigo'
 
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
