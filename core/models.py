@@ -5,11 +5,28 @@ from django.contrib.auth.models import User
 from django.utils import timezone, formats
 import datetime
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 import os.path
 
 class EmbigoUser(models.Model):
+    class Meta():
+        verbose_name = "użytkownik embigo"
+        verbose_name_plural = "użytkownicy embigo"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     color = models.CharField(max_length=7, null=True, blank=True)
+    def __str__(self):
+        return "%s"%(self.user.username)
+
+def get_color(self):
+    try:
+        color = self.embigouser.color
+    except ObjectDoesNotExist:
+        embigo_user = EmbigoUser(user=self, color="#FFFFFF")
+        embigo_user.save()
+        color = self.embigouser.color
+    return color
+
+User.add_to_class('get_color', get_color)
 
 class Space(models.Model):
     class Meta():
