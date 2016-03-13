@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from core.views import index, space, signout, signin, register, new_message, delete_message, new_space, edit_space, new_channel, \
-    delete_space, enter_channel, archive_space, add_collaborators
+from core.views import index, space, signout, signin, register, new_message, delete_message, new_space, edit_space, \
+    delete_space, archive_space, add_collaborators
 
 urlpatterns = [
     url(r'^$', index, name="index"),
@@ -16,9 +16,7 @@ urlpatterns = [
     url(r'^new_conversation/$', new_space, name="new_conversation"),
     url(r'^edit_space/$', edit_space, name="edit_space"),
     url(r'^add_collaborators/$', add_collaborators, name="add_collaborators"),
-    url(r'^new_channel/$', new_channel, name="new_channel"),
     url(r'(?P<space_id>[0-9a-z-]+)/$', space, name="space"),
-    url(r'(?P<space_id>[0-9a-z-]+)/enter_channel/(?P<channel_id>[0-9a-z-]+)$', enter_channel, name="enter_channel"),
     url(r'(?P<space_id>[0-9a-z-]+)/delete_space/1$', delete_space, name="delete_space"),
     url(r'(?P<space_id>[0-9a-z-]+)/archive_space/1$', archive_space, name="archive_space"),
 ]

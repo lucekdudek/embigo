@@ -58,15 +58,10 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         'space': this space
         'own_spaces': list of login user's spaces
         'other_spaces': list of login user's spaces witch user can see
-        'own_channels': list of login user's channels
-        'other_channels': list of login user's channels witch user can see
-        'conversations': list of login user's conversations
         'collaborators': list of space's users
         'messages': list of space's messages
         'can_add_message': rights flag
         'can_create_space': rights flag
-        'can_create_channel': rights flag
-        'can_create_conversation': rights flag
         'can_edit_space': rights flag
         'can_archive_space': rights flag
         'can_delete_space': rights flag
@@ -85,12 +80,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             return HttpResponseRedirect("/out")
         space_users = SpaceUser.objects.filter(space=space)
         space_list = Space.objects.filter(parent=space_id).order_by('-status')
-        own_channels = [s for s in space_list if s.is_channel() and user_is_space_user(user=user, space=s)]
-        other_channels = [s for s in space_list if s.is_channel()]
-        other_channels = [s for s in other_channels if s not in own_channels]
-        conversations = [s for s in space_list if s.is_conversation() and user_is_space_user(user=user, space=s)]
-        own_spaces = [s for s in space_list if s.is_space() and user_is_space_user(user=user, space=s)]
-        other_spaces = [s for s in space_list if s.is_space() and space_user.can(SEE_UNDERSPACES)]
+        own_spaces = [s for s in space_list if user_is_space_user(user=user, space=s)]
+        other_spaces = [s for s in space_list if space_user.can(SEE_UNDERSPACES)]
         other_spaces = [s for s in other_spaces if s not in own_spaces]
         collaborators = SpaceUser.objects.filter(space=space) if space_user.can(SEE_USERS) else []
         messages = Message.objects.filter(space=space).order_by('-date') if space_user.can(SEE_MESSAGES) else []
@@ -106,8 +97,6 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
                 parent_collaborators = [pc for pc in parent_collaborators if pc.user not in space_user_users]
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
-        can_create_channel = space_user.can(CREATE_CHANNEL)
-        can_create_conversation = space_user.can(CREATE_CONVERSATION)
         can_edit_space = space_user.can(EDIT_SPACE)
         can_archive_space = space_user.can(ARCHIVE_SPACE)
         can_delete_space = space_user.can(DELETE_SPACE)
@@ -118,16 +107,11 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'space_users': space_users,
             'own_spaces': own_spaces,
             'other_spaces': other_spaces,
-            'own_channels': own_channels,
-            'other_channels': other_channels,
-            'conversations': conversations,
             'collaborators': collaborators,
             'parent_collaborators': parent_collaborators,
             'messages': messages,
             'can_add_message': can_add_message,
             'can_create_space': can_create_space,
-            'can_create_channel': can_create_channel,
-            'can_create_conversation': can_create_conversation,
             'can_edit_space': can_edit_space,
             'can_archive_space': can_archive_space,
             'can_delete_space': can_delete_space,
@@ -302,68 +286,6 @@ def delete_space(request, space_id):
         return HttpResponseRedirect("/%s"%(parent.uid))
     else:
         return HttpResponseRedirect("/")
-
-def new_channel(request):
-    """
-    Display form for channel
-
-    **Context**
-        channel form
-
-    **Template:**
-    :template:`form_new_channel.html`
-    """
-    if request.method == 'POST':
-        spaceUid = Space.objects.get(uid=request.POST.get('space'))
-        channel = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=2, status=1, parent=spaceUid)
-        channel.save()
-        spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=channel, user=request.user)
-        spaceUser.save()
-        context = {'result':'Success', 'space': str(channel.uid)}
-    else:
-        context = None
-    return HttpResponse(json.dumps(context), content_type="application/json")
-
-@login_required(login_url='/in/')
-def enter_channel(request, space_id, channel_id):
-    """
-    Add login user to chanel as SpaceUser
-
-    **Context**
-        endter chanel button
-    """
-    user = request.user
-    space = get_object_or_404(Space, pk=space_id)
-    if user_is_space_user(user, space):
-        channel = Space.objects.get(uid=channel_id)
-        new_spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=channel, user=request.user)
-        new_spaceUser.save()
-        return HttpResponseRedirect("/%s"%(channel_id))
-    else:
-        return HttpResponseRedirect("/")
-
-
-def new_conversation(request):
-    """
-    Display form for conversation
-
-    **Context**
-        conversation form
-
-    **Template:**
-    :template:`form_new_conversation.html`
-    """
-    if request.method == 'POST':
-        print(request.POST.get('space'))
-        # spaceUid = Space.objects.get(uid=request.POST.get('space'))
-        # conversation = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=2, status=1, parent=spaceUid)
-        # conversation.save()
-        # spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=conversation, user=request.user)
-        # spaceUser.save()
-        # context = {'result':'Success', 'space': str(conversation.uid)}
-    else:
-        context = None
-    return HttpResponse(json.dumps(context), content_type="application/json")
 
 def edit_space(request):
     """

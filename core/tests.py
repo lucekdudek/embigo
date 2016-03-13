@@ -25,42 +25,6 @@ class SpaceModelTests(TestCase):
         space = Space(name="")
         self.assertEqual(str(space), space.name)
 
-    def test_space_is_spaec_1(self):
-        space = Space(type=1)
-        self.assertTrue(space.is_space())
-
-    def test_space_is_spaec_2(self):
-        space = Space(type=2)
-        self.assertFalse(space.is_space())
-
-    def test_space_is_spaec_3(self):
-        space = Space(type=3)
-        self.assertFalse(space.is_space())
-
-    def test_space_is_channel_2(self):
-        channel = Space(type=2)
-        self.assertTrue(channel.is_channel())
-
-    def test_space_is_channel_1(self):
-        channel = Space(type=1)
-        self.assertFalse(channel.is_channel())
-
-    def test_space_is_channel_3(self):
-        channel = Space(type=3)
-        self.assertFalse(channel.is_channel())
-
-    def test_space_is_conversation_3(self):
-        conversation = Space(type=3)
-        self.assertTrue(conversation.is_conversation())
-
-    def test_space_is_conversation_1(self):
-        conversation = Space(type=1)
-        self.assertFalse(conversation.is_conversation())
-
-    def test_space_is_conversation_2(self):
-        conversation = Space(type=2)
-        self.assertFalse(conversation.is_conversation())
-
     def test_user_can_SEE_UNDERSPACES(self):
         new_rights="000000000000"
         space_user = SpaceUser(rights=new_rights)
@@ -76,16 +40,6 @@ class SpaceUserTests(TestCase):
         new_rights="000000000000"
         space_user = SpaceUser(rights=new_rights)
         self.assertEqual(space_user.can(CREATE_SPACE), False)
-
-    def test_user_can_CREATE_CHANNEL(self):
-        new_rights="000000000000"
-        space_user = SpaceUser(rights=new_rights)
-        self.assertEqual(space_user.can(CREATE_CHANNEL), False)
-
-    def test_user_can_CREATE_CONVERSATION(self):
-        new_rights="000000000000"
-        space_user = SpaceUser(rights=new_rights)
-        self.assertEqual(space_user.can(CREATE_CONVERSATION), False)
 
     def test_user_can_EDIT_SPACE(self):
         new_rights="000000000000"
@@ -132,13 +86,3 @@ class MessageModelTests(TestCase):
     def test_Message_str(self):
         message = Message(content="")
         self.assertEqual(str(message), "%s"%(message.content))
-
-
-
-
-
-
-
-
-
-

@@ -2,11 +2,7 @@
 
 {% block core %}
 
-	{% if space.type == 1  %}
-		{% include "views/view_space.html" %}
-	{% elif space.type == 2 %}
-		{% include "views/view_channel.html" %}
-	{% endif %}
+	{% include "views/view_space.html" %}
 
 	<div class="popup-bg"></div>
 	<div class="popup" id="popupEditSpace">
@@ -21,13 +17,6 @@
 		<h2>Dodaj przestrzeń</h2>
 		<div id="newSpaceForm">
 			{% include "forms/form_new_space.html" %}
-		</div>
-	</div>
-	<div class="popup" id="popupNewChannel">
-		<button class="popup_btn-close">Zamknij</button>
-		<h2>Dodaj kanał</h2>
-		<div id="newChannelForm">
-			{% include "forms/form_new_channel.html" %}
 		</div>
 	</div>
 	<div class="popup" id="popupAddCollaborators">

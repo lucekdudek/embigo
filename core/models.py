@@ -32,15 +32,6 @@ class Space(models.Model):
             parent=parent.parent
         return paths[::-1]
 
-    def is_space(self):
-        return True if self.type == 1 else False
-
-    def is_channel(self):
-        return True if self.type == 2 else False
-
-    def is_conversation(self):
-        return True if self.type == 3 else False
-
 class SpaceUser(models.Model):
     class Meta():
         verbose_name = "użytkownik przestrzeni"
@@ -77,10 +68,10 @@ class Message(models.Model):
             return str(sub)+" dni temu"
         else:
             return self.date
-			
+
     def get_filepath(self):
         return settings.MEDIA_URL+self.file.name
-		
+
     def check_if_image(self):
         name, extension = os.path.splitext(self.file.name)
         if extension == '.png' or extension == '.jpg' or extension == '.bmp':
@@ -89,6 +80,3 @@ class Message(models.Model):
 
     def __str__(self):
         return "%s"%(self.content)
-
-
-
