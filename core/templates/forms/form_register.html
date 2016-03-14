@@ -1,5 +1,8 @@
 <form action="{% url 'register' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" method="post">
     {% csrf_token %}
+    <span class="error">
+        {{ form.non_field_errors|striptags }}
+    </span>
     {% for f in form %}
             <p>{{ f.label_tag }}
             {{ f }}
@@ -8,7 +11,6 @@
                 <span class="error">
                     {{ f.errors|striptags }}
                 </span>
-            {% else %}
             {% endif %}
             </p>
     {% endfor %}

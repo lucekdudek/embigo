@@ -1,5 +1,8 @@
 <form method="post" action="{% url 'signin' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
     {% csrf_token %}
+    <span class="error">
+        {{ form.non_field_errors|striptags }}
+    </span>
     {% for f in form %}
             <p>{{ f.label_tag }}
             {{ f }}
