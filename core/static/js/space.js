@@ -18,10 +18,10 @@ $(function(){
 			formData.append('content', content.val());
 			formData.append('space', space.val());
 			if(file.prop('files')[0]) formData.append('file', file.prop('files')[0]);
-			
+
 			$.ajax({
 		        url : "/new_message/",
-		        type : "POST", 
+		        type : "POST",
 				cache: false,
        			dataType: 'json',
 				processData: false,
@@ -78,7 +78,7 @@ $(function(){
 		function delete_message(uid, item) {
 		    $.ajax({
 		        url : "/delete_message/",
-		        type : "POST", 
+		        type : "POST",
 		        data : { 'message': uid },
 
 		        success : function(data) {
@@ -113,7 +113,7 @@ $(function(){
 		function edit_space() {
 		    $.ajax({
 		        url : "/edit_space/",
-		        type : "POST", 
+		        type : "POST",
 		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
 
 		        success : function(data) {
@@ -156,10 +156,10 @@ $(function(){
 			users.each(function(){
 				if($(this).prop('checked')) checkedUsers.push($(this).val());
 			});
-			
+
 		    $.ajax({
 		        url : "/new_space/",
-		        type : "POST", 
+		        type : "POST",
 		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'new_space_users_id': checkedUsers },
 
 		        success : function(data) {
@@ -191,48 +191,6 @@ $(function(){
 	/**
 	 * Tworzy nowy kanał
 	 */
-	var initNewChannelForm = (function(){
-		var form = $('#newChannelForm form'),
-			btnSubmit = $('.btn', form),
-			name = $('input[name="name"]', form),
-			description = $('textarea[name="description"]', form),
-			space = $('input[name="space"]', form);
-
-		function new_channel() {
-		    $.ajax({
-		        url : "/new_channel/",
-		        type : "POST", 
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
-
-		        success : function(data) {
-		        	if(data){
-		        		closePopup('#popupNewChannel');
-		        		if($('#myChannels').hasClass('list-space--empty')) $('#myChannels').removeClass('list-space--empty').text('');
-		        		$('#myChannels').append('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
-		        		name.val('');
-		        		description.val('');
-		        	}
-		        },
-
-		        error : function(xhr,errmsg,err) {
-		            console.log(xhr.status + ": " + xhr.responseText);
-		        }
-		    });
-		};
-		form.on('submit', function(event){
-		    event.preventDefault();
-		    form.removeClass('is-error');
-		    if(name.val()!=''){
-		    	new_channel();
-		    }else{
-		    	form.addClass('is-error');
-		    }
-		});
-	});
-
-	/**
-	 * Tworzy nowy kanał
-	 */
 	var initAddCollaborators = (function(){
 		var form = $('#addCollaboratorsForm form'),
 			btnSubmit = $('.btn', form),
@@ -243,17 +201,17 @@ $(function(){
 		function add_collaborators() {
 			var checkedUsers = [],
 				checkedUsersId = [];
-				
+
 			users.each(function(index){
 				if($(this).prop('checked')){
 					checkedUsers.push($(this).val());
 					checkedUsersId.push(index);
 				}
 			});
-			
+
 		    $.ajax({
 		        url : "/add_collaborators/",
-		        type : "POST", 
+		        type : "POST",
 		        data : { 'space':  space.val(), 'new_collaborators_id': checkedUsers },
 
 		        success : function(data) {
@@ -281,7 +239,7 @@ $(function(){
 			add_collaborators();
 		});
 	});
-	
+
 	/**
 	 * Koloruje userów
 	 */
@@ -343,7 +301,6 @@ $(function(){
 	initMessageForm();
 	initDeleteMessageForm();
 	initNewSpaceForm();
-	initNewChannelForm();
 	initEditForm();
 	initAddCollaborators();
 	initUsers();
@@ -354,12 +311,12 @@ $(function(){
 	$('.file-input').on('click',function(){
 		var btn = $(this).find('.file-input_btn'),
 			span = $(this).find('span');
-			
+
 		btn.on('change',function(event){
 			span.text($('.file-input input').val());
 		});
 	});
-	
+
 	$('.checkbox-wrapper').on('click', function(){
 		var t = $(this).find('input');
 		if(t.prop('checked')){
