@@ -1,0 +1,26 @@
+<div class="messages">
+    <h2>{% if messages %}Komentarze{% else %}Brak komentarzy{% endif %}</h2>
+    <div class="messages_list {% if not messages %}messages_list--empty{% endif %}">
+        {% for message in messages %}
+            <div class="messages-item">
+                <strong class="messages-item_user">{{ message.user }}</strong>
+                <span class="messages-item_date">{{ message.get_date_for_message }}</span>
+                {% if user.username == message.user.username %}<button class="messages-item_btn-delete" data-uid="{{ message.uid }}"><i class="fa fa-times"></i></button>{% endif %}
+                <p>
+                    {{ message.content }}
+                </p>
+                {% if message.file %}
+                    <br>
+                    {% if message.check_if_image %}
+                        <img src="{{ message.get_filepath }}">
+                    {% else %}
+                        <i class="fa fa-file-o"></i> <a href="{{ message.get_filepath }}">{{ message.file.name }}</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="messages_form" id="messageForm">
+        {% include "forms/form_new_message.html" %}
+    </div>
+</div>
