@@ -14,6 +14,8 @@ class EmbigoUser(models.Model):
         verbose_name_plural = "użytkownicy embigo"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     color = models.CharField(max_length=7, null=True, blank=True)
+    activation_key = models.CharField(max_length=40, blank=True)
+    key_expires = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return "%s"%(self.user.username)
 

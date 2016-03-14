@@ -134,3 +134,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
+
+EMAIL_HOST = 'poczta.interia.pl'
+EMAIL_HOST_USER = 'embigo@interia.pl'
+EMAIL_HOST_PASSWORD = 'ISI2016'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'embigo@interia.pl'
