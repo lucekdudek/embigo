@@ -674,6 +674,80 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 			max-width: 100%;
 		}
 
+.communicator {
+	background: rgba(109, 109, 109, 0.82);
+	position: fixed;
+	width: 280px;
+	right: 20px;
+	bottom: 0;
+	border-radius: 5px 5px 0 0;
+}
+	.communicator form {
+		background: #fff;
+		display: flex;
+		border-left: 1px solid #646464;
+	}
+	.communicator input[type='text'] {
+		flex: 1 1 auto;
+		width: 100%;
+		border: 0;
+		padding: 10px;
+		font-size: 14px;
+	}
+	.communicator input[type="submit"] {
+		flex: 0 0 auto;
+		font-size: 14px;
+		line-height: 32px;
+		border-radius: 0;
+	}
+	.communicator_list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		height: 300px;
+		overflow-y: auto;
+		padding-right: 10px;
+		padding: 10px;
+	}
+		.communicator_list li {
+			background: #f0f0f0;
+			display: block;
+			margin-bottom: 20px;
+			padding: 10px;
+			border-radius: 5px;
+			margin-right: 30px;
+			position: relative;
+			font-size: 14px;
+			line-height: 20px;
+			border: 1px solid #DDDDDD;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
+		}
+			.communicator_list li:after {
+				background: #DDDDDD;
+				display: block;
+				content: ' ';
+				width: 20px;
+				height: 12px;
+				position: absolute;
+				top: 100%;
+				left: 10px;
+				transform: skewY(-45deg);
+				margin-top: -11px;
+				z-index: -1;
+			}
+		.communicator_list .communicator_sender {
+			background: #FFF3BA;
+			margin-left: 30px;
+			margin-right: 0;
+			border-color: #F7E27B;
+		}
+		.communicator_list .communicator_sender:after {
+			background: #F7E27B;
+			left: auto;
+			right: 10px;
+			transform: skewY(45deg);
+		}
+
 
 .popup-bg {
 	background: rgba(247, 226, 123, 0.8);
