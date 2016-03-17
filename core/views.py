@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+import datetime
+import hashlib
 import json
+from random import random
 from uuid import uuid1
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.template import RequestContext
@@ -14,7 +18,7 @@ from django.utils import timezone, formats
 from core.forms import RegistrationForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights
-from core.models import Space, SpaceUser, Message
+from core.models import Space, SpaceUser, Message, EmbigoUser
 from core.rights import *
 
 
@@ -163,8 +167,19 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
+            #new_user.is_active = False
+            #new_user.save()
             new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(), user=new_user)
             new_space_user.save()
+            salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
+            activation_key = hashlib.sha1((salt+new_user.email).encode("utf-8")).hexdigest()
+            key_expires = datetime.datetime.now() + datetime.timedelta(2)
+            embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires)
+            embigo_user.save()
+            email_subject = 'Embigo - Potwierdzenie Rejestracji '
+            email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
+                         " 48 godzin kliknąć w poniższy link:\nhttp://127.0.0.1:8000/confirm/%s" % (new_user.username, activation_key)
+            send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
             return HttpResponseRedirect(request.GET.get("next","/"), RequestContext(request))
     else:
         form = RegistrationForm()

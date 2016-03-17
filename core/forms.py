@@ -12,7 +12,7 @@ class RegistrationForm(UserCreationForm):
     requires the password to be entered twice to catch typos.
     """
     email = forms.EmailField(
-        widget = forms.TextInput(attrs={'placeholder': 'email:'}),
+        widget = forms.TextInput(),
         required=True
     )
 
