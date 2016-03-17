@@ -167,8 +167,8 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-            #new_user.is_active = False
-            #new_user.save()
+            new_user.is_active = False
+            new_user.save()
             new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(), user=new_user)
             new_space_user.save()
             salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
@@ -321,3 +321,12 @@ def edit_space(request):
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+def activate(request, activation_key):
+    embigo_user = EmbigoUser.objects.get(activation_key=activation_key)
+    if embigo_user.key_expires > timezone.now():
+        embigo_user.user.is_active = True
+        embigo_user.user.save()
+        embigo_user.activation_key = None
+        embigo_user.save()
+    return render(request, 'activation.html', {})
