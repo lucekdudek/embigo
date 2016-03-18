@@ -26,5 +26,15 @@
 			{% include "forms/form_add_collaborators.html" %}
 		</div>
 	</div>
+
+    <div class="communicator">
+        <ul class="communicator_list"></ul>
+        <form id="sendChat">
+			<input type="hidden" id="user_key" value="{{ user_key }}">
+            <input type="text" autocomplete="off" id="chatInput">
+            <input type="submit" class="btn" value="Send">
+        </form>
+    </div>
+	<script src="/static/js/websocket.js"></script>
 	<script src="/static/js/space.js"></script>
 {% endblock %}

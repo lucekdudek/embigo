@@ -17,11 +17,15 @@ Including another URLconf
 from django.conf.urls import url, include, patterns
 from django.contrib import admin
 from django.conf import settings
+from server import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('core.urls')),
 ]
+
+start_thread()
+
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
     urlpatterns += patterns('',
