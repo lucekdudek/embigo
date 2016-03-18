@@ -20,6 +20,7 @@ from core.helper import embigo_default_rights, embigo_main_space, user_is_space_
     owner_default_rights, user_default_rights
 from core.models import Space, SpaceUser, Message, EmbigoUser
 from core.rights import *
+from core.crypto import *
 
 
 @login_required(login_url='/in/')
@@ -106,6 +107,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_delete_space = space_user.can(DELETE_SPACE)
         can_add_user = space_user.can(ADD_USER)
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
+
+        user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
         context = {
             'space': space,
             'space_users': space_users,
@@ -121,6 +124,7 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'can_delete_space': can_delete_space,
             'can_add_user': can_add_user,
             'can_edit_user_rights': can_edit_user_rights,
+            'user_key': user_key
         }
         return render(request, 'space.html', context)
     else:

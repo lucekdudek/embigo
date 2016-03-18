@@ -3,6 +3,7 @@
 
 import re, sys
 import struct
+import logging
 from base64 import b64encode
 from hashlib import sha1
 
@@ -157,8 +158,11 @@ class WebSocketHandler(StreamRequestHandler):
             return bytes
 
     def read_next_message(self):
-
-        b1, b2 = self.read_bytes(2)
+        b1, b2 = bytes(2)
+        try:
+            b1, b2 = self.read_bytes(2)
+        except ValueError:
+            logging.error("not enough values to unpack")
 
         fin = b1 & FIN
         opcode = b1 & OPCODE
@@ -199,7 +203,6 @@ class WebSocketHandler(StreamRequestHandler):
 		Fragmented(=continuation) messages are not being used since their usage
 		is needed in very limited cases - when we don't know the payload length.
 		'''
-
         # Validate message
         if isinstance(message, bytes):
             message = try_decode_UTF8(message)  # this is slower but assures we have UTF-8
