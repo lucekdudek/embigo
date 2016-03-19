@@ -3,7 +3,7 @@
 {% block core %}
 <div class="form-signin">
     <a href="/" class="form-signin_logo">embigo</a>
-    <p>Twoje konto jest już aktywne.</p>
+    <p>{{message}}</p>
     <a href="/{% if request.GET.next %}{{ request.GET.next }}{% endif %}"><input  type="submit" value="Dalej" class="btn"></a>
 </div>
 {% endblock %}

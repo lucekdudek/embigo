@@ -16,5 +16,6 @@
             </p>
     {% endfor %}
     <input type="submit" value="Zaloguj" class="btn"/>
+    <div class="text-right"><a href="/recover_password/">Przypomnij hasło</a></div>
 	<div class="text-right"><a href="/register/{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Zarejestruj się</a></div>
 </form>
