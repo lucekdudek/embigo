@@ -47,8 +47,7 @@ class Space(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     type = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(null=True, blank=True)
-    parent = models.ForeignKey('self', null=True, blank=True)
-
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
     def __str__(self):
         return "%s" % (self.name)
 
