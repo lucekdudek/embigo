@@ -123,6 +123,10 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	.btn:hover {
 		background: #7E7758;
 	}
+	.btn:disabled {
+		background: #7E7758 url('../img/spin.gif') no-repeat left 5px center;
+		padding-left: 40px;
+	}
 	.btn i {
 		margin-right: 10px;
 	}
@@ -435,6 +439,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		border: 1px solid #C2AD48;
 		border-radius: 5px;
 		padding: 10px 20px;
+		margin-bottom: 4px;
 		display: block;
 		text-decoration: none;
 		color: #000;
