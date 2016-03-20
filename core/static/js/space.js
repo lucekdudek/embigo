@@ -148,6 +148,7 @@ $(function(){
 			btnSubmit = $('.btn', form),
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
+			type = $('input[name="type"]', form),
 			space = $('input[name="space"]', form),
 			users = $('input[name="new_space_users_id"]', form);
 
@@ -157,10 +158,17 @@ $(function(){
 				if($(this).prop('checked')) checkedUsers.push($(this).val());
 			});
 
+			type.each(function(){
+				if($(this).prop('checked')) {
+					type = $(this).val();
+					$(this).prop('checked', false);
+				}
+			});
+
 		    $.ajax({
 		        url : "/new_space/",
 		        type : "POST",
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'new_space_users_id': checkedUsers },
+		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'type': type, 'new_space_users_id': checkedUsers },
 
 		        success : function(data) {
 		        	if(data){

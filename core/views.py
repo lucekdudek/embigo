@@ -244,7 +244,8 @@ def new_space(request):
     """
     if request.method == 'POST':
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
-        space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=1, status=1, parent=spaceUid)
+        print(request.POST)
+        space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=request.POST.get('type'), status=1, parent=spaceUid)
         space.save()
         spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=space, user=request.user)
         spaceUser.save()
