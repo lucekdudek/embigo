@@ -16,6 +16,7 @@ from django.shortcuts import  render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
+from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights
