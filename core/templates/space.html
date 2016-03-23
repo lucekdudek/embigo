@@ -27,10 +27,17 @@
 		</div>
 	</div>
 
-    <div class="communicator">
-        <ul class="communicator_list"></ul>
+    <div class="communicator" data-port="{{ user_key }}" data-wsaddress="{{ websocket_server_address }}">
+        <ul class="communicator_list">
+			{% for chat_message in chat_messages %}
+				{% if chat_message.user == user %}
+					<li class="communicator_sender">{{ chat_message.text }}</li>
+				{% else %}
+					<li>{{ chat_message.text }}</li>
+				{% endif %}
+			{% endfor %}
+		</ul>
         <form id="sendChat">
-			<input type="hidden" id="user_key" value="{{ user_key }}">
             <input type="text" autocomplete="off" id="chatInput">
             <input type="submit" class="btn" value="Send">
         </form>

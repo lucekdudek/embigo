@@ -1,14 +1,15 @@
 var ws;
 init();
+scrollBottom();
 
 function init() {
     // Connect to Web Socket
-    ws = new WebSocket(['ws://',window.location.hostname,':56625/'].join(''));
+    ws = new WebSocket(document.getElementsByClassName("communicator")[0].getAttribute("data-wsaddress"));
 
     // Set event handlers.
     ws.onopen = function() {
-        output("onopen");
-        var user_key = document.getElementById("user_key").value;
+        //output("onopen");
+        var user_key = document.getElementsByClassName("communicator")[0].getAttribute("data-port");
         ws.send(user_key);
     };
 
@@ -18,23 +19,19 @@ function init() {
     };
 
     ws.onclose = function() {
-        output("onclose");
+        //output("onclose");
         init();
     };
 
     ws.onerror = function(e) {
-        output("onerror");
+        //output("onerror");
         console.log(e);
     };
 }
 
-function onSubmit() {
-    var input = document.getElementById("input");
-    // You can send message to the Web Socket using ws.send.
-    ws.send(input.value);
-    output("send: " + input.value);
-    input.value = "";
-    input.focus();
+function scrollBottom() {
+    var list = document.getElementsByClassName("communicator_list")[0];
+    list.scrollTop = list.scrollHeight;
 }
 
 function onCloseClick() {
@@ -65,7 +62,7 @@ formChat.onsubmit = function(){
     elem.className = "communicator_sender";
     var list = document.getElementsByClassName("communicator_list")[0];
     list.appendChild(elem);
-    list.scrollTop = list.scrollHeight;
+    scrollBottom();
 
     input.value="";
 

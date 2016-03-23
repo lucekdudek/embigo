@@ -5,7 +5,7 @@ import json
 from random import random
 from uuid import uuid1
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -13,14 +13,15 @@ from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.template import RequestContext
-from django.utils import timezone, formats
+from django.utils import timezone
 
+from core.crypto import *
 from core.forms import RegistrationForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights
-from core.models import Space, SpaceUser, Message, EmbigoUser
+from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
 from core.rights import *
-from core.crypto import *
+from embigo.settings import WEBSOCKET_IP, WEBSOCKET_PORT
 
 
 @login_required(login_url='/in/')
@@ -108,7 +109,9 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_add_user = space_user.can(ADD_USER)
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
 
+        chat_messages = ChatMessage.objects.filter(conversation=1)
         user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
+        websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+WEBSOCKET_PORT+'/';
         context = {
             'space': space,
             'space_users': space_users,
@@ -124,7 +127,9 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'can_delete_space': can_delete_space,
             'can_add_user': can_add_user,
             'can_edit_user_rights': can_edit_user_rights,
-            'user_key': user_key
+            'user_key': user_key,
+            'chat_messages': chat_messages,
+            'websocket_server_address': websocket_server_address
         }
         return render(request, 'space.html', context)
     else:

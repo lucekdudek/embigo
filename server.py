@@ -2,6 +2,7 @@
 import threading
 import logging
 
+from core.models import ChatMessage, Conversation
 from websocket_server import WebsocketServer
 from django.contrib.sessions.models import Session
 from django.contrib.auth.models import User
@@ -31,15 +32,20 @@ def message_received(client, server, message):
 
     if client['id'] in connected_users:
         print("Client(%d) said: %s" % (client['id'], message))
+        conversation = Conversation.objects.get(id=1)
+        user = User.objects.get(username=connected_users[client['id']])
+        new_chat_message = ChatMessage(user=user, conversation=conversation, text=message)
+        new_chat_message.save()
         for c in server.clients:
             if c['id'] != client['id']:
-                server.send_message(c, connected_users[client['id']] + " said: " + message)
+                server.send_message(c, message)
+                # server.send_message(c, connected_users[client['id']] + " said: " + message)
     else:
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
             session = Session.objects.get(pk=session_id)
             user_name = User.objects.get(id=session.get_decoded().get('_auth_user_id', None))
-            server.send_message(client, "zalogowany jako " + user_name.username)
+            # server.send_message(client, "zalogowany jako " + user_name.username)
             connected_users[client['id']] = user_name.username
             print(connected_users)
             print(server.clients)
