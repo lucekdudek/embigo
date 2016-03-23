@@ -2,7 +2,7 @@
 
 from django.conf.urls import url
 from core.views import index, space, signout, signin, register, new_message, delete_message, new_space, edit_space, \
-    delete_space, archive_space, add_collaborators, activate
+    delete_space, archive_space, add_collaborators, activate, recover_password, new_password
 
 urlpatterns = [
     url(r'^$', index, name="index"),
@@ -16,7 +16,9 @@ urlpatterns = [
     url(r'^new_conversation/$', new_space, name="new_conversation"),
     url(r'^edit_space/$', edit_space, name="edit_space"),
     url(r'^add_collaborators/$', add_collaborators, name="add_collaborators"),
+    url(R'^recover_password/$', recover_password, name="recover_password"),
     url(r'^confirm/(?P<activation_key>[0-9a-z-]+)/$', activate, name="activate"),
+    url(r'^new_password/(?P<activation_key>[0-9a-z-]+)/$', new_password, name="new_password"),
     url(r'(?P<space_id>[0-9a-z-]+)/$', space, name="space"),
     url(r'(?P<space_id>[0-9a-z-]+)/delete_space/1$', delete_space, name="delete_space"),
     url(r'(?P<space_id>[0-9a-z-]+)/archive_space/1$', archive_space, name="archive_space"),

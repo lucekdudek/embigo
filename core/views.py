@@ -7,16 +7,16 @@ from uuid import uuid1
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
-from core.crypto import *
-from core.forms import RegistrationForm
+from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights
 from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
@@ -183,11 +183,11 @@ def register(request):
             salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
             activation_key = hashlib.sha1((salt+new_user.email).encode("utf-8")).hexdigest()
             key_expires = datetime.datetime.now() + datetime.timedelta(2)
-            embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires)
+            embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires, hash_type='ACTIVATE_HASH')
             embigo_user.save()
             email_subject = 'Embigo - Potwierdzenie Rejestracji '
             email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
-                         " 48 godzin kliknąć w poniższy link:\nhttp://127.0.0.1:8000/confirm/%s" % (new_user.username, activation_key)
+                         " 48 godzin kliknąć w poniższy link:\nhttp://87.206.25.188/confirm/%s" % (new_user.username, activation_key)
             send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
             return HttpResponseRedirect(request.GET.get("next","/"), RequestContext(request))
     else:
@@ -332,10 +332,86 @@ def edit_space(request):
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 def activate(request, activation_key):
-    embigo_user = EmbigoUser.objects.get(activation_key=activation_key)
-    if embigo_user.key_expires > timezone.now():
-        embigo_user.user.is_active = True
-        embigo_user.user.save()
-        embigo_user.activation_key = None
-        embigo_user.save()
-    return render(request, 'activation.html', {})
+    try:
+        embigo_user = EmbigoUser.objects.get(activation_key=activation_key)
+        if embigo_user.key_expires > timezone.now() and embigo_user.hash_type == 'ACTIVATE_HASH':
+            embigo_user.user.is_active = True
+            embigo_user.user.save()
+            embigo_user.activation_key = None
+            embigo_user.hash_type = None
+            embigo_user.save()
+            context = {'message': "Twoje konto jest już aktywne"}
+        else:
+            context = {'message': "Błąd, podany link jest nieaktywny."}
+    except ObjectDoesNotExist:
+       context = {'message': "Błąd, podany link jest nieaktywny."}
+    finally:
+       return render(request, 'confirmation.html', context)
+
+
+
+def recover_password(request):
+    """
+    Display form for recovering password
+
+    **Context**
+        recovery form
+
+    **Template:**
+    :template:`recovery.html`
+    """
+    if request.method == 'POST':
+        form = RecoveryForm(request.POST)
+        if form.is_valid():
+            user = User.objects.get(email=form.cleaned_data['email'])
+            salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
+            activation_key = hashlib.sha1((salt+user.email).encode("utf-8")).hexdigest()
+            key_expires = datetime.datetime.now() + datetime.timedelta(1)
+            hash_type = "PASSWORD_HASH"
+            embigo_user = EmbigoUser.objects.get(user=user)
+            embigo_user.activation_key = activation_key
+            embigo_user.key_expires = key_expires
+            embigo_user.hash_type = hash_type
+            embigo_user.save()
+            email_subject = 'Embigo - odzyskiwanie hasła '
+            email_body = "Witaj %s,\n aby zmienić swoje hasło w ciągu najbliższych 24 godzin kliknij w poniższy link:" \
+                         "\nhttp://87.206.25.188/new_password/%s" % (user.username, activation_key)
+            send_mail(email_subject, email_body, 'embigo@interia.pl', [user.email], fail_silently=False)
+            return HttpResponseRedirect(request.GET.get("next","/"), RequestContext(request))
+    else:
+        form = RecoveryForm()
+    context = {'form': form}
+    return render(request, 'recovery.html', context)
+
+
+def new_password(request, activation_key):
+    """
+    Display form for recovering password
+
+    **Context**
+        set password Form
+
+    **Template:**
+    :template:`new_password.html`
+    """
+    try:
+        embigo_user = EmbigoUser.objects.get(activation_key=activation_key)
+        if embigo_user.key_expires > timezone.now() and embigo_user.hash_type == "PASSWORD_HASH":
+            if request.method == 'POST':
+                form = SetPasswordForm(embigo_user.user, request.POST)
+                if form.is_valid():
+                    embigo_user.activation_key = None
+                    embigo_user.save()
+                    form.save()
+                    context = {'message': "Twoje hasło zostało zmienione"}
+                    return render(request, 'confirmation.html', context)
+            else:
+                form = SetPasswordForm(embigo_user.user)
+            context = {'form': form}
+            return render(request, 'new_password.html', context)
+        else:
+            context = {'message': "Błąd, podany link jest nieaktywny."}
+    except ObjectDoesNotExist:
+        context = {'message': "Błąd, podany link jest nieaktywny."}
+    return render(request, 'confirmation.html', context)
+

@@ -33,3 +33,28 @@ class RegistrationForm(UserCreationForm):
             raise forms.ValidationError("Ten adres email jest już zarejestrowany."
                                         "Proszę wprowadź inny adres email.")
         return self.cleaned_data['email']
+
+class RecoveryForm(forms.Form):
+    """
+    Form for confirming e-mail for password recovery.
+    Validates that requested email matches any user.
+    """
+    email = forms.EmailField(
+        widget = forms.TextInput(),
+        required=True
+    )
+
+    class Meta():
+        fields = [
+            'email'
+        ]
+        required_css_class = 'required'
+
+    def clean_email(self):
+        """
+        Validate that the supplied email address matches any user.
+        """
+        if not User.objects.filter(email__iexact=self.cleaned_data['email']):
+            raise forms.ValidationError("Brak podanego adresu w bazie."
+                                        "Proszę wprowadź poprawny adres email.")
+        return self.cleaned_data['email']
