@@ -31,9 +31,9 @@
         <ul class="communicator_list">
 			{% for chat_message in chat_messages %}
 				{% if chat_message.user == user %}
-					<li class="communicator_sender">{{ chat_message.text }}</li>
+					<li class="communicator_sender"><span class="communicator_author">Admin</span>{{ chat_message.text }}</li>
 				{% else %}
-					<li>{{ chat_message.text }}</li>
+					<li><span class="communicator_author">Admin</span>{{ chat_message.text }}</li>
 				{% endif %}
 			{% endfor %}
 		</ul>
@@ -42,6 +42,17 @@
             <input type="submit" class="btn" value="Send">
         </form>
     </div>
+	<div class="users-list">
+		<li class="users-list_head">Ostatni rozmówca</li>
+		<li><a href="" class="users-list_item is-online">Bartek</a></li>
+		<li class="users-list_head">Użytkownicy</li>
+		<li><a href="" class="users-list_item is-online">Bartek</a></li>
+		<li><a href="" class="users-list_item">Bartek</a></li>
+		<li><a href="" class="users-list_item">Bartek</a></li>
+		<li><a href="" class="users-list_item">Bartek</a></li>
+		<li class="users-list_head">Konwersacje grupowe</li>
+		<li><a href="" class="users-list_item">Bartek, Michał, Jakub, Łukasz, Lucjan</a></li>
+	</div>
 	<script src="/static/js/websocket.js"></script>
 	<script src="/static/js/space.js"></script>
 {% endblock %}

@@ -40,7 +40,7 @@ function onCloseClick() {
 
 function output(str) {
     var elem = document.createElement('li');
-    elem.innerHTML = str;
+    elem.innerHTML = '<span class="communicator_author">Admin</span>' + str;
     //elem.className = "communicator_sender";
     var list = document.getElementsByClassName("communicator_list")[0];
     list.appendChild(elem);
@@ -58,7 +58,7 @@ formChat.onsubmit = function(){
     ws.send(input.value);
 
     var elem = document.createElement('li');
-    elem.innerHTML = input.value;
+    elem.innerHTML = '<span class="communicator_author">Admin</span>' + input.value;
     elem.className = "communicator_sender";
     var list = document.getElementsByClassName("communicator_list")[0];
     list.appendChild(elem);

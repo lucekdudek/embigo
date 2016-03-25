@@ -105,6 +105,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 .content {
 	max-width: 1100px;
 	margin: 0 auto;
+	padding-right: 160px !important;
 }
 
 .btn {
@@ -678,9 +679,10 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	background: rgba(109, 109, 109, 0.82);
 	position: fixed;
 	width: 280px;
-	right: 20px;
+	right: 220px;
 	bottom: 0;
 	border-radius: 5px 5px 0 0;
+	z-index: 1;
 }
 	.communicator form {
 		background: #fff;
@@ -746,6 +748,69 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 			left: auto;
 			right: 10px;
 			transform: skewY(45deg);
+		}
+	.communicator_author {
+		display: block;
+		text-align: right;
+		font-size: 12px;
+		color: #969696;
+		margin-top: -5px;
+	}
+	.communicator_sender .communicator_author {
+		color: #AF982E;
+	}
+
+.users-list {
+	background: #3C3C3C;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	border-left: 1px solid #585858;
+	width: 200px;
+	height: calc(100% - 70px);
+	position: fixed;
+	top: 70px;
+	right: 0;
+	overflow-y: auto;
+}
+	.users-list_head {
+		color: #F7E27B;
+		text-transform: uppercase;
+		border-bottom: 1px solid #F7E27B;
+		padding: 0 15px 5px;
+		font-size: 12px;
+		margin-top: 30px;
+	}
+	.users-list_item {
+		text-decoration: none;
+		color: #D7D7D7;
+		border-bottom: 1px solid #585858;
+		padding: 15px 45px 15px 15px;
+		display: block;
+		font-size: 12px;
+		position: relative;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+		.users-list_item:hover {
+			background: #404040;
+		}
+		.users-list_item:after {
+			background: #585858;
+			content: ' ';
+			width: 10px;
+			height: 10px;
+			display: block;
+			margin: auto;
+			border-radius: 10px;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 15px;
+		}
+		.users-list_item.is-online:after {
+			background: #82DC04;
 		}
 
 
