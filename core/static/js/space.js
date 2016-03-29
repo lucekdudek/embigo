@@ -249,32 +249,8 @@ $(function(){
 	 * Koloruje userów
 	 */
 	var initUsers = (function(){
-    	function getRandomInt(min, max) {
-    	    return Math.floor(Math.random() * (max - min + 1)) + min;
-    	}
-    	function losuj(){
-	    	var r, g, b,
-	    		pos = Math.round(getRandomInt(0,2));
-
-	    	if(pos == 0){
-	    		r = 247;
-	    		g = Math.round(getRandomInt(124,246));
-	    		b = 123;
-	    	}else if(pos == 1){
-	    		r = 247;
-	    		g = 123;
-	    		b = Math.round(getRandomInt(124,246));
-	    	}else{
-	    		r = 123;
-	    		g = Math.round(getRandomInt(124,246));
-	    		b = 247;
-	    	}
-	    	return 'rgb('+r+','+g+','+b+')';
-	    }
-
     	$('.current-space_avatar').each(function(id){
     		var t = $(this);
-    		t.css('background', losuj());
     		t.on('mouseover',function(){
     			t.width(t.prop('scrollWidth'));
     		});

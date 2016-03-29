@@ -5,7 +5,7 @@ import json
 from random import random
 from uuid import uuid1
 
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.contrib.auth.models import User
@@ -201,6 +201,40 @@ def register(request):
         form = RegistrationForm()
     context = {'form': form}
     return render(request, 'register.html', context)
+
+def edit_user(request):
+    """
+    Display forms for edit user
+
+    **Context**
+        user
+        set password form
+        notification
+
+    **Template:**
+    :template:`edit_user.html`
+    """
+    user = User.objects.get(id=request.user.id)
+    form = SetPasswordForm(None)
+    notification = None
+    if request.method == 'POST':
+        if request.POST.get('changePassword'):
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                notification = 'Hasło zostało zmienione! :)'
+                update_session_auth_hash(request, form.user)
+        elif request.POST.get('changeColor'):
+            embigo_user = EmbigoUser.objects.get(user=user)
+            embigo_user.color = request.POST.get('color')
+            embigo_user.save()
+            notification = 'Zmieniono kolor avatara! :)'
+    context = {
+        'user': request.user,
+        'form': form,
+        'notification': notification
+    }
+    return render(request, 'edit_user.html', context)
 
 def new_message(request):
     """
@@ -423,4 +457,3 @@ def new_password(request, activation_key):
     except ObjectDoesNotExist:
         context = {'message': "Błąd, podany link jest nieaktywny."}
     return render(request, 'confirmation.html', context)
-

@@ -3,11 +3,13 @@
 	{% if space.uid != "00000000-0000-0000-0000-000000000000" %}
 		{% include "./breadcrumbs.html" %}
 		<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
-            <div class="current-space_users">
-                {% for su in space.space_users %}
-                    <div class="current-space_avatar"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
-                {% endfor %}
-            </div>
+			{% if collaborators %}
+				<div class="current-space_users">
+					{% for su in space_users %}
+						<div class="current-space_avatar" style="background-color: {{ su.user.get_color }}"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
+		    		{% endfor %}
+				</div>
+			{% endif %}
 			<div class="current-space_head">
 				<i class="fa fa-folder-o"></i>
 				<div>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from core.views import index, space, signout, signin, register, new_message, delete_message, new_space, edit_space, \
+from core.views import index, space, signout, signin, register, edit_user, new_message, delete_message, new_space, edit_space, \
     delete_space, archive_space, add_collaborators, activate, recover_password, new_password
 
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^in/$', signin, name="signin"),
     url(r'^out/$', signout, name="signout"),
     url(r'^register/$', register, name="register"),
+    url(r'^edit_user/$', edit_user, name="edit_user"),
     url(r'^new_message/$', new_message, name="new_message"),
     url(r'^delete_message/$', delete_message, name="delete_message"),
     url(r'^new_space/$', new_space, name="new_space"),

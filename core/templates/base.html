@@ -23,6 +23,7 @@
 			<a href="/" class="header_logo">embigo</a>
 				<div class="header_user">
 					<strong>{{ user.username }}</strong>
+                    <a href="{% url 'edit_user' %}?next={{ request.path | urlencode }}" class="header_btn-edit"><i class="fa fa-cog"></i></a>
 			        {% include "forms/form_signout.html" %}
 			    </div>
 		</div>
