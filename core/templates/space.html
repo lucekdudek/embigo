@@ -28,8 +28,8 @@
 	</div>
     <div class="communicator" data-port="{{ user_key }}" data-username="{{ user.username }}" data-wsaddress="{{ websocket_server_address }}">
 		<div class="communicator_head">
-			<button class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
-			<button class="communicator_btn-close"><i class="fa fa-times"></i></button>
+			<button id="add_btn" class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
+			<button id="close_btn" class="communicator_btn-close"><i class="fa fa-times"></i></button>
 		</div>
         <ul class="communicator_list">
 			{% for chat_message in chat_messages %}
