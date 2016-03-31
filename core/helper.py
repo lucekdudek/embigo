@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from core.models import Space, SpaceUser
 
+
 def embigo_default_rights():
     """
     :return: rights of brand new user
     """
     return "010000000000"
+
 
 def owner_default_rights():
     """
@@ -13,17 +15,20 @@ def owner_default_rights():
     """
     return "111111111111"
 
+
 def user_default_rights():
     """
     :return: rights of normal user of space
     """
     return "111100011011"
 
+
 def embigo_main_space():
     """
     :return: star space
     """
     return Space.objects.get(uid="00000000-0000-0000-0000-000000000000")
+
 
 def user_is_space_user(user, space):
     """
@@ -38,6 +43,7 @@ def user_is_space_user(user, space):
     except SpaceUser.MultipleObjectsReturned:
         pass
     return True if 'su' in locals() else False
+
 
 def get_space_user(user, space):
     """
