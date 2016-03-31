@@ -11,16 +11,18 @@ from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Model
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
+from chat.chat import get_or_create_conversation
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights
-from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
+from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage, Conversation
 from core.rights import *
 from embigo.settings import WEBSOCKET_IP, WEBSOCKET_PORT
 
@@ -55,6 +57,7 @@ def index(request):
         return HttpResponseRedirect("/")
     else:
         return space(request)
+
 
 @login_required(login_url='/in/')
 def space(request, space_id='00000000-0000-0000-0000-000000000000'):
@@ -111,8 +114,26 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
 
         chat_messages = ChatMessage.objects.filter(conversation=1)
+        users_list = User.objects.filter(is_active=1).exclude(username=request.user.username)
+
         user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
-        websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+WEBSOCKET_PORT+'/';
+        websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+str(WEBSOCKET_PORT)+'/';
+
+        # conversations = Conversation.objects.filter(isgroup=False, members=request.user)
+        # try:
+        #     user_conv = User.objects.get(username="disc")
+        #     print("znaleziono:")
+        #     print(conversations.get(members=user_conv))
+        # except User.DoesNotExist:
+        #     print("nie znaleziono usera")
+        # except Conversation.DoesNotExist:
+        #     print("nie znaleziono konwersacji")
+        #     new_conv = Conversation(isgroup=False)
+        #     new_conv.save()
+        #     new_conv.members.add(request.user)
+        #     new_conv.members.add(user_conv)
+        print(get_or_create_conversation(request.user, "przetest"))
+
         context = {
             'space': space,
             'space_users': space_users,
@@ -130,7 +151,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'can_edit_user_rights': can_edit_user_rights,
             'user_key': user_key,
             'chat_messages': chat_messages,
-            'websocket_server_address': websocket_server_address
+            'websocket_server_address': websocket_server_address,
+            'users_list': users_list
         }
         return render(request, 'space.html', context)
     else:

@@ -27,13 +27,13 @@
 		</div>
 	</div>
 
-    <div class="communicator" data-port="{{ user_key }}" data-wsaddress="{{ websocket_server_address }}">
+    <div class="communicator" data-port="{{ user_key }}" data-username="{{ user.username }}" data-wsaddress="{{ websocket_server_address }}">
         <ul class="communicator_list">
 			{% for chat_message in chat_messages %}
 				{% if chat_message.user == user %}
-					<li class="communicator_sender"><span class="communicator_author">Admin</span>{{ chat_message.text }}</li>
+					<li class="communicator_sender"><span class="communicator_author" title="{{ chat_message.time }}">{{ chat_message.user }}</span>{{ chat_message.text }}</li>
 				{% else %}
-					<li><span class="communicator_author">Admin</span>{{ chat_message.text }}</li>
+					<li><span class="communicator_author" title="{{ chat_message.time }}">{{ chat_message.user }}</span>{{ chat_message.text }}</li>
 				{% endif %}
 			{% endfor %}
 		</ul>
@@ -43,15 +43,20 @@
         </form>
     </div>
 	<div class="users-list">
-		<li class="users-list_head">Ostatni rozmówca</li>
-		<li><a href="" class="users-list_item is-online">Bartek</a></li>
-		<li class="users-list_head">Użytkownicy</li>
-		<li><a href="" class="users-list_item is-online">Bartek</a></li>
-		<li><a href="" class="users-list_item">Bartek</a></li>
-		<li><a href="" class="users-list_item">Bartek</a></li>
-		<li><a href="" class="users-list_item">Bartek</a></li>
-		<li class="users-list_head">Konwersacje grupowe</li>
-		<li><a href="" class="users-list_item">Bartek, Michał, Jakub, Łukasz, Lucjan</a></li>
+		<div class="users-list_head">Ostatni rozmówca</div>
+		<ul>
+			<li><a href="" class="users-list_item is-online">Bartek</a></li>
+		</ul>
+		<div class="users-list_head">Użytkownicy</div>
+		<ul id="users_list">
+		{% for current_user in users_list %}
+			<li><a href="" class="users-list_item">{{ current_user.username }}</a></li>
+		{% endfor %}
+		</ul>
+		<div class="users-list_head">Konwersacje grupowe</div>
+		<ul>
+			<li><a href="" class="users-list_item">Bartek, Michał, Jakub, Łukasz, Lucjan</a></li>
+		</ul>
 	</div>
 	<script src="/static/js/websocket.js"></script>
 	<script src="/static/js/space.js"></script>

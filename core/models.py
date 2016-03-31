@@ -120,9 +120,10 @@ class Conversation(models.Model):
         verbose_name_plural = "konwersacje"
 
     members = models.ManyToManyField(User)
+    isgroup = models.BooleanField()
 
     def __str__(self):
-        return "%s" % (self.members)
+        return "%i: %s" % (self.id, self.members)
 
 
 class ChatMessage(models.Model):

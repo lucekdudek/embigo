@@ -14,8 +14,25 @@ function init() {
     };
 
     ws.onmessage = function(e) {
-        // e.data contains received string.
-        output(e.data);
+        if(e.data[0]=='l'){
+            //alert(e.data);
+            data = e.data.split(";");
+            list = document.getElementById("users_list").getElementsByTagName("a");
+            for (i = 0; i < list.length; i++) {
+                found = false;
+                for (j = 0; j < data.length; j++) {
+                    if(data[j]==list[i].innerHTML){
+                        list[i].parentNode.className = "users-list_item is-online";
+                        found=true;
+                        break;
+                    }
+                }
+                if(!found)
+                    list[i].parentNode.className = "users-list_item";
+            }
+        }else{
+            output(e.data);
+        }
     };
 
     ws.onclose = function() {
@@ -39,9 +56,12 @@ function onCloseClick() {
 }
 
 function output(str) {
+    data = str.split(";",2);
+    content = str.substring(data[0].length+data[1].length+2);
     var elem = document.createElement('li');
-    elem.innerHTML = '<span class="communicator_author">Admin</span>' + str;
-    //elem.className = "communicator_sender";
+    elem.innerHTML = '<span class="communicator_author">' + data[1] + '</span>' + content;
+    if(data[0] == "cu")
+        elem.className = "communicator_sender";
     var list = document.getElementsByClassName("communicator_list")[0];
     list.appendChild(elem);
     list.scrollTop = list.scrollHeight;
@@ -57,8 +77,10 @@ formChat.onsubmit = function(){
     }
     ws.send(input.value);
 
+    var username = document.getElementsByClassName("communicator")[0].getAttribute("data-username");
+
     var elem = document.createElement('li');
-    elem.innerHTML = '<span class="communicator_author">Admin</span>' + input.value;
+    elem.innerHTML = '<span class="communicator_author" title="TODO">' + username + '</span>' + input.value;
     elem.className = "communicator_sender";
     var list = document.getElementsByClassName("communicator_list")[0];
     list.appendChild(elem);
