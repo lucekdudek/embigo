@@ -7,23 +7,23 @@ function init() {
     ws = new WebSocket(document.getElementsByClassName("communicator")[0].getAttribute("data-wsaddress"));
 
     // Set event handlers.
-    ws.onopen = function() {
+    ws.onopen = function () {
         //output("onopen");
         var user_key = document.getElementsByClassName("communicator")[0].getAttribute("data-port");
         ws.send(user_key);
     };
 
-    ws.onmessage = function(e) {
+    ws.onmessage = function (e) {
         // e.data contains received string.
         output(e.data);
     };
 
-    ws.onclose = function() {
+    ws.onclose = function () {
         //output("onclose");
         init();
     };
 
-    ws.onerror = function(e) {
+    ws.onerror = function (e) {
         //output("onerror");
         console.log(e);
     };
@@ -49,10 +49,10 @@ function output(str) {
 
 var formChat = document.getElementById("sendChat");
 
-formChat.onsubmit = function(){
+formChat.onsubmit = function () {
     input = document.getElementById("chatInput");
     input.focus();
-    if(input.value == ""){
+    if (input.value == "") {
         return false;
     }
     ws.send(input.value);
@@ -64,7 +64,7 @@ formChat.onsubmit = function(){
     list.appendChild(elem);
     scrollBottom();
 
-    input.value="";
+    input.value = "";
 
     return false;
 }
