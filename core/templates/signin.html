@@ -2,14 +2,14 @@
 
 {% block core %}
     {% if errormessage %}
-		<p>{{ errormessage }}</p>
-	{% endif %}
+        <p>{{ errormessage }}</p>
+    {% endif %}
     {% if user.is_authenticated %}
         {% include "forms/form_signout.html" %}
     {% else %}
         <div class="form-signin">
             <a href="" class="form-signin_logo">embigo</a>
-    	    {% include "forms/form_signin.html" %}
+            {% include "forms/form_signin.html" %}
         </div>
     {% endif %}
 {% endblock %}

@@ -24,6 +24,7 @@ class EmbigoUser(models.Model):
         return "%s" % (self.user.username)
 
 
+
 def get_color(self):
     try:
         color = self.embigouser.color
@@ -48,6 +49,7 @@ class Space(models.Model):
     type = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+
     def __str__(self):
         return "%s" % (self.name)
 
@@ -82,6 +84,7 @@ class Space(models.Model):
             return True
         else:
             return False
+
 
 class SpaceUser(models.Model):
     class Meta:
@@ -134,7 +137,6 @@ class Message(models.Model):
 
     def __str__(self):
         return "%s" % (self.content)
-
 
 class Conversation(models.Model):
     class Meta:

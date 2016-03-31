@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import  render, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
@@ -32,7 +32,7 @@ def index(request):
     redirect start space
     """
     try:
-        emgibo_space=Space.objects.get(uid='00000000-0000-0000-0000-000000000000')
+        emgibo_space = Space.objects.get(uid='00000000-0000-0000-0000-000000000000')
     except Space.DoesNotExist:
         emgibo_space = Space(
             uid='00000000-0000-0000-0000-000000000000',
@@ -55,6 +55,7 @@ def index(request):
         return HttpResponseRedirect("/")
     else:
         return space(request)
+
 
 @login_required(login_url='/in/')
 def space(request, space_id='00000000-0000-0000-0000-000000000000'):
@@ -84,7 +85,7 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         try:
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
-           return HttpResponseRedirect("/out")
+            return HttpResponseRedirect("/out")
 
         children_list = [c for c in space.children.all() if c.is_active()]
         user_spaces = {}
@@ -101,7 +102,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
                 parent_user = None
             if parent_user and parent_user.can(SEE_USERS):
                 parent_collaborators = SpaceUser.objects.filter(space=space.parent)
-                parent_collaborators = [pc for pc in parent_collaborators if not user_is_space_user(pc.user, space) and space_user.can(SEE_USERS)]
+                parent_collaborators = [pc for pc in parent_collaborators if
+                                        not user_is_space_user(pc.user, space) and space_user.can(SEE_USERS)]
 
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
@@ -140,6 +142,7 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
     else:
         return HttpResponseRedirect("/")
 
+
 def signin(request):
     """
     Display form for login
@@ -154,11 +157,12 @@ def signin(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return HttpResponseRedirect(request.GET.get("next","/"))
+            return HttpResponseRedirect(request.GET.get("next", "/"))
     else:
         form = AuthenticationForm()
     context = {'form': form}
     return render(request, 'signin.html', context)
+
 
 def signout(request):
     """
@@ -166,6 +170,7 @@ def signout(request):
     """
     logout(request)
     return HttpResponseRedirect("/")
+
 
 def register(request):
     """
@@ -186,19 +191,21 @@ def register(request):
             new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(), user=new_user)
             new_space_user.save()
             salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
-            activation_key = hashlib.sha1((salt+new_user.email).encode("utf-8")).hexdigest()
+            activation_key = hashlib.sha1((salt + new_user.email).encode("utf-8")).hexdigest()
             key_expires = datetime.datetime.now() + datetime.timedelta(2)
             embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires, hash_type='ACTIVATE_HASH')
             embigo_user.save()
             email_subject = 'Embigo - Potwierdzenie Rejestracji '
             email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
                          " 48 godzin kliknąć w poniższy link:\nhttp://87.206.25.188/confirm/%s" % (new_user.username, activation_key)
+
             send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
-            return HttpResponseRedirect(request.GET.get("next","/"), RequestContext(request))
+            return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
     else:
         form = RegistrationForm()
     context = {'form': form}
     return render(request, 'register.html', context)
+
 
 def new_message(request):
     """
@@ -212,14 +219,17 @@ def new_message(request):
     """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
-        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space, date=timezone.now())
+        message = Message(uid=uuid1(), content=request.POST.get('content'), user=request.user, space=space,
+                          date=timezone.now())
         if request.FILES:
             message.file = request.FILES['file']
         message.save()
-        context = {'result':'Success', 'uid': str(message.uid), 'content':message.content,'user': message.user.username, 'date': 'Dzisiaj'}
+        context = {'result': 'Success', 'uid': str(message.uid), 'content': message.content,
+                   'user': message.user.username, 'date': 'Dzisiaj'}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
 
 def delete_message(request):
     """
@@ -236,6 +246,7 @@ def delete_message(request):
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+
 def new_space(request):
     """
     Display form for space
@@ -248,17 +259,20 @@ def new_space(request):
     """
     if request.method == 'POST':
         spaceUid = Space.objects.get(uid=request.POST.get('space'))
-        space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'), type=request.POST.get('type'), status=1, parent=spaceUid)
+        space = Space(uid=uuid1(), name=request.POST.get('name'), description=request.POST.get('description'),
+                      type=request.POST.get('type'), status=1, parent=spaceUid)
         space.save()
         spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=space, user=request.user)
         spaceUser.save()
         for user_id in request.POST.getlist('new_space_users_id[]'):
-            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
+            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space,
+                                  user=User.objects.get(id=user_id))
             spaceUser.save()
-        context = {'result':'Success', 'space': str(space.uid)}
+        context = {'result': 'Success', 'space': str(space.uid)}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
 
 def add_collaborators(request):
     """
@@ -274,12 +288,14 @@ def add_collaborators(request):
         print(request.POST)
         space = Space.objects.get(uid=request.POST.get('space'))
         for user_id in request.POST.getlist('new_collaborators_id[]'):
-            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
+            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space,
+                                  user=User.objects.get(id=user_id))
             spaceUser.save()
-        context = {'result':'Success'}
+        context = {'result': 'Success'}
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
 
 @login_required(login_url='/in/')
 def archive_space(request, space_id):
@@ -293,11 +309,12 @@ def archive_space(request, space_id):
     space = get_object_or_404(Space, pk=space_id)
     spaceUser = SpaceUser.objects.get(user=user, space=space)
     if user_is_space_user(user, space) and spaceUser.can(ARCHIVE_SPACE):
-        space.status=(2 if space.status==1 else 1)
+        space.status = (2 if space.status == 1 else 1)
         space.save()
         return HttpResponseRedirect("../")
     else:
         return HttpResponseRedirect("/")
+
 
 @login_required(login_url='/in/')
 def delete_space(request, space_id):
@@ -310,12 +327,13 @@ def delete_space(request, space_id):
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
     spaceUser = SpaceUser.objects.get(user=user, space=space)
-    parent=space.parent
-    if user_is_space_user(user, space) and spaceUser.can(DELETE_SPACE) and parent!=None:
+    parent = space.parent
+    if user_is_space_user(user, space) and spaceUser.can(DELETE_SPACE) and parent != None:
         space.delete()
-        return HttpResponseRedirect("/%s"%(parent.uid))
+        return HttpResponseRedirect("/%s" % (parent.uid))
     else:
         return HttpResponseRedirect("/")
+
 
 def edit_space(request):
     """

@@ -1,7 +1,8 @@
 <div class="list-space {% if not own_spaces %}list-space--empty{% endif %}" id="mySubspaces">
     {% if user_spaces %}
         {% for space, children in user_spaces.items %}
-            <a href="/{{ space.uid }}" class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">{{ space.name }}</a>
+            <a href="/{{ space.uid }}"
+               class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">{{ space.name }}</a>
             {% for child in children %}
                 <ul>
                     <li><a href="/{{ child.uid }}">{{ child.name }}</a></li>
