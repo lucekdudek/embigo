@@ -1,7 +1,8 @@
 <div class="messages">
-    <h2>{% if messages %}Komentarze{% else %}Brak komentarzy{% endif %}</h2>
-    <div class="messages_list {% if not messages %}messages_list--empty{% endif %}">
-        {% for message in messages %}
+    {% if space.messages %}
+    <h2>Komentarze</h2>
+    <div class="messages_list">
+        {% for message in space.messages %}
             <div class="messages-item">
                 <strong class="messages-item_user">{{ message.user }}</strong>
                 <span class="messages-item_date">{{ message.get_date_for_message }}</span>
@@ -20,6 +21,10 @@
             </div>
         {% endfor %}
     </div>
+    {% else %}
+        <h2>Brak komentarzy</h2>
+        <div class="messages_list messages_list--empty"></div>
+    {% endif %}
     <div class="messages_form" id="messageForm">
         {% include "forms/form_new_message.html" %}
     </div>

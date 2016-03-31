@@ -14,14 +14,16 @@
 			</div>
 		</div>
 		<div class="popup_users-list">
-		{% for su in collaborators %}
-			{% if su.user != request.user %}
-				<div class="checkbox-wrapper">
-					<div class="checkbox-wrapper_input"><input type="checkbox" name="new_space_users_id" value="{{ su.user.id }}" id="{{ su }}"></div>
-					<label> {{ su.user.username }}</label>
-				</div>
-			{% endif %}
-		{% endfor %}
+        {%  if can_see_users %}
+            {% for su in space.space_users %}
+                {% if su.user != request.user %}
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-wrapper_input"><input type="checkbox" name="new_space_users_id" value="{{ su.user.id }}" id="{{ su }}"></div>
+                        <label> {{ su.user.username }}</label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {%  endif %}
 		</div>
 	</div>
 

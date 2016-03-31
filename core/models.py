@@ -59,6 +59,29 @@ class Space(models.Model):
             parent = parent.parent
         return paths[::-1]
 
+    def space_users(self):
+        return SpaceUser.objects.filter(space=self)
+
+    def messages(self):
+        return Message.objects.filter(space=self).order_by('-date')
+
+    def is_public(self):
+        if self.type == 1:
+            return True
+        else:
+            return False
+
+    def is_private(self):
+        if self.type == 2:
+            return True
+        else:
+            return False
+
+    def is_active(self):
+        if self.status == 1:
+            return True
+        else:
+            return False
 
 class SpaceUser(models.Model):
     class Meta:

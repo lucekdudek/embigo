@@ -19,7 +19,7 @@ from django.utils import timezone
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
-    owner_default_rights, user_default_rights
+    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none
 from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
 from core.rights import *
 from embigo.settings import WEBSOCKET_IP, WEBSOCKET_PORT
@@ -84,14 +84,15 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         try:
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
-            return HttpResponseRedirect("/out")
-        space_users = SpaceUser.objects.filter(space=space)
-        space_list = Space.objects.filter(parent=space_id).order_by('-status')
-        own_spaces = [s for s in space_list if user_is_space_user(user=user, space=s)]
-        other_spaces = [s for s in space_list if space_user.can(SEE_UNDERSPACES)]
-        other_spaces = [s for s in other_spaces if s not in own_spaces]
-        collaborators = SpaceUser.objects.filter(space=space) if space_user.can(SEE_USERS) else []
-        messages = Message.objects.filter(space=space).order_by('-date') if space_user.can(SEE_MESSAGES) else []
+           return HttpResponseRedirect("/out")
+
+        children_list = [c for c in space.children.all() if c.is_active()]
+        user_spaces = {}
+        for c in children_list:
+            if user_see_child(user, space_user, c):
+                c_user = get_space_user_or_none(user, c)
+                user_spaces[c] = [gc for gc in c.children.all() if gc.is_active() and user_see_child(user, c_user, gc)]
+
         parent_collaborators = []
         if space.parent:
             try:
@@ -99,9 +100,9 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             except SpaceUser.DoesNotExist:
                 parent_user = None
             if parent_user and parent_user.can(SEE_USERS):
-                space_user_users = [s.user for s in collaborators]
                 parent_collaborators = SpaceUser.objects.filter(space=space.parent)
-                parent_collaborators = [pc for pc in parent_collaborators if pc.user not in space_user_users]
+                parent_collaborators = [pc for pc in parent_collaborators if not user_is_space_user(pc.user, space) and space_user.can(SEE_USERS)]
+
         can_add_message = space_user.can(ADD_MESSAGE)
         can_create_space = space_user.can(CREATE_SPACE)
         can_edit_space = space_user.can(EDIT_SPACE)
@@ -109,18 +110,19 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_delete_space = space_user.can(DELETE_SPACE)
         can_add_user = space_user.can(ADD_USER)
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
+        can_see_users = space_user.can(SEE_USERS)
 
         chat_messages = ChatMessage.objects.filter(conversation=1)
         user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
         websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+WEBSOCKET_PORT+'/';
+
         context = {
             'space': space,
-            'space_users': space_users,
-            'own_spaces': own_spaces,
-            'other_spaces': other_spaces,
-            'collaborators': collaborators,
+
+            'user_spaces': user_spaces,
+
             'parent_collaborators': parent_collaborators,
-            'messages': messages,
+
             'can_add_message': can_add_message,
             'can_create_space': can_create_space,
             'can_edit_space': can_edit_space,
@@ -128,6 +130,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'can_delete_space': can_delete_space,
             'can_add_user': can_add_user,
             'can_edit_user_rights': can_edit_user_rights,
+            'can_see_users': can_see_users,
+
             'user_key': user_key,
             'chat_messages': chat_messages,
             'websocket_server_address': websocket_server_address
@@ -267,6 +271,7 @@ def add_collaborators(request):
     :template:`form_collaborators.html`
     """
     if request.method == 'POST':
+        print(request.POST)
         space = Space.objects.get(uid=request.POST.get('space'))
         for user_id in request.POST.getlist('new_collaborators_id[]'):
             spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))
