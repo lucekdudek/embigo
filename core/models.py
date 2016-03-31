@@ -43,6 +43,7 @@ class Space(models.Model):
     type = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+
     def __str__(self):
         return "%s"%(self.name)
 
@@ -77,6 +78,7 @@ class Space(models.Model):
             return True
         else:
             return False
+
 
 class SpaceUser(models.Model):
     class Meta:

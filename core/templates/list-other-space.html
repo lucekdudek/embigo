@@ -1,7 +1,9 @@
 <div class="list-space list-space--other {% if not other_spaces %}list-space--empty{% endif %}">
     {% if other_spaces %}
         {% for space in other_spaces %}
-            <a href="/{{ space.uid }}" class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">{{ space.name }}<i class="fa fa-sign-in"></i></a>
+            <a href="/{{ space.uid }}"
+               class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">{{ space.name }}<i
+                    class="fa fa-sign-in"></i></a>
         {% endfor %}
         <a class="list-space_item"></a>
         <a class="list-space_item"></a>

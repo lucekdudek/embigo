@@ -9,11 +9,13 @@ def embigo_default_rights():
     """
     return "010000000000"
 
+
 def owner_default_rights():
     """
     :return: rights of creator of space
     """
     return "111111111111"
+
 
 def user_default_rights():
     """
@@ -21,11 +23,13 @@ def user_default_rights():
     """
     return "111100011011"
 
+
 def embigo_main_space():
     """
     :return: star space
     """
     return Space.objects.get(uid="00000000-0000-0000-0000-000000000000")
+
 
 def user_is_space_user(user, space):
     """
@@ -41,6 +45,7 @@ def user_is_space_user(user, space):
         pass
     return True if 'su' in locals() else False
 
+
 def get_space_user(user, space):
     """
     note that this funcion can rasie error: paceUser.DoesNotExist
@@ -49,6 +54,7 @@ def get_space_user(user, space):
     :return: SpaceUser
     """
     return SpaceUser.objects.get(space=space, user=user)
+
 
 def get_space_user_or_none(user, space):
     """
@@ -65,6 +71,7 @@ def get_space_user_or_none(user, space):
     else:
         return None
 
+
 def user_see_child(user, parent_user, child):
     """
     :param user: user
@@ -73,7 +80,8 @@ def user_see_child(user, parent_user, child):
     :return: True/False
     """
     if parent_user:
-        return child.is_public() or child.is_private() and (user_is_space_user(user, child) or parent_user.can(SEE_UNDERSPACES))
+        return child.is_public() or child.is_private() and (
+        user_is_space_user(user, child) or parent_user.can(SEE_UNDERSPACES))
     else:
         return child.is_public() or child.is_private() and user_is_space_user(user, child)
 
@@ -92,5 +100,4 @@ def user_see_space(user, space):
         return True
     else:
         return False
-
 

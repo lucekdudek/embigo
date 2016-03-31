@@ -4,12 +4,12 @@
     {% if user.is_authenticated %}
         {% if space_list %}
             {% for space in space_list %}
-				<a href="/{{ space.uid }}">{{ space.name }}</a>
+                <a href="/{{ space.uid }}">{{ space.name }}</a>
             {% endfor %}
         {% else %}
-			<a>No spaces are available.</a>
-		{% endif %}
+            <a>No spaces are available.</a>
+        {% endif %}
     {% else %}
-	    {% include "forms/form_signin.html" %}
+        {% include "forms/form_signin.html" %}
     {% endif %}
 {% endblock %}
