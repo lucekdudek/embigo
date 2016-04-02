@@ -4,7 +4,7 @@ import logging
 
 import time
 
-from chat.chat import print_color, get_connected_users, connected_users, send_list
+from chat.chat import print_color, send_list, connected
 from core.models import ChatMessage, Conversation
 from embigo.settings import WEBSOCKET_PORT
 from django.contrib.sessions.models import Session
@@ -23,12 +23,8 @@ def new_client(client, server):
 def client_left(client, server):
     if client is not None:
         try:
-            time.sleep(5)
-            del connected_users[client['id']]
+            connected.remove(client["id"])
             print_color("Client(%d) disconnected" % client['id'])
-            print_color(connected_users)
-            get_connected_users()
-
             send_list(server)
         except KeyError:
             logging.error("user doesn't exist")
@@ -38,15 +34,16 @@ def client_left(client, server):
 def message_received(client, server, message):
     message = decode_utf_8(message)
 
-    if client['id'] in connected_users:
+    user = connected.get(client["id"])
+    if user is not None:
         print_color("Client(%d) said: %s" % (client['id'], message))
         conversation = Conversation.objects.get(id=1)
-        user = connected_users[client['id']]
+
         new_chat_message = ChatMessage(user=user, conversation=conversation, text=message)
         new_chat_message.save()
         for c in server.clients:
             if c['id'] != client['id']:
-                if connected_users[c['id']] == user.username:
+                if connected.get(c['id']) == user:
                     x = 'cu'  # current user
                 else:
                     x = 'ou'  # other user
@@ -55,16 +52,10 @@ def message_received(client, server, message):
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
             session = Session.objects.get(pk=session_id)
-            connected_users[client['id']] = User.objects.get(id=session.get_decoded().get('_auth_user_id', None))
-
-            print_color(connected_users)
-            get_connected_users()
+            connected.add(client['id'], User.objects.get(id=session.get_decoded().get('_auth_user_id', None)))
             send_list(server)
         except Session.DoesNotExist:
             logging.error("Error: user doesn't exist")
-
-    if message[0] == 'c':
-        print_color("Get list: " + connected_users[client['id']].username)
 
 
 def start_server():

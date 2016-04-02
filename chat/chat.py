@@ -2,38 +2,23 @@ from itertools import chain
 
 from django.contrib.auth.models import User
 
+from chat.connected_users import ConnectedUsers
 from core.models import Conversation
 
 
 YELLOW = '\033[93m'
 ENDC = '\033[0m'
 
-connected_users = {}
+connected = ConnectedUsers()
+last_update_time = -1
 
 
 def print_color(string):
     print(YELLOW+str(string)+ENDC)
 
 
-def get_connected_users():
-    unique_values = set(connected_users[d] for d in connected_users)
-    print(unique_values)
-    return unique_values
-
-
-def is_online(user):
-    for d in connected_users:
-        if connected_users[d].username == user:
-            return True
-    return False
-
-
-def send_list(server):# TODO
-    lista = get_connected_users()
-
-    string = ';'.join(str(e) for e in get_connected_users())
-    print(string)
-
+def send_list(server):  # TODO
+    string = ';'.join(str(k.username) for (k, v) in connected.get_unique().items())
     for c in server.clients:
         server.send_message(c, "l;"+string)  # e.g. cu:root:test message
 

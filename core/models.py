@@ -18,7 +18,7 @@ class EmbigoUser(models.Model):
     color = models.CharField(max_length=7, null=True, blank=True)
     activation_key = models.CharField(max_length=40, null=True, blank=True)
     key_expires = models.DateTimeField(default=timezone.now)
-    hash_type = models.CharField(max_length =20, null=True, blank=True)
+    hash_type = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return "%s" % (self.user.username)
@@ -138,3 +138,14 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return "%s: %s" % (self.user.username, self.text)
+
+
+# class Contacts(models.Model):
+#     class Meta:
+#         verbose_name = "kontakt"
+#         verbose_name_plural = "kontakty"
+#     user1 = models.OneToOneField(User, on_delete=models.CASCADE)
+#     user2 = models.OneToOneField(User, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return "%s - %s" % (self.user1.username, self.user2.username)
