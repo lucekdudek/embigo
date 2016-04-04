@@ -1,7 +1,6 @@
 {% for su in space_users %}
     <div class="checkbox-wrapper">
-        <div class="checkbox-wrapper_input"><input type="checkbox"" name="new_space_users" value="{{ su }}" id="{{ su }}">
-        </div>
-        <label> {{ su.user.username }}</label>
+        <div class="checkbox-wrapper_input"><input type="checkbox"" name="new_space_users" value="{{ su }}" id="{{ su }}"></div>
+		<label> {{ su.user.username }}</label>
     </div>
 {% endfor %}

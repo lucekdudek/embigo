@@ -5,9 +5,7 @@
             <div class="messages-item">
                 <strong class="messages-item_user">{{ message.user }}</strong>
                 <span class="messages-item_date">{{ message.get_date_for_message }}</span>
-                {% if user.username == message.user.username %}
-                    <button class="messages-item_btn-delete" data-uid="{{ message.uid }}"><i class="fa fa-times"></i>
-                    </button>{% endif %}
+                {% if user.username == message.user.username %}<button class="messages-item_btn-delete" data-uid="{{ message.uid }}"><i class="fa fa-times"></i></button>{% endif %}
                 <p>
                     {{ message.content }}
                 </p>

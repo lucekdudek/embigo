@@ -2,46 +2,46 @@
 
 {% block core %}
 
-    {% include "views/view_space.html" %}
+	{% include "views/view_space.html" %}
 
-    <div class="popup-bg"></div>
-    <div class="popup" id="popupEditSpace">
-        <button class="popup_btn-close">Zamknij</button>
-        <h2>Edytuj przestrzeń</h2>
-        <div id="editForm">
-            {% include "forms/form_edit_space.html" %}
-        </div>
-    </div>
-    <div class="popup" id="popupNewSpace">
-        <button class="popup_btn-close">Zamknij</button>
-        <h2>Dodaj przestrzeń</h2>
-        <div id="newSpaceForm">
-            {% include "forms/form_new_space.html" %}
-        </div>
-    </div>
-    <div class="popup" id="popupAddCollaborators">
-        <button class="popup_btn-close">Zamknij</button>
-        <h2>Dodaj użytkowników</h2>
-        <div id="addCollaboratorsForm">
-            {% include "forms/form_add_collaborators.html" %}
-        </div>
-    </div>
+	<div class="popup-bg"></div>
+	<div class="popup" id="popupEditSpace">
+		<button class="popup_btn-close">Zamknij</button>
+		<h2>Edytuj przestrzeń</h2>
+		<div id="editForm">
+			{% include "forms/form_edit_space.html" %}
+		</div>
+	</div>
+	<div class="popup" id="popupNewSpace">
+		<button class="popup_btn-close">Zamknij</button>
+		<h2>Dodaj przestrzeń</h2>
+		<div id="newSpaceForm">
+			{% include "forms/form_new_space.html" %}
+		</div>
+	</div>
+	<div class="popup" id="popupAddCollaborators">
+		<button class="popup_btn-close">Zamknij</button>
+		<h2>Dodaj użytkowników</h2>
+		<div id="addCollaboratorsForm">
+			{% include "forms/form_add_collaborators.html" %}
+		</div>
+	</div>
 
     <div class="communicator" data-port="{{ user_key }}" data-wsaddress="{{ websocket_server_address }}">
         <ul class="communicator_list">
-            {% for chat_message in chat_messages %}
-                {% if chat_message.user == user %}
-                    <li class="communicator_sender">{{ chat_message.text }}</li>
-                {% else %}
-                    <li>{{ chat_message.text }}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+			{% for chat_message in chat_messages %}
+				{% if chat_message.user == user %}
+					<li class="communicator_sender">{{ chat_message.text }}</li>
+				{% else %}
+					<li>{{ chat_message.text }}</li>
+				{% endif %}
+			{% endfor %}
+		</ul>
         <form id="sendChat">
             <input type="text" autocomplete="off" id="chatInput">
             <input type="submit" class="btn" value="Send">
         </form>
     </div>
-    <script src="/static/js/websocket.js"></script>
-    <script src="/static/js/space.js"></script>
+	<script src="/static/js/websocket.js"></script>
+	<script src="/static/js/space.js"></script>
 {% endblock %}

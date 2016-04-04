@@ -12,7 +12,7 @@ class RegistrationForm(UserCreationForm):
     requires the password to be entered twice to catch typos.
     """
     email = forms.EmailField(
-        widget=forms.TextInput(),
+        widget = forms.TextInput(),
         required=True
     )
 
@@ -34,14 +34,13 @@ class RegistrationForm(UserCreationForm):
                                         "Proszę wprowadź inny adres email.")
         return self.cleaned_data['email']
 
-
 class RecoveryForm(forms.Form):
     """
     Form for confirming e-mail for password recovery.
     Validates that requested email matches any user.
     """
     email = forms.EmailField(
-        widget=forms.TextInput(),
+        widget = forms.TextInput(),
         required=True
     )
 

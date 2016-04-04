@@ -8,16 +8,14 @@ class EmbigoUserInLine(admin.StackedInline):
     model = EmbigoUser
     can_delete = False
 
-
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
-    inlines = (EmbigoUserInLine,)
-
+    inlines = (EmbigoUserInLine, )
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
-# admin.site.register(EmbigoUser)
+#admin.site.register(EmbigoUser)
 admin.site.register(Space)
 admin.site.register(SpaceUser)
 admin.site.register(Message)
