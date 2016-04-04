@@ -1,29 +1,26 @@
 <div class="messages">
     {% if space.messages %}
-        <h2>Komentarze</h2>
-        <div class="messages_list">
-            {% for message in space.messages %}
-                <div class="messages-item">
-                    <strong class="messages-item_user">{{ message.user }}</strong>
-                    <span class="messages-item_date">{{ message.get_date_for_message }}</span>
-                    {% if user.username == message.user.username %}
-                        <button class="messages-item_btn-delete" data-uid="{{ message.uid }}"><i
-                                class="fa fa-times"></i></button>{% endif %}
-                    <p>
-                        {{ message.content }}
-                    </p>
-                    {% if message.file %}
-                        <br>
-                        {% if message.check_if_image %}
-                            <img src="{{ message.get_filepath }}">
-                        {% else %}
-                            <i class="fa fa-file-o"></i>
-                            <a href="{{ message.get_filepath }}">{{ message.file.name }}</a>
-                        {% endif %}
+    <h2>Komentarze</h2>
+    <div class="messages_list">
+        {% for message in space.messages %}
+            <div class="messages-item">
+                <strong class="messages-item_user">{{ message.user }}</strong>
+                <span class="messages-item_date">{{ message.get_date_for_message }}</span>
+                {% if user.username == message.user.username %}<button class="messages-item_btn-delete" data-uid="{{ message.uid }}"><i class="fa fa-times"></i></button>{% endif %}
+                <p>
+                    {{ message.content }}
+                </p>
+                {% if message.file %}
+                    <br>
+                    {% if message.check_if_image %}
+                        <img src="{{ message.get_filepath }}">
+                    {% else %}
+                        <i class="fa fa-file-o"></i> <a href="{{ message.get_filepath }}">{{ message.file.name }}</a>
                     {% endif %}
-                </div>
-            {% endfor %}
-        </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
     {% else %}
         <h2>Brak komentarzy</h2>
         <div class="messages_list messages_list--empty"></div>

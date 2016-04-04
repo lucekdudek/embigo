@@ -1,361 +1,360 @@
-$(function () {
+$(function(){
 
-    /**
-     * Tworzy message
-     */
-    var initMessageForm = (function () {
-        var form = $('#messageForm form'),
-            btnSubmit = $('.btn', form),
-            content = $('textarea[name="content"]', form),
-            space = $('input[name="space"]', form),
-            file = $('input[name="file"]', form),
-            fileSpan = $('.file-input span', form),
-            active = false;
+	/**
+	 * Tworzy message
+	 */
+	var initMessageForm = (function(){
+		var form = $('#messageForm form'),
+			btnSubmit = $('.btn', form),
+			content = $('textarea[name="content"]', form),
+			space = $('input[name="space"]', form),
+			file = $('input[name="file"]', form),
+			fileSpan = $('.file-input span', form),
+			active = false;
 
 
-        function new_message() {
-            var formData = new FormData();
-            formData.append('content', content.val());
-            formData.append('space', space.val());
-            if (file.prop('files')[0]) formData.append('file', file.prop('files')[0]);
+		function new_message() {
+			var formData = new FormData();
+			formData.append('content', content.val());
+			formData.append('space', space.val());
+			if(file.prop('files')[0]) formData.append('file', file.prop('files')[0]);
 
-            $.ajax({
-                url: "/new_message/",
-                type: "POST",
-                cache: false,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                data: formData,
+			$.ajax({
+		        url : "/new_message/",
+		        type : "POST",
+				cache: false,
+       			dataType: 'json',
+				processData: false,
+				contentType: false,
+		        data : formData,
 
-                success: function (data) {
-                    var s = '<div class="messages-item messages-item--new">';
-                    s += '<strong class="messages-item_user">' + data.user + '</strong><span class="messages-item_date">' + data.date + '</span>';
-                    s += '<button class="messages-item_btn-delete" data-uid="' + data.uid + '"><i class="fa fa-times"></i></button>';
-                    s += '<p>' + data.content + '</p>';
-                    if (file.prop('files')[0]) {
-                        var name = file.prop('files')[0].name,
-                            extension = name.split(".")[1];
-                        if (extension == 'png' || extension == 'jpg' || extension == 'bmp') {
-                            s += '<br><img src="/media/' + file.prop('files')[0].name + '">';
-                        } else {
-                            s += '<br><i class="fa fa-file-o"></i> ' + name;
-                        }
-                    }
-                    s += '</div>';
-                    $('.messages_list').removeClass('messages_list--empty');
-                    $('.messages_list #mCSB_1_container').prepend(s);
-                    content.val('');
-                    file.val('');
-                    fileSpan.text('');
-                    initDeleteMessageForm();
-                    active = false;
-                },
+		        success : function(data) {
+		            var s = '<div class="messages-item messages-item--new">';
+		            s += '<strong class="messages-item_user">'+data.user+'</strong><span class="messages-item_date">'+data.date+'</span>';
+		            s += '<button class="messages-item_btn-delete" data-uid="'+data.uid+'"><i class="fa fa-times"></i></button>';
+		            s += '<p>'+data.content+'</p>';
+					if(file.prop('files')[0]){
+						var name = file.prop('files')[0].name,
+							extension = name.split(".")[1];
+						if(extension=='png' || extension=='jpg' || extension=='bmp'){
+							s += '<br><img src="/media/'+file.prop('files')[0].name+'">';
+						}else {
+							s += '<br><i class="fa fa-file-o"></i> '+name;
+						}
+					}
+		            s += '</div>';
+		            $('.messages_list').removeClass('messages_list--empty');
+		            $('.messages_list #mCSB_1_container').prepend(s);
+					content.val('');
+					file.val('');
+					fileSpan.text('');
+		            initDeleteMessageForm();
+					active = false;
+		        },
 
-                error: function (xhr, errmsg, err) {
-                    console.log(xhr.status + ": " + xhr.responseText);
-                }
-            });
-        };
-        form.on('submit', function (event) {
-            event.preventDefault();
-            form.removeClass('is-error');
-            if (content.val() != '' && !active) {
-                active = true;
-                new_message();
-            } else {
-                form.addClass('is-error');
-            }
-        });
-    });
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		form.on('submit', function(event){
+		    event.preventDefault();
+		    form.removeClass('is-error');
+		    if(content.val()!='' && !active){
+		    	active = true;
+				new_message();
+		    }else{
+		    	form.addClass('is-error');
+		    }
+		});
+	});
 
-    /**
-     * Usuwa message
-     */
-    var initDeleteMessageForm = (function () {
-        var btns = $('.messages-item_btn-delete');
+	/**
+	 * Usuwa message
+	 */
+	var initDeleteMessageForm = (function(){
+		var btns = $('.messages-item_btn-delete');
 
-        function delete_message(uid, item) {
-            $.ajax({
-                url: "/delete_message/",
-                type: "POST",
-                data: {'message': uid},
+		function delete_message(uid, item) {
+		    $.ajax({
+		        url : "/delete_message/",
+		        type : "POST",
+		        data : { 'message': uid },
 
-                success: function (data) {
-                    if (data) {
-                        item.on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
-                            $(this).remove();
-                        });
-                        item.addClass('messages-item--delete');
-                    }
-                },
+		        success : function(data) {
+					if(data){
+						item.on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(){
+							$(this).remove();
+						});
+						item.addClass('messages-item--delete');
+					}
+		        },
 
-                error: function (xhr, errmsg, err) {
-                    console.log(xhr.status + ": " + xhr.responseText);
-                }
-            });
-        };
-        btns.on('click', function (event) {
-            delete_message($(this).attr('data-uid'), $(this).parent());
-        });
-    });
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		btns.on('click', function(event){
+		    delete_message($(this).attr('data-uid'), $(this).parent());
+		});
+	});
 
-    function sendForm(form, url, callback) {
-        var f = new FormData(form[0]);
-        $.ajax({
-            url: url,
-            type: "POST",
-            dataType: 'json',
-            cache: false,
-            processData: false,
-            contentType: false,
-            data: f,
+	function sendForm(form, url, callback){
+		var f = new FormData(form[0]);
+	    $.ajax({
+	        url : url,
+	        type : "POST",
+   			dataType: 'json',
+			cache: false,
+			processData: false,
+			contentType: false,
+	        data : f,
 
-            success: function (data) {
-                callback(data);
-            },
+	        success : function(data) {
+	        	callback(data);
+	        },
 
-            error: function (xhr, errmsg, err) {
-                console.log(xhr.status + ": " + xhr.responseText);
-            }
-        });
-    }
+	        error : function(xhr,errmsg,err) {
+	            console.log(xhr.status + ": " + xhr.responseText);
+	        }
+	    });
+	}
 
-    /**
-     * Edycja space
-     */
-    var initEditForm = (function () {
-        var form = $('#editForm form'),
-            btn = $('input[type="submit"]', form),
-            name = $('input[name="name"]', form),
-            description = $('textarea[name="description"]', form),
-            sent = false;
+	/**
+	 * Edycja space
+	 */
+	var initEditForm = (function(){
+		var form = $('#editForm form'),
+			btn =  $('input[type="submit"]', form),
+			name = $('input[name="name"]', form),
+			description = $('textarea[name="description"]', form),
+			sent = false;
 
-        form.on('submit', function (event) {
-            event.preventDefault();
+		form.on('submit', function(event){
+		    event.preventDefault();
 
-            form.removeClass('is-error');
+		    form.removeClass('is-error');
 
-            if (name.val() != '') {
-                sent = true;
-                btn.prop('disabled', true);
+		    if(name.val()!=''){
+		    	sent = true;
+		    	btn.prop('disabled', true);
 
-                sendForm(form, '/edit_space/', function (data) {
-                    closePopup('#popupEditSpace');
+		    	sendForm(form, '/edit_space/', function(data){
+					closePopup('#popupEditSpace');
+					
+	        		$('.current-space_head h1').text(name.val());
+	        		$('.current-space_desc p').text(description.val());
+					
+		    		sent = false;
+		    		btn.prop('disabled', false);
+				})
 
-                    $('.current-space_head h1').text(name.val());
-                    $('.current-space_desc p').text(description.val());
+		    }else{
+		    	form.addClass('is-error');
+		    }
+		});
+	});
 
-                    sent = false;
-                    btn.prop('disabled', false);
-                })
+	/**
+	 * Tworzenie nowego space
+	 */
+	var initNewSpaceForm = (function(){
+		var form = $('#newSpaceForm form'),
+			name = $('input[name="name"]', form),
+			btn =  $('input[type="submit"]', form),
+			mySubspaces = $('#mySubspaces'),
+			sent = false;
 
-            } else {
-                form.addClass('is-error');
-            }
-        });
-    });
+		form.on('submit', function(event){
+		    event.preventDefault();
+		    
+		    form.removeClass('is-error');
+		    
+		    if(name.val()!=''){
+		    	sent = true;
+		    	btn.prop('disabled', true);
 
-    /**
-     * Tworzenie nowego space
-     */
-    var initNewSpaceForm = (function () {
-        var form = $('#newSpaceForm form'),
-            name = $('input[name="name"]', form),
-            btn = $('input[type="submit"]', form),
-            mySubspaces = $('#mySubspaces'),
-            sent = false;
+		    	sendForm(form, '/new_space/', function(data){
+					closePopup('#popupNewSpace');
 
-        form.on('submit', function (event) {
-            event.preventDefault();
+		    		if(mySubspaces.hasClass('list-space--empty')){
+		    			mySubspaces.removeClass('list-space--empty').html('<a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a>');	
+		    		}
+		    		mySubspaces.find('.list-space_item:empty').eq(0).before('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
 
-            form.removeClass('is-error');
+		    		sent = false;
+		    		btn.prop('disabled', false);
+		    		form[0].reset();
+				})
+		    }else{
+		    	form.addClass('is-error');
+		    }
+		});
+	});
 
-            if (name.val() != '') {
-                sent = true;
-                btn.prop('disabled', true);
+	/**
+	 * Tworzy nowy kanał
+	 */
+	var initAddCollaborators = (function(){
+		var form = $('#addCollaboratorsForm form'),
+			btnSubmit = $('.btn', form),
+			space = $('input[name="space"]', form),
+			users = $('input[name="new_collaborators_id"]', form),
+			usersNames = $('.checkbox-wrapper label', form);
 
-                sendForm(form, '/new_space/', function (data) {
-                    closePopup('#popupNewSpace');
+		function add_collaborators() {
+			var checkedUsers = [],
+				checkedUsersId = [];
 
-                    if (mySubspaces.hasClass('list-space--empty')) {
-                        mySubspaces.removeClass('list-space--empty').html('<a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a>');
-                    }
-                    mySubspaces.find('.list-space_item:empty').eq(0).before('<a href="/' + data.space + '" class="list-space_item list-space_item--new">' + name.val() + '</a>');
+			users.each(function(index){
+				if($(this).prop('checked')){
+					checkedUsers.push($(this).val());
+					checkedUsersId.push(index);
+				}
+			});
 
-                    sent = false;
-                    btn.prop('disabled', false);
-                    form[0].reset();
-                })
-            } else {
-                form.addClass('is-error');
-            }
-        });
-    });
+		    $.ajax({
+		        url : "/add_collaborators/",
+		        type : "POST",
+		        data : { 'space':  space.val(), 'new_collaborators_id': checkedUsers },
 
-    /**
-     * Tworzy nowy kanał
-     */
-    var initAddCollaborators = (function () {
-        var form = $('#addCollaboratorsForm form'),
-            btnSubmit = $('.btn', form),
-            space = $('input[name="space"]', form),
-            users = $('input[name="new_collaborators_id"]', form),
-            usersNames = $('.checkbox-wrapper label', form);
+		        success : function(data) {
+		        	if(data){
+		        		closePopup('#popupAddCollaborators');
+						$.each(checkedUsersId, function(index){
+							var name = usersNames.eq(checkedUsersId[index]).text();
+							$('.checkbox-wrapper', form).eq(checkedUsersId[index]).css('display','none');
+							$('.current-space_users').append('<div class="current-space_avatar"><strong>'+name.substr(1,1)+'</strong><span>'+name+'</span></div>');
+						});
+						users.each(function(index){
+							$(this).prop('checked', false);
+						});
+						initUsers();
+		        	}
+		        },
 
-        function add_collaborators() {
-            var checkedUsers = [],
-                checkedUsersId = [];
+		        error : function(xhr,errmsg,err) {
+		            console.log(xhr.status + ": " + xhr.responseText);
+		        }
+		    });
+		};
+		form.on('submit', function(event){
+		    event.preventDefault();
+			add_collaborators();
+		});
+	});
 
-            users.each(function (index) {
-                if ($(this).prop('checked')) {
-                    checkedUsers.push($(this).val());
-                    checkedUsersId.push(index);
-                }
-            });
+	/**
+	 * Koloruje userów
+	 */
+	var initUsers = (function(){
+    	function getRandomInt(min, max) {
+    	    return Math.floor(Math.random() * (max - min + 1)) + min;
+    	}
+    	function losuj(){
+	    	var r, g, b,
+	    		pos = Math.round(getRandomInt(0,2));
 
-            $.ajax({
-                url: "/add_collaborators/",
-                type: "POST",
-                data: {'space': space.val(), 'new_collaborators_id': checkedUsers},
+	    	if(pos == 0){
+	    		r = 247;
+	    		g = Math.round(getRandomInt(124,246));
+	    		b = 123;
+	    	}else if(pos == 1){
+	    		r = 247;
+	    		g = 123;
+	    		b = Math.round(getRandomInt(124,246));
+	    	}else{
+	    		r = 123;
+	    		g = Math.round(getRandomInt(124,246));
+	    		b = 247;
+	    	}
+	    	return 'rgb('+r+','+g+','+b+')';
+	    }
 
-                success: function (data) {
-                    if (data) {
-                        closePopup('#popupAddCollaborators');
-                        $.each(checkedUsersId, function (index) {
-                            var name = usersNames.eq(checkedUsersId[index]).text();
-                            $('.checkbox-wrapper', form).eq(checkedUsersId[index]).css('display', 'none');
-                            $('.current-space_users').append('<div class="current-space_avatar"><strong>' + name.substr(1, 1) + '</strong><span>' + name + '</span></div>');
-                        });
-                        users.each(function (index) {
-                            $(this).prop('checked', false);
-                        });
-                        initUsers();
-                    }
-                },
+    	$('.current-space_avatar').each(function(id){
+    		var t = $(this);
+    		t.css('background', losuj());
+    		t.on('mouseover',function(){
+    			t.width(t.prop('scrollWidth'));
+    		});
+    		t.on('mouseout',function(){
+    			t.width(35);
+    		});
+    	});
+	});
 
-                error: function (xhr, errmsg, err) {
-                    console.log(xhr.status + ": " + xhr.responseText);
-                }
-            });
-        };
-        form.on('submit', function (event) {
-            event.preventDefault();
-            add_collaborators();
-        });
-    });
+	var initBreadcrumbs = (function(){
+		if($('.breadcrumbs ul').prop('scrollWidth')>$('.breadcrumbs').width()){
+			$('.breadcrumbs').addClass('breadcrumbs--hide');
+		}
+	});
 
-    /**
-     * Koloruje userów
-     */
-    var initUsers = (function () {
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+	var openPopup = function(popup){
+		$('.popup-bg').fadeIn(function(){
+			$(popup).fadeIn();
+		});
+	};
 
-        function losuj() {
-            var r, g, b,
-                pos = Math.round(getRandomInt(0, 2));
+	var closePopup = function(popup){
+		$(popup).fadeOut(function(){
+			$('.popup-bg').fadeOut();
+		});
+	};
 
-            if (pos == 0) {
-                r = 247;
-                g = Math.round(getRandomInt(124, 246));
-                b = 123;
-            } else if (pos == 1) {
-                r = 247;
-                g = 123;
-                b = Math.round(getRandomInt(124, 246));
-            } else {
-                r = 123;
-                g = Math.round(getRandomInt(124, 246));
-                b = 247;
-            }
-            return 'rgb(' + r + ',' + g + ',' + b + ')';
-        }
+	initBreadcrumbs();
+	initMessageForm();
+	initDeleteMessageForm();
+	initNewSpaceForm();
+	initEditForm();
+	initAddCollaborators();
+	initUsers();
 
-        $('.current-space_avatar').each(function (id) {
-            var t = $(this);
-            t.css('background', losuj());
-            t.on('mouseover', function () {
-                t.width(t.prop('scrollWidth'));
-            });
-            t.on('mouseout', function () {
-                t.width(35);
-            });
-        });
-    });
+	$('.popup_btn-close').on('click',function(){
+		closePopup('#'+$(this).parent().prop('id'));
+	});
+	$('.file-input').on('click',function(){
+		var btn = $(this).find('.file-input_btn'),
+			span = $(this).find('span');
 
-    var initBreadcrumbs = (function () {
-        if ($('.breadcrumbs ul').prop('scrollWidth') > $('.breadcrumbs').width()) {
-            $('.breadcrumbs').addClass('breadcrumbs--hide');
-        }
-    });
+		btn.on('change',function(event){
+			span.text($('.file-input input').val());
+		});
+	});
 
-    var openPopup = function (popup) {
-        $('.popup-bg').fadeIn(function () {
-            $(popup).fadeIn();
-        });
-    };
+	$('.checkbox-wrapper').on('click', function(){
+		var t = $(this).find('input');
+		if(t.prop('checked')){
+			t.prop('checked', false);
+			$(this).removeClass('is-active');
+		}else {
+			t.prop('checked', true);
+			$(this).addClass('is-active');
+		}
+	});
 
-    var closePopup = function (popup) {
-        $(popup).fadeOut(function () {
-            $('.popup-bg').fadeOut();
-        });
-    };
+	$('.checkbox-wrapper').each(function(){
+		if($(this).find('input').prop('checked')){
+			$(this).addClass('is-active');
+		}
+	});
 
-    initBreadcrumbs();
-    initMessageForm();
-    initDeleteMessageForm();
-    initNewSpaceForm();
-    initEditForm();
-    initAddCollaborators();
-    initUsers();
-
-    $('.popup_btn-close').on('click', function () {
-        closePopup('#' + $(this).parent().prop('id'));
-    });
-    $('.file-input').on('click', function () {
-        var btn = $(this).find('.file-input_btn'),
-            span = $(this).find('span');
-
-        btn.on('change', function (event) {
-            span.text($('.file-input input').val());
-        });
-    });
-
-    $('.checkbox-wrapper').on('click', function () {
-        var t = $(this).find('input');
-        if (t.prop('checked')) {
-            t.prop('checked', false);
-            $(this).removeClass('is-active');
-        } else {
-            t.prop('checked', true);
-            $(this).addClass('is-active');
-        }
-    });
-
-    $('.checkbox-wrapper').each(function () {
-        if ($(this).find('input').prop('checked')) {
-            $(this).addClass('is-active');
-        }
-    });
-
-    $('#btnEditSpace').on('click', function (event) {
-        event.preventDefault();
-        openPopup('#popupEditSpace');
-    })
-    $('#btnNewSpace').on('click', function (event) {
-        event.preventDefault();
-        openPopup('#popupNewSpace');
-    })
-    $('#btnNewChannel').on('click', function (event) {
-        event.preventDefault();
-        openPopup('#popupNewChannel');
-    })
-    $('#btnAddCollaborators').on('click', function (event) {
-        event.preventDefault();
-        openPopup('#popupAddCollaborators');
-    })
+	$('#btnEditSpace').on('click', function(event){
+		event.preventDefault();
+		openPopup('#popupEditSpace');
+	})
+	$('#btnNewSpace').on('click', function(event){
+		event.preventDefault();
+		openPopup('#popupNewSpace');
+	})
+	$('#btnNewChannel').on('click', function(event){
+		event.preventDefault();
+		openPopup('#popupNewChannel');
+	})
+	$('#btnAddCollaborators').on('click', function(event){
+		event.preventDefault();
+		openPopup('#popupAddCollaborators');
+	})
 
     $(".messages_list").mCustomScrollbar();
 });
