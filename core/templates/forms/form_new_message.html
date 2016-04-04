@@ -1,17 +1,17 @@
 <form action="{% url 'new_message' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <textarea name="content" placeholder="Dodaj komentarz..."></textarea>
-    <input type="hidden" name="space" value="{{ space.uid }}">
-    <div class="text-right">
-        <!-- Fake attachment button -->
-        <div class="file-input">
-            <span></span>
-            <div class="file-input_btn">
-                <i class="fa fa-paperclip"></i>
-                <input type="file" name="file">
-            </div>
-        </div>
-        <!-- -->
-        <input type="submit" value="Wyślij" class="btn">
-    </div>
+	{% csrf_token %}
+	<textarea name="content" placeholder="Dodaj komentarz..."></textarea>
+	<input type="hidden" name="space" value="{{ space.uid }}">
+	<div class="text-right">
+		<!-- Fake attachment button -->
+		<div class="file-input">
+			<span></span>
+			<div class="file-input_btn">
+				<i class="fa fa-paperclip"></i>
+				<input type="file" name="file">
+			</div>
+		</div>
+		<!-- -->
+		<input type="submit" value="Wyślij" class="btn">
+	</div>
 </form>
