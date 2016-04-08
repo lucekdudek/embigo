@@ -676,7 +676,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		}
 
 .communicator {
-	background: rgba(109, 109, 109, 0.82);
+	background: rgba(0, 0, 0, 0.6);
 	position: fixed;
 	width: 280px;
 	right: 220px;
@@ -705,7 +705,9 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	.communicator_head {
 		padding: 10px;
 		text-align: right;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+		border: 1px solid rgba(0, 0, 0, 0.2);
+		background: #f7e27b;
+		border-radius: 5px 5px 0 0;
 	}
 		.communicator_head button {
 			color: #fff;
@@ -713,6 +715,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 			border: 0;
 			padding: 0;
 			margin: 0 5px;
+			text-shadow: 0 0 2px black;
 		}
 	.communicator_list {
 		list-style: none;
