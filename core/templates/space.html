@@ -26,13 +26,19 @@
 			{% include "forms/form_add_collaborators.html" %}
 		</div>
 	</div>
-    <div class="communicator" data-port="{{ user_key }}" data-username="{{ user.username }}" data-wsaddress="{{ websocket_server_address }}">
-		<div class="communicator_users">
-			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239);"><strong>a</strong></div>
-			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239);"><strong>a</strong></div>
-			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239);"><strong>a</strong></div>
+    <div style="display: none;" class="communicator" data-port="{{ user_key }}" data-username="{{ user.username }}" data-wsaddress="{{ websocket_server_address }}">
+		<div id="communicator_users" class="communicator_users">
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
 		</div>
 		<div class="communicator_head">
+			<div id="conv-name" style="float:left"></div>
 			<button id="add_btn" class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
 			<button id="close_btn" class="communicator_btn-close"><i class="fa fa-times"></i></button>
 		</div>

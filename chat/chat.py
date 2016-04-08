@@ -1,7 +1,6 @@
 from itertools import chain
 
 from django.contrib.auth.models import User
-
 from chat.connected_users import ConnectedUsers
 from core.models import Conversation
 
@@ -17,10 +16,19 @@ def print_color(string):
     print(YELLOW+str(string)+ENDC)
 
 
-def send_list(server):  # TODO
+def send_online(server):  # TODO
     string = ';'.join(str(k.username) for (k, v) in connected.get_unique().items())
     for c in server.clients:
-        server.send_message(c, "l;"+string)  # e.g. cu:root:test message
+        server.send_message(c, "o;"+string)
+
+
+def send_list(server, client, username):
+    users_list = User.objects.filter(is_active=1).exclude(username=username).order_by('username')
+    list = "l"
+    for x in users_list.values_list('username', flat=True):
+        list += ";"+str(get_or_create_conversation(username, x).id)+";"+x
+        print(x)
+    server.send_message(client, list)
 
 
 def get_or_create_conversation(user1, user2):

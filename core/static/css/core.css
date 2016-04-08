@@ -153,8 +153,8 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	box-sizing: border-box;
 	-webkit-transition: width 0.3s ease-out;
 			transition: width 0.3s ease-out;
-	-webkit-transition: transform 0.3s cubic-bezier(0, 0, 0.15, 1.32);
-			transition: transform 0.3s cubic-bezier(0, 0, 0.15, 1.32);
+	-webkit-transition: transform 0.3s ease;
+			transition: transform 0.3s ease;
 }
 	.user-avatar strong {
 		font-size: 22px;
@@ -703,7 +703,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		}
 		.communicator_users .user-avatar {
 			margin-bottom: 5px;
-			box-shadow: 0 0 10px rgba(0,0,0,1);
+			box-shadow: 0 0 5px rgba(0,0,0,1);
 			transform: translate3d(45px,0,0);
 		}
 			.communicator:hover .user-avatar {

@@ -1,10 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
+import json
 import threading
 import logging
 
-import time
-
-from chat.chat import print_color, send_list, connected
+from chat.chat import print_color, send_list, connected, send_online, get_or_create_conversation
 from core.models import ChatMessage, Conversation
 from embigo.settings import WEBSOCKET_PORT
 from django.contrib.sessions.models import Session
@@ -25,7 +24,7 @@ def client_left(client, server):
         try:
             connected.remove(client["id"])
             print_color("Client(%d) disconnected" % client['id'])
-            send_list(server)
+            send_online(server)
         except KeyError:
             logging.error("user doesn't exist")
 
@@ -36,24 +35,45 @@ def message_received(client, server, message):
 
     user = connected.get(client["id"])
     if user is not None:
-        print_color("Client(%d) said: %s" % (client['id'], message))
-        conversation = Conversation.objects.get(id=1)
+        if message[0] == "m":
+            message = message[2:]
+            index = message.index(";")
+            target = message[:index]
+            message = message[(index+1):]
 
-        new_chat_message = ChatMessage(user=user, conversation=conversation, text=message)
-        new_chat_message.save()
-        for c in server.clients:
-            if c['id'] != client['id']:
-                if connected.get(c['id']) == user:
-                    x = 'cu'  # current user
-                else:
-                    x = 'ou'  # other user
-                server.send_message(c, x + ";" + user.username + ";" + message)  # e.g. cu:root:test message
+            print_color("Client(%d) said: %s" % (client['id'], message))
+            conversation = get_or_create_conversation(user, target)
+
+            new_chat_message = ChatMessage(user=user, conversation=conversation, text=message)
+            new_chat_message.save()
+            for c in server.clients:
+                if c['id'] != client['id']:
+                    print(connected.get(c['id']))
+                    if connected.get(c['id']) == user:
+                        x = 'cu'  # current user
+                    else:
+                        x = 'ou'  # other user
+                    server.send_message(c, "m;" + str(conversation.id) + ";" + user.username + ";" + message)  # e.g. cu:root:test message
+        if message[0] == "n":
+            message = message[2:]
+            conversation = get_or_create_conversation(user, message)
+            chat_messages = ChatMessage.objects.filter(conversation=conversation)
+            data = {}
+            counter=0
+            for current_message in chat_messages:
+                data[counter] = "m;" + str(conversation.id) + ";" + current_message.user.username + ";" + current_message.text
+                counter += 1
+            server.send_message(client, "a;"+str(conversation.id)+";"+json.dumps(data))
     else:
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
             session = Session.objects.get(pk=session_id)
-            connected.add(client['id'], User.objects.get(id=session.get_decoded().get('_auth_user_id', None)))
-            send_list(server)
+            u=User.objects.get(id=session.get_decoded().get('_auth_user_id', None))
+            connected.add(client['id'], u)
+
+            send_list(server, client, u.username)
+            send_online(server)
+            server.send_message(client, "u;" + u.username)
         except Session.DoesNotExist:
             logging.error("Error: user doesn't exist")
 

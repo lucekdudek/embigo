@@ -114,7 +114,7 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
 
         chat_messages = ChatMessage.objects.filter(conversation=1)
-        users_list = User.objects.filter(is_active=1).exclude(username=request.user.username)
+        users_list = []
 
         user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
         websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+str(WEBSOCKET_PORT)+'/';
@@ -132,7 +132,6 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         #     new_conv.save()
         #     new_conv.members.add(request.user)
         #     new_conv.members.add(user_conv)
-        print(get_or_create_conversation(request.user, "przetest"))
 
         context = {
             'space': space,

@@ -289,7 +289,7 @@ $(function(){
 		var users = $('.communicator_users .user-avatar'),
 			t;
 		users.each(function(index){
-			t = index*0.1 + 's';
+			t = index*0.06 + 's';
 			$(this).css('transition-delay', t);
 		});
 	});
