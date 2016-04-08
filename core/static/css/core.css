@@ -396,6 +396,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	margin-bottom: 20px;
 	background: #515151;
     padding: 10px;
+	padding-bottom: 0;
     border-radius: 5px;
 	color: #9F9F9F;
 	display: -webkit-box;
@@ -435,17 +436,9 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		        align-items: center;
 	}
 	.list-space_item {
-		background: #F7E27B;
-		border: 1px solid #C2AD48;
+		background: #6D6D6D;
+		margin-bottom: 10px;
 		border-radius: 5px;
-		padding: 10px 20px;
-		margin-bottom: 4px;
-		display: block;
-		text-decoration: none;
-		color: #000;
-		font-weight: 500;
-		font-size: 16px;
-		box-sizing: border-box;
 		-webkit-box-flex: 0;
 		-webkit-flex: 0 0 24%;
 		    -ms-flex: 0 0 24%;
@@ -457,26 +450,51 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 			height: 0px;
 			border: 0;
 		}
-		.list-space_item:hover {
-			background: #E5D16F;
-		}
 		.list-space_item:last-child {
 			margin-bottom: 0;
+		}
+		.list-space_item a {
+			background: #F7E27B;
+			border: 1px solid #C2AD48;
+			border-radius: 5px;
+			padding: 10px 20px;
+			display: block;
+			text-decoration: none;
+			color: #000;
+			font-weight: 500;
+			font-size: 16px;
+			box-sizing: border-box;
+		}
+		.list-space_item a:hover {
+			background: #E5D16F;
 		}
 		.list-space_item--new {
 			-webkit-animation: initMessage 1s;
 			        animation: initMessage 1s;
 		}
-		.list-space_item--archive {
+		.list-space_item--archive > a {
 			background: #D7D7D7;
 			border-color: #ADADAD;
 		}
-			.list-space_item--archive:hover {
+			.list-space_item--archive > a:hover {
 				background: #CCCCCC;
 			}
 		.list-space_item i {
 			margin-left: 20px;
 		}
+		.list-space_item ul {
+			list-style: none;
+			padding: 0;
+			margin: 8px;
+		}
+			.list-space_sub-item a {
+				font-size: 14px;
+				padding: 10px 15px;
+				margin-bottom: 8px;
+			}
+			.list-space_sub-item:last-child a {
+				margin-bottom: 0;
+			}
 
 @-webkit-keyframes initSignIn{
 	from {
