@@ -136,6 +136,41 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 			text-shadow: 0px 0px 1px #000;
 		}
 
+.user-avatar {
+	width: 35px;
+	height: 35px;
+	display: block;
+	border-radius: 50px;
+	background: rgb(247, 125, 123);
+	color: #3C3C3C;
+	line-height: 39px;
+	font-weight: 700;
+	cursor: pointer;
+	margin-bottom: 8px;
+	clear: both;
+	overflow: hidden;
+	white-space: nowrap;
+	box-sizing: border-box;
+	-webkit-transition: width 0.3s ease-out;
+			transition: width 0.3s ease-out;
+	-webkit-transition: transform 0.3s cubic-bezier(0, 0, 0.15, 1.32);
+			transition: transform 0.3s cubic-bezier(0, 0, 0.15, 1.32);
+}
+	.user-avatar strong {
+		font-size: 22px;
+		vertical-align: middle;
+		display: inline-block;
+		width: 35px;
+		text-align: center;
+	}
+	.user-avatar span {
+		font-size: 14px;
+		font-weight: 400;
+		vertical-align: middle;
+		margin-right: 15px;
+	}
+
+
 .header {
 	background: #F7E27B;
 }
@@ -229,38 +264,9 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		right: 100%;
 		margin-right: 15px;
 	}
-		.current-space_avatar {
-			width: 35px;
-		    height: 35px;
-		    display: block;
-		    border-radius: 50px;
-		    background: rgb(247, 125, 123);
-		    color: #3C3C3C;
-		    line-height: 39px;
-		    font-weight: 700;
-		    cursor: pointer;
-		    margin-bottom: 8px;
-		    float: right;
-		    clear: both;
-		    overflow: hidden;
-		    white-space: nowrap;
-		    box-sizing: border-box;
-		    -webkit-transition: width 0.3s ease-out;
-		            transition: width 0.3s ease-out;
+		.current-space .user-avatar {
+			float: right;
 		}
-			.current-space_avatar strong {
-				font-size: 22px;
-				vertical-align: middle;
-				display: inline-block;
-				width: 35px;
-				text-align: center;
-			}
-			.current-space_avatar span {
-				font-size: 14px;
-				font-weight: 400;
-				vertical-align: middle;
-				margin-right: 15px;
-			}
 
 	.current-space_head {
 		background: #F7E27B;
@@ -676,7 +682,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 		}
 
 .communicator {
-	background: rgba(0, 0, 0, 0.6);
+	background: rgba(50, 50, 50, 0.8);
 	position: fixed;
 	width: 280px;
 	right: 220px;
@@ -684,6 +690,25 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	border-radius: 5px 5px 0 0;
 	z-index: 1;
 }
+	.communicator_users {
+		position: absolute;
+		right: 100%;
+		top: 40px;
+		padding: 5px;
+		overflow: hidden;
+		pointer-events: none;
+	}
+		.communicator:hover .communicator_users {
+			pointer-events: all;
+		}
+		.communicator_users .user-avatar {
+			margin-bottom: 5px;
+			box-shadow: 0 0 10px rgba(0,0,0,1);
+			transform: translate3d(45px,0,0);
+		}
+			.communicator:hover .user-avatar {
+				transform: translate3d(0px,0,0);
+			}
 	.communicator form {
 		background: #fff;
 		display: flex;
