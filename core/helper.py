@@ -77,4 +77,20 @@ def user_see_child(user, parent_user, child):
     else:
         return child.is_public() or child.is_private() and user_is_space_user(user, child)
 
+def user_see_space(user, space):
+    """
+    :param user: user
+    :param child: space wich can or cannot be seen
+    :param parent_user: space_user of parent space to child
+    :return: True/False
+    """
+    if user_is_space_user(user, space):
+        return True
+    elif space.parent and user_is_space_user(user, space.parent):
+        return True
+    elif space.parent and space.parent.parent and user_is_space_user(user, space.parent.parent):
+        return True
+    else:
+        return False
+
 

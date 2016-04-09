@@ -19,7 +19,7 @@ from django.utils import timezone
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
-    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none
+    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space
 from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
 from core.rights import *
 from embigo.settings import WEBSOCKET_IP, WEBSOCKET_PORT
@@ -80,11 +80,12 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
     """
     user = request.user
     space = get_object_or_404(Space, pk=space_id)
-    if user_is_space_user(user, space):
+    if user_see_space(user, space):
         try:
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
-           return HttpResponseRedirect("/out")
+            space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=space, user=user)
+            space_user.save()
 
         children_list = [c for c in space.children.all() if c.is_active()]
         user_spaces = {}
