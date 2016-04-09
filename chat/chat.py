@@ -1,6 +1,8 @@
 from itertools import chain
 
 from django.contrib.auth.models import User
+from django.utils.datastructures import OrderedSet
+
 from chat.connected_users import ConnectedUsers
 from core.models import Conversation
 
@@ -24,10 +26,19 @@ def send_online(server):  # TODO
 
 def send_list(server, client, username):
     users_list = User.objects.filter(is_active=1).exclude(username=username).order_by('username')
+
+    if not isinstance(username, User):
+        username = User.objects.get(username=username)
+    conversations = Conversation.objects.filter(isgroup=False, members=username)
+    users_list = set()
+    for conv in conversations:
+        for user in conv.members.all().exclude(username=username):
+            users_list.add(user.username)
+    users_list = sorted(users_list, key=str.lower)
+
     list = "l"
-    for x in users_list.values_list('username', flat=True):
+    for x in users_list:
         list += ";"+str(get_or_create_conversation(username, x).id)+";"+x
-        print(x)
     server.send_message(client, list)
 
 

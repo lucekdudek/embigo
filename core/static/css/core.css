@@ -151,10 +151,8 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 	overflow: hidden;
 	white-space: nowrap;
 	box-sizing: border-box;
-	-webkit-transition: width 0.3s ease-out;
-			transition: width 0.3s ease-out;
-	-webkit-transition: transform 0.3s ease;
-			transition: transform 0.3s ease;
+	-webkit-transition: width 0.3s ease-out, transform 0.3s ease;
+			transition: width 0.3s ease-out, transform 0.3s ease;
 }
 	.user-avatar strong {
 		font-size: 22px;

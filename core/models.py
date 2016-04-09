@@ -144,8 +144,8 @@ class ChatMessage(models.Model):
 #     class Meta:
 #         verbose_name = "kontakt"
 #         verbose_name_plural = "kontakty"
-#     user1 = models.OneToOneField(User, on_delete=models.CASCADE)
-#     user2 = models.OneToOneField(User, on_delete=models.CASCADE)
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     users_list = models.OneToManyField(User, on_delete=models.CASCADE)
 #
 #     def __str__(self):
 #         return "%s - %s" % (self.user1.username, self.user2.username)

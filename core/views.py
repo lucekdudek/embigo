@@ -113,25 +113,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_add_user = space_user.can(ADD_USER)
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
 
-        chat_messages = ChatMessage.objects.filter(conversation=1)
-        users_list = []
-
         user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
         websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+str(WEBSOCKET_PORT)+'/';
-
-        # conversations = Conversation.objects.filter(isgroup=False, members=request.user)
-        # try:
-        #     user_conv = User.objects.get(username="disc")
-        #     print("znaleziono:")
-        #     print(conversations.get(members=user_conv))
-        # except User.DoesNotExist:
-        #     print("nie znaleziono usera")
-        # except Conversation.DoesNotExist:
-        #     print("nie znaleziono konwersacji")
-        #     new_conv = Conversation(isgroup=False)
-        #     new_conv.save()
-        #     new_conv.members.add(request.user)
-        #     new_conv.members.add(user_conv)
 
         context = {
             'space': space,
@@ -149,9 +132,7 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'can_add_user': can_add_user,
             'can_edit_user_rights': can_edit_user_rights,
             'user_key': user_key,
-            'chat_messages': chat_messages,
-            'websocket_server_address': websocket_server_address,
-            'users_list': users_list
+            'websocket_server_address': websocket_server_address
         }
         return render(request, 'space.html', context)
     else:

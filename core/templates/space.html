@@ -38,18 +38,11 @@
 			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
 		</div>
 		<div class="communicator_head">
-			<div id="conv-name" style="float:left"></div>
+			<div id="conv-name" style="float:left; width: 200px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; text-align: left;"></div>
 			<button id="add_btn" class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
 			<button id="close_btn" class="communicator_btn-close"><i class="fa fa-times"></i></button>
 		</div>
         <ul class="communicator_list">
-			{% for chat_message in chat_messages %}
-				{% if chat_message.user == user %}
-					<li class="communicator_sender"><span class="communicator_author" title="{{ chat_message.time }}">{{ chat_message.user }}</span>{{ chat_message.text }}</li>
-				{% else %}
-					<li><span class="communicator_author" title="{{ chat_message.time }}">{{ chat_message.user }}</span>{{ chat_message.text }}</li>
-				{% endif %}
-			{% endfor %}
 		</ul>
         <form id="sendChat">
             <input type="text" autocomplete="off" id="chatInput">
@@ -63,9 +56,6 @@
 		</ul>
 		<div class="users-list_head">Użytkownicy</div>
 		<ul id="users_list">
-		{% for current_user in users_list %}
-			<li><a href="" class="users-list_item">{{ current_user.username }}</a></li>
-		{% endfor %}
 		</ul>
 		<div class="users-list_head">Konwersacje grupowe</div>
 		<ul>

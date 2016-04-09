@@ -1,11 +1,13 @@
 var ws;
 var conversations = new Array();
-var current_conv = "";
 var username;
 init();
 scrollBottom();
 
 function init(){
+    if(typeof localStorage.current_conv === "undefined"){
+        localStorage.current_conv = "";
+    }
     connect();
     document.getElementById("close_btn").onclick = function(){
         var name = getConv();
@@ -20,25 +22,21 @@ function init(){
         }
     }
 
-    var hidden = "hidden";
-    if (hidden in document)
-        document.addEventListener("visibilitychange", onchange);
-    else if ((hidden = "mozHidden") in document)
-        document.addEventListener("mozvisibilitychange", onchange);
-    else if ((hidden = "webkitHidden") in document)
-        document.addEventListener("webkitvisibilitychange", onchange);
-    else if ((hidden = "msHidden") in document)
-        document.addEventListener("msvisibilitychange", onchange);
-    else
-        window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+    window.addEventListener('storage', storageEventHandler, false);
 
-    function onchange (evt) {
-        localStorage.conversations=JSON.stringify(conversations);
-
-        if(typeof localStorage.conversations !== "undefined"){
+    function storageEventHandler(evt) {
+        if(evt.key == "conversations"){
             conversations = JSON.parse(localStorage.conversations);
             changeConv(conversations[0]);
             refreshList();
+        }else if(evt.key == "current_conv"){
+            list = document.getElementById("users_list").getElementsByTagName("a");
+            for (i = 0; i < list.length; i++) {
+                if(localStorage.current_conv==list[i].getAttribute("data-id")){
+                    changeConv(list[i].innerHTML);
+                    break;
+                }
+            }
         }
     }
 }
@@ -166,7 +164,7 @@ function refreshList(){
     }
     if(conversations.length == 0){
         document.getElementsByClassName("communicator")[0].style.display = "none";
-        current_conv="";
+        localStorage.current_conv="";
     }else{
         document.getElementsByClassName("communicator")[0].style.display = "block";
     }
@@ -179,7 +177,7 @@ function changeConv(name){
         list = document.getElementById("users_list").getElementsByTagName("a");
         for (i = 0; i < list.length; i++) {
             if(name==list[i].innerHTML){
-                current_conv = list[i].getAttribute("data-id");
+                localStorage.current_conv = list[i].getAttribute("data-id");
                 break;
             }
         }
@@ -208,7 +206,7 @@ function clear() {
 
 function output(str) {
     data = str.split(";",3);
-    if(data[1]==current_conv){
+    if(data[1]==localStorage.current_conv){
         content = str.substring(data[0].length+data[1].length+data[2].length+3);
         var elem = document.createElement('li');
         elem.innerHTML = '<span class="communicator_author">' + data[2] + '</span>' + content;
