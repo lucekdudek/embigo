@@ -1,4 +1,4 @@
-<div class="list-space {% if not own_spaces %}list-space--empty{% endif %}" id="mySubspaces">
+<div class="list-space {% if not user_spaces %}list-space--empty{% endif %}" id="mySubspaces">
     {% if user_spaces %}
         {% for space, children in user_spaces.items %}
             <div class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">
@@ -13,10 +13,10 @@
             </div>
         {% endfor %}
         <!-- IMPORTANT FOR CSS -->
-        <a class="list-space_item"></a>
-        <a class="list-space_item"></a>
-        <a class="list-space_item"></a>
-        <a class="list-space_item"></a>
+        <div class="list-space_item"></div>
+        <div class="list-space_item"></div>
+        <div class="list-space_item"></div>
+        <div class="list-space_item"></div>
     {% else %}
         Brak
     {% endif %}

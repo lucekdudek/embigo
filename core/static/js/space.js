@@ -142,10 +142,10 @@ $(function(){
 
 		    	sendForm(form, '/edit_space/', function(data){
 					closePopup('#popupEditSpace');
-					
+
 	        		$('.current-space_head h1').text(name.val());
 	        		$('.current-space_desc p').text(description.val());
-					
+
 		    		sent = false;
 		    		btn.prop('disabled', false);
 				})
@@ -168,9 +168,9 @@ $(function(){
 
 		form.on('submit', function(event){
 		    event.preventDefault();
-		    
+
 		    form.removeClass('is-error');
-		    
+
 		    if(name.val()!=''){
 		    	sent = true;
 		    	btn.prop('disabled', true);
@@ -179,9 +179,9 @@ $(function(){
 					closePopup('#popupNewSpace');
 
 		    		if(mySubspaces.hasClass('list-space--empty')){
-		    			mySubspaces.removeClass('list-space--empty').html('<a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a>');	
+		    			mySubspaces.removeClass('list-space--empty').html('<div class="list-space_item"></div><div class="list-space_item"></div><div class="list-space_item"></div><div class="list-space_item"></div>');
 		    		}
-		    		mySubspaces.find('.list-space_item:empty').eq(0).before('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
+		    		mySubspaces.find('.list-space_item:empty').eq(0).before('<div class="list-space_item list-space_item--new"><a href="/'+data.space+'">'+name.val()+'</a></div>');
 
 		    		sent = false;
 		    		btn.prop('disabled', false);
