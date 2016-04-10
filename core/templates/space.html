@@ -26,7 +26,6 @@
 			{% include "forms/form_add_collaborators.html" %}
 		</div>
 	</div>
-
     <div class="communicator" data-port="{{ user_key }}" data-wsaddress="{{ websocket_server_address }}">
         <ul class="communicator_list">
 			{% for chat_message in chat_messages %}

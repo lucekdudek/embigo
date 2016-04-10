@@ -3,6 +3,10 @@
 	<div>
 		<input type="text" name="name" value="{{ space.name }}">
 	</div>
+    <div>
+        Prywatna<input type="radio" name="type" value="1" required>
+        Publiczna<input type="radio" name="type" value="2">
+    </div>
 	<div>
 		<textarea name="description">{{ space.description }}</textarea>
 	</div>

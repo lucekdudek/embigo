@@ -18,7 +18,8 @@ admin.site.register(User, UserAdmin)
 #admin.site.register(EmbigoUser)
 admin.site.register(Space)
 admin.site.register(SpaceUser)
-admin.site.register(Message)
 
+admin.site.register(Message)
 admin.site.register(Conversation)
 admin.site.register(ChatMessage)
+

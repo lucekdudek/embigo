@@ -100,40 +100,56 @@ $(function(){
 		});
 	});
 
+	function sendForm(form, url, callback){
+		var f = new FormData(form[0]);
+	    $.ajax({
+	        url : url,
+	        type : "POST",
+   			dataType: 'json',
+			cache: false,
+			processData: false,
+			contentType: false,
+	        data : f,
+
+	        success : function(data) {
+	        	callback(data);
+	        },
+
+	        error : function(xhr,errmsg,err) {
+	            console.log(xhr.status + ": " + xhr.responseText);
+	        }
+	    });
+	}
+
 	/**
-	 * Edytuje space
+	 * Edycja space
 	 */
 	var initEditForm = (function(){
 		var form = $('#editForm form'),
-			btnSubmit = $('.btn', form),
+			btn =  $('input[type="submit"]', form),
 			name = $('input[name="name"]', form),
 			description = $('textarea[name="description"]', form),
-			space = $('input[name="space"]', form);
+			sent = false;
 
-		function edit_space() {
-		    $.ajax({
-		        url : "/edit_space/",
-		        type : "POST",
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val() },
-
-		        success : function(data) {
-		        	if(data){
-		        		closePopup('#popupEditSpace');
-		        		$('.current-space h1').text(name.val());
-		        		$('.current-space p').text(description.val());
-		        	}
-		        },
-
-		        error : function(xhr,errmsg,err) {
-		            console.log(xhr.status + ": " + xhr.responseText);
-		        }
-		    });
-		};
 		form.on('submit', function(event){
 		    event.preventDefault();
+
 		    form.removeClass('is-error');
+
 		    if(name.val()!=''){
-		    	edit_space();
+		    	sent = true;
+		    	btn.prop('disabled', true);
+
+		    	sendForm(form, '/edit_space/', function(data){
+					closePopup('#popupEditSpace');
+					
+	        		$('.current-space_head h1').text(name.val());
+	        		$('.current-space_desc p').text(description.val());
+					
+		    		sent = false;
+		    		btn.prop('disabled', false);
+				})
+
 		    }else{
 		    	form.addClass('is-error');
 		    }
@@ -141,47 +157,36 @@ $(function(){
 	});
 
 	/**
-	 * Tworzy nowy space
+	 * Tworzenie nowego space
 	 */
 	var initNewSpaceForm = (function(){
 		var form = $('#newSpaceForm form'),
-			btnSubmit = $('.btn', form),
 			name = $('input[name="name"]', form),
-			description = $('textarea[name="description"]', form),
-			space = $('input[name="space"]', form),
-			users = $('input[name="new_space_users_id"]', form);
+			btn =  $('input[type="submit"]', form),
+			mySubspaces = $('#mySubspaces'),
+			sent = false;
 
-		function new_space() {
-			var checkedUsers = [];
-			users.each(function(){
-				if($(this).prop('checked')) checkedUsers.push($(this).val());
-			});
-
-		    $.ajax({
-		        url : "/new_space/",
-		        type : "POST",
-		        data : { 'space':  space.val(), 'name': name.val(), 'description': description.val(), 'new_space_users_id': checkedUsers },
-
-		        success : function(data) {
-		        	if(data){
-		        		closePopup('#popupNewSpace');
-		        		if($('#mySubspaces').hasClass('list-space--empty')) $('#mySubspaces').removeClass('list-space--empty').text('');
-		        		$('#mySubspaces').append('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
-		        		name.val('');
-		        		description.val('');
-		        	}
-		        },
-
-		        error : function(xhr,errmsg,err) {
-		            console.log(xhr.status + ": " + xhr.responseText);
-		        }
-		    });
-		};
 		form.on('submit', function(event){
 		    event.preventDefault();
+		    
 		    form.removeClass('is-error');
+		    
 		    if(name.val()!=''){
-		    	new_space();
+		    	sent = true;
+		    	btn.prop('disabled', true);
+
+		    	sendForm(form, '/new_space/', function(data){
+					closePopup('#popupNewSpace');
+
+		    		if(mySubspaces.hasClass('list-space--empty')){
+		    			mySubspaces.removeClass('list-space--empty').html('<a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a><a class="list-space_item"></a>');	
+		    		}
+		    		mySubspaces.find('.list-space_item:empty').eq(0).before('<a href="/'+data.space+'" class="list-space_item list-space_item--new">'+name.val()+'</a>');
+
+		    		sent = false;
+		    		btn.prop('disabled', false);
+		    		form[0].reset();
+				})
 		    }else{
 		    	form.addClass('is-error');
 		    }

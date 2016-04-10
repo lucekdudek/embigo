@@ -1,21 +1,13 @@
 {% include "./topbar.html" %}
 <div class="view-space">
-	{% if space.uid == "00000000-0000-0000-0000-000000000000" %}
-		<div class="view-space_subspaces">
-			<h2>Moje przestrzenie</h2>
-			{% include "./list-space.html" %}
-			{% include "./list-other-space.html" %}
-		</div>
-	{% else %}
+	{% if space.uid != "00000000-0000-0000-0000-000000000000" %}
 		{% include "./breadcrumbs.html" %}
 		<div class="current-space {% if space.status == 2 %} current-space--archive {% endif %}">
-			{% if collaborators %}
-				<div class="current-space_users">
-					{% for su in space_users %}
-						<div class="current-space_avatar"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
-		    		{% endfor %}
-				</div>
-			{% endif %}
+            <div class="current-space_users">
+                {% for su in space.space_users %}
+                    <div class="current-space_avatar"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
+                {% endfor %}
+            </div>
 			<div class="current-space_head">
 				<i class="fa fa-folder-o"></i>
 				<div>
@@ -31,10 +23,9 @@
 				{% include "./messages.html" %}
 			</div>
 	    </div>
-		<div class="view-space_subspaces">
-			<h2>Podprzestrzenie</h2>
-			{% include "./list-space.html" %}
-			{% include "./list-other-space.html" %}
-	    </div>
-	{% endif %}
+    {% endif %}
+    <div class="view-space_subspaces">
+        <h2>Podprzestrzenie</h2>
+        {% include "./user_spaces.html" %}
+    </div>
 </div>

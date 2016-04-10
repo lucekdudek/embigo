@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from core.models import Space, SpaceUser
+from core.rights import SEE_UNDERSPACES
+
 
 def embigo_default_rights():
     """
@@ -47,3 +49,47 @@ def get_space_user(user, space):
     :return: SpaceUser
     """
     return SpaceUser.objects.get(space=space, user=user)
+
+def get_space_user_or_none(user, space):
+    """
+    :param user: user
+    :param space: space
+    :return: SpaceUser or None in the case of error SpaceUser.DoesNotExist
+    """
+    try:
+        space_user = SpaceUser.objects.get(space=space, user=user)
+    except SpaceUser.DoesNotExist:
+        pass
+    if 'space_user' in locals():
+        return space_user
+    else:
+        return None
+
+def user_see_child(user, parent_user, child):
+    """
+    :param user: user
+    :param child: space wich can or cannot be seen
+    :param parent_user: space_user of parent space to child
+    :return: True/False
+    """
+    if parent_user:
+        return child.is_public() or child.is_private() and (user_is_space_user(user, child) or parent_user.can(SEE_UNDERSPACES))
+    else:
+        return child.is_public() or child.is_private() and user_is_space_user(user, child)
+
+def user_see_space(user, space):
+    """
+    :param user: user
+    :param child: space wich can or cannot be seen
+    :param parent_user: space_user of parent space to child
+    :return: True/False
+    """
+    if user_is_space_user(user, space):
+        return True
+    elif space.parent and user_is_space_user(user, space.parent):
+        return True
+    elif space.parent and space.parent.parent and user_is_space_user(user, space.parent.parent):
+        return True
+    else:
+        return False
+
