@@ -152,7 +152,7 @@ function refreshList() {
     for (var nr = 0; nr < conv_list.length; nr++) {
         if (nr < conversations.length) {
             conv_list[nr].style.display = "block";
-            conv_list[nr].firstChild.innerHTML = conversations[nr][0];
+            conv_list[nr].getElementsByTagName("strong")[0].innerHTML = conversations[nr][0];
             conv_list[nr].setAttribute("data-name", conversations[nr]);
 
             conv_list[nr].onclick = function () {
