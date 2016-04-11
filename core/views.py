@@ -304,10 +304,12 @@ def new_space(request):
         space.save()
         spaceUser = SpaceUser(uid=uuid1(), rights=owner_default_rights(), space=space, user=request.user)
         spaceUser.save()
-        for user_id in request.POST.get('new_space_users_id'):
-            spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space,
-                                  user=User.objects.get(id=user_id))
-            spaceUser.save()
+        new_space_users_id = request.POST.get('new_space_users_id')
+        if new_space_users_id:
+            for user_id in new_space_users_id:
+                spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space,
+                                      user=User.objects.get(id=user_id))
+                spaceUser.save()
         context = {'result': 'Success', 'space': str(space.uid)}
     else:
         context = None
