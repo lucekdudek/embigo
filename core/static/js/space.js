@@ -249,7 +249,7 @@ $(function(){
 	 * Koloruje userów
 	 */
 	var initUsers = (function(){
-    	$('.current-space_avatar').each(function(id){
+    	$('.user-avatar').each(function(id){
     		var t = $(this);
     		t.on('mouseover',function(){
     			t.width(t.prop('scrollWidth'));

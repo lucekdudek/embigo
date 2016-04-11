@@ -6,7 +6,7 @@
 			{% if can_see_users %}
 				<div class="current-space_users">
 					{% for su in space.space_users %}
-						<div class="current-space_avatar" style="background-color: {{ su.user.get_color }}"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
+						<div class="user-avatar" style="background-color: {{ su.user.get_color }}"><strong>{{ su.user.username|make_list|first }}</strong><span>{{ su.user.username }}</span></div>
 		    		{% endfor %}
 				</div>
 			{% endif %}
