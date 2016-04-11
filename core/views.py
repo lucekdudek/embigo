@@ -11,11 +11,13 @@ from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Model
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import  render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
+from chat.chat import get_or_create_conversation
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
@@ -55,6 +57,7 @@ def index(request):
         return HttpResponseRedirect("/")
     else:
         return space(request)
+
 
 @login_required(login_url='/in/')
 def space(request, space_id='00000000-0000-0000-0000-000000000000'):
@@ -113,9 +116,9 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         can_edit_user_rights = space_user.can(EDIT_RIGHTS)
         can_see_users = space_user.can(SEE_USERS)
 
-        chat_messages = ChatMessage.objects.filter(conversation=1)
         user_key = encrypt(SECRET_KEY_WEBSOCKET,request.session.session_key)
-        websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+WEBSOCKET_PORT+'/';
+
+        websocket_server_address = 'ws://'+WEBSOCKET_IP+':'+str(WEBSOCKET_PORT)+'/';
 
         context = {
             'space': space,
@@ -134,7 +137,6 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
             'can_see_users': can_see_users,
 
             'user_key': user_key,
-            'chat_messages': chat_messages,
             'websocket_server_address': websocket_server_address
         }
         return render(request, 'space.html', context)
@@ -307,7 +309,6 @@ def add_collaborators(request):
     :template:`form_collaborators.html`
     """
     if request.method == 'POST':
-        print(request.POST)
         space = Space.objects.get(uid=request.POST.get('space'))
         for user_id in request.POST.getlist('new_collaborators_id[]'):
             spaceUser = SpaceUser(uid=uuid1(), rights=user_default_rights(), space=space, user=User.objects.get(id=user_id))

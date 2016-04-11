@@ -151,7 +151,10 @@ class WebSocketHandler(StreamRequestHandler):
 
     def read_bytes(self, num):
         # python3 gives ordinal of byte directly
-        bytes = self.rfile.read(num)
+        try:
+            bytes = self.rfile.read(num)
+        except ConnectionResetError:
+            raise
         if sys.version_info[0] < 3:
             return map(ord, bytes)
         else:
@@ -163,6 +166,10 @@ class WebSocketHandler(StreamRequestHandler):
             b1, b2 = self.read_bytes(2)
         except ValueError:
             logging.error("not enough values to unpack")
+        except ConnectionResetError:
+            self.keep_alive = 0
+            logging.error("ConnectionResetError")
+            return
 
         fin = b1 & FIN
         opcode = b1 & OPCODE
@@ -170,15 +177,15 @@ class WebSocketHandler(StreamRequestHandler):
         payload_length = b2 & PAYLOAD_LEN
 
         if not b1:
-            print("Client closed connection.")
+            logging.info("Client closed connection.")
             self.keep_alive = 0
             return
         if opcode == CLOSE_CONN:
-            print("Client asked to close connection.")
+            logging.info("Client asked to close connection.")
             self.keep_alive = 0
             return
         if not masked:
-            print("Client must always be masked.")
+            logging.info("Client must always be masked.")
             self.keep_alive = 0
             return
 
@@ -240,7 +247,10 @@ class WebSocketHandler(StreamRequestHandler):
             raise Exception("Message is too big. Consider breaking it into chunks.")
             return
 
-        self.request.send(header + payload)
+        try:
+            self.request.send(header + payload)
+        except ConnectionAbortedError:
+            return
 
     def handshake(self):
         message = self.request.recv(1024).decode().strip()

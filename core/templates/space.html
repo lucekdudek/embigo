@@ -26,21 +26,42 @@
 			{% include "forms/form_add_collaborators.html" %}
 		</div>
 	</div>
-    <div class="communicator" data-port="{{ user_key }}" data-wsaddress="{{ websocket_server_address }}">
+    <div style="display: none;" class="communicator" data-port="{{ user_key }}" data-username="{{ user.username }}" data-wsaddress="{{ websocket_server_address }}">
+		<div id="communicator_users" class="communicator_users">
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+			<div class="user-avatar" style="width: 35px; background: rgb(247, 123, 239); display: none;"><strong>a</strong></div>
+		</div>
+		<div class="communicator_head">
+			<div id="conv-name" style="float:left; width: 200px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; text-align: left;"></div>
+			<button id="add_btn" class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
+			<button id="close_btn" class="communicator_btn-close"><i class="fa fa-times"></i></button>
+		</div>
         <ul class="communicator_list">
-			{% for chat_message in chat_messages %}
-				{% if chat_message.user == user %}
-					<li class="communicator_sender">{{ chat_message.text }}</li>
-				{% else %}
-					<li>{{ chat_message.text }}</li>
-				{% endif %}
-			{% endfor %}
 		</ul>
         <form id="sendChat">
             <input type="text" autocomplete="off" id="chatInput">
             <input type="submit" class="btn" value="Send">
         </form>
     </div>
+	<div class="users-list">
+		<div class="users-list_head">Ostatni rozmówca</div>
+		<ul>
+			<li><a href="" class="users-list_item is-online">Bartek</a></li>
+		</ul>
+		<div class="users-list_head">Użytkownicy</div>
+		<ul id="users_list">
+		</ul>
+		<div class="users-list_head">Konwersacje grupowe</div>
+		<ul>
+			<li><a href="" class="users-list_item">Bartek, Michał, Jakub, Łukasz, Lucjan</a></li>
+		</ul>
+	</div>
 	<script src="/static/js/websocket.js"></script>
 	<script src="/static/js/space.js"></script>
 {% endblock %}

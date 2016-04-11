@@ -17,10 +17,11 @@ class EmbigoUser(models.Model):
     color = models.CharField(max_length=7, null=True, blank=True)
     activation_key = models.CharField(max_length=40, null=True, blank=True)
     key_expires = models.DateTimeField(default=timezone.now)
-    hash_type = models.CharField(max_length =20, null=True, blank=True)
+    hash_type = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return "%s" % (self.user.username)
+
 
 def get_color(self):
     try:
@@ -31,12 +32,15 @@ def get_color(self):
         color = self.embigouser.color
     return color
 
+
 User.add_to_class('get_color', get_color)
+
 
 class Space(models.Model):
     class Meta:
         verbose_name = "przestrzeń"
         verbose_name_plural = "przestrzenie"
+
     uid = models.CharField(primary_key=True, max_length=64)
     name = models.CharField(max_length=32, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
@@ -82,6 +86,7 @@ class SpaceUser(models.Model):
     class Meta:
         verbose_name = "użytkownik przestrzeni"
         verbose_name_plural = "użytkownicy przestrzeni"
+
     uid = models.CharField(primary_key=True, max_length=64)
     rights = models.CharField(max_length=32, null=True, blank=True)
     space = models.ForeignKey(Space, null=True, blank=True)
@@ -93,10 +98,12 @@ class SpaceUser(models.Model):
     def can(self, right):
         return int(self.rights[right])
 
+
 class Message(models.Model):
     class Meta:
         verbose_name = "komentarz"
         verbose_name_plural = "komentarze"
+
     uid = models.CharField(primary_key=True, max_length=64)
     content = models.CharField(max_length=255, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
@@ -127,15 +134,17 @@ class Message(models.Model):
     def __str__(self):
         return "%s" % (self.content)
 
+
 class Conversation(models.Model):
     class Meta:
         verbose_name = "konwersacja"
         verbose_name_plural = "konwersacje"
 
     members = models.ManyToManyField(User)
+    isgroup = models.BooleanField()
 
     def __str__(self):
-        return "%s" % (self.members)
+        return "%i: %s" % (self.id, self.members)
 
 
 class ChatMessage(models.Model):
@@ -151,3 +160,13 @@ class ChatMessage(models.Model):
     def __str__(self):
         return "%s: %s" % (self.user.username, self.text)
 
+
+# class Contacts(models.Model):
+#     class Meta:
+#         verbose_name = "kontakt"
+#         verbose_name_plural = "kontakty"
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     users_list = models.OneToManyField(User, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return "%s - %s" % (self.user1.username, self.user2.username)

@@ -15,10 +15,13 @@ Including another URLconf
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 import sys
+
+from django.conf import settings
 from django.conf.urls import url, include, patterns
 from django.contrib import admin
-from django.conf import settings
-from server import *
+from django.views.static import serve
+
+from chat.server import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -28,10 +31,13 @@ urlpatterns = [
 for string in sys.argv:
     if string.lower() == "runserver":
         start_thread()
+        break
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.MEDIA_ROOT}))
-
+    # urlpatterns += patterns('',
+    #     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+    #     'document_root': settings.MEDIA_ROOT}))
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT})
+    ]

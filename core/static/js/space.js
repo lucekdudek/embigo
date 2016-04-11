@@ -266,6 +266,15 @@ $(function(){
 		}
 	});
 
+	var initCommunicator = (function(){
+		var users = $('.communicator_users .user-avatar'),
+			t;
+		users.each(function(index){
+			t = index*0.06 + 's';
+			$(this).css('transition-delay', t);
+		});
+	});
+
 	var openPopup = function(popup){
 		$('.popup-bg').fadeIn(function(){
 			$(popup).fadeIn();
@@ -285,6 +294,7 @@ $(function(){
 	initEditForm();
 	initAddCollaborators();
 	initUsers();
+	initCommunicator();
 
 	$('.popup_btn-close').on('click',function(){
 		closePopup('#'+$(this).parent().prop('id'));
