@@ -17,7 +17,7 @@ Including another URLconf
 import sys
 
 from django.conf import settings
-from django.conf.urls import url, include, patterns
+from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.static import serve
 

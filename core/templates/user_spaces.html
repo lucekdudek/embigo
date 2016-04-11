@@ -4,11 +4,11 @@
             <div class="list-space_item {% if space.status == 2 %}list-space_item--archive{% endif %}">
                 <a href="/{{ space.uid }}">{{ space.name }}</a>
                 {% if children %}
-                <ul>
-                    {% for child in children %}
-                        <li class="list-space_sub-item"><a href="/{{ child.uid }}">{{ child.name }}</a></li>
-                    {% endfor %}
-                </ul>
+                    <ul>
+                        {% for child in children %}
+                            <li class="list-space_sub-item"><a href="/{{ child.uid }}">{{ child.name }}</a></li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
             </div>
         {% endfor %}

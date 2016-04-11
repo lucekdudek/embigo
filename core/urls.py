@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from core.views import index, space, signout, signin, register, edit_user, new_message, delete_message, new_space, edit_space, \
+
+from core.views import index, space, signout, signin, register, edit_user, new_message, delete_message, new_space, \
+    edit_space, \
     delete_space, archive_space, add_collaborators, activate, recover_password, new_password
 
 urlpatterns = [

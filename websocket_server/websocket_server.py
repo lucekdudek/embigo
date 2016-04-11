@@ -1,9 +1,10 @@
 # Author: Johan Hanssen Seferidis
 # License: MIT
 
-import re, sys
-import struct
 import logging
+import re
+import struct
+import sys
 from base64 import b64encode
 from hashlib import sha1
 

@@ -1,75 +1,76 @@
 {% extends "base.html" %}
 
 {% block core %}
-	<div class="top-bar">
-		<div class="text-left">
-			<a href="{% if request.GET.next %}{{ request.GET.next }}{% else %}/{% endif %}" class="btn"><i class="fa fa-chevron-left"></i> Wróć</a>
-		</div>
-	</div>
-	<div class="view-editUser">
-		<h1>Edit user</h1>
-			{% if notification %}
-				<div class="notification">
-					{{ notification }}
-				</div>
-			{% endif %}
-			<div class="view-editUser_forms">
-				<div class="view-editUser_column">
-			    	{% include "forms/form_change_password.html" %}
-				</div>
-				<div class="view-editUser_column">
-					<form action="{% url 'edit_user' %}?next={{ request.GET.next }}" method="POST">
-						{% csrf_token %}
-						<div class="colors">
-							<div class="colors_current" style="background-color: {{ user.get_color }};"><span>a</span></div>
-							<div class="colors_others">
-								<div class="colors_column">
-									<button style="background-color: hsl(43, 97%, 83%);"></button>
-									<button style="background-color: hsl(43, 97%, 73%);"></button>
-									<button style="background-color: hsl(43, 97%, 63%);"></button>
-									<button style="background-color: hsl(43, 97%, 53%);"></button>
-								</div>
-								<div class="colors_column">
-									<button style="background-color: hsl(0, 97%, 83%);"></button>
-									<button style="background-color: hsl(0, 97%, 73%);"></button>
-									<button style="background-color: hsl(0, 97%, 63%);"></button>
-									<button style="background-color: hsl(0, 97%, 53%);"></button>
-								</div>
-								<div class="colors_column">
-									<button style="background-color: hsl(287, 97%, 83%);"></button>
-									<button style="background-color: hsl(287, 97%, 73%);"></button>
-									<button style="background-color: hsl(287, 97%, 63%);"></button>
-									<button style="background-color: hsl(287, 97%, 53%);"></button>
-								</div>
-								<div class="colors_column">
-									<button style="background-color: hsl(251, 97%, 83%);"></button>
-									<button style="background-color: hsl(251, 97%, 73%);"></button>
-									<button style="background-color: hsl(251, 97%, 63%);"></button>
-									<button style="background-color: hsl(251, 97%, 53%);"></button>
-								</div>
-								<div class="colors_column">
-									<button style="background-color: hsl(201, 97%, 83%);"></button>
-									<button style="background-color: hsl(201, 97%, 73%);"></button>
-									<button style="background-color: hsl(201, 97%, 63%);"></button>
-									<button style="background-color: hsl(201, 97%, 53%);"></button>
-								</div>
-								<div class="colors_column">
-									<button style="background-color: hsl(143, 97%, 83%);"></button>
-									<button style="background-color: hsl(143, 97%, 73%);"></button>
-									<button style="background-color: hsl(143, 97%, 63%);"></button>
-									<button style="background-color: hsl(143, 97%, 53%);"></button>
-								</div>
-							</div>
-							<input type="hidden" name="color" value="#9077FD">
-						</div>
-						<br>
-					    <input type="hidden" name="changeColor" value="1">
-					    <input type="submit" value="Zapisz" class="btn">
-					</form>
-				</div>
-			</div>
-	</div>
-	<script src="/static/js/websocket.js"></script>
-	<script src="/static/js/space.js"></script>
-	<script src="/static/js/colorpicker.js"></script>
+    <div class="top-bar">
+        <div class="text-left">
+            <a href="{% if request.GET.next %}{{ request.GET.next }}{% else %}/{% endif %}" class="btn"><i
+                    class="fa fa-chevron-left"></i> Wróć</a>
+        </div>
+    </div>
+    <div class="view-editUser">
+        <h1>Edit user</h1>
+        {% if notification %}
+            <div class="notification">
+                {{ notification }}
+            </div>
+        {% endif %}
+        <div class="view-editUser_forms">
+            <div class="view-editUser_column">
+                {% include "forms/form_change_password.html" %}
+            </div>
+            <div class="view-editUser_column">
+                <form action="{% url 'edit_user' %}?next={{ request.GET.next }}" method="POST">
+                    {% csrf_token %}
+                    <div class="colors">
+                        <div class="colors_current" style="background-color: {{ user.get_color }};"><span>a</span></div>
+                        <div class="colors_others">
+                            <div class="colors_column">
+                                <button style="background-color: hsl(43, 97%, 83%);"></button>
+                                <button style="background-color: hsl(43, 97%, 73%);"></button>
+                                <button style="background-color: hsl(43, 97%, 63%);"></button>
+                                <button style="background-color: hsl(43, 97%, 53%);"></button>
+                            </div>
+                            <div class="colors_column">
+                                <button style="background-color: hsl(0, 97%, 83%);"></button>
+                                <button style="background-color: hsl(0, 97%, 73%);"></button>
+                                <button style="background-color: hsl(0, 97%, 63%);"></button>
+                                <button style="background-color: hsl(0, 97%, 53%);"></button>
+                            </div>
+                            <div class="colors_column">
+                                <button style="background-color: hsl(287, 97%, 83%);"></button>
+                                <button style="background-color: hsl(287, 97%, 73%);"></button>
+                                <button style="background-color: hsl(287, 97%, 63%);"></button>
+                                <button style="background-color: hsl(287, 97%, 53%);"></button>
+                            </div>
+                            <div class="colors_column">
+                                <button style="background-color: hsl(251, 97%, 83%);"></button>
+                                <button style="background-color: hsl(251, 97%, 73%);"></button>
+                                <button style="background-color: hsl(251, 97%, 63%);"></button>
+                                <button style="background-color: hsl(251, 97%, 53%);"></button>
+                            </div>
+                            <div class="colors_column">
+                                <button style="background-color: hsl(201, 97%, 83%);"></button>
+                                <button style="background-color: hsl(201, 97%, 73%);"></button>
+                                <button style="background-color: hsl(201, 97%, 63%);"></button>
+                                <button style="background-color: hsl(201, 97%, 53%);"></button>
+                            </div>
+                            <div class="colors_column">
+                                <button style="background-color: hsl(143, 97%, 83%);"></button>
+                                <button style="background-color: hsl(143, 97%, 73%);"></button>
+                                <button style="background-color: hsl(143, 97%, 63%);"></button>
+                                <button style="background-color: hsl(143, 97%, 53%);"></button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="color" value="#9077FD">
+                    </div>
+                    <br>
+                    <input type="hidden" name="changeColor" value="1">
+                    <input type="submit" value="Zapisz" class="btn">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/space.js"></script>
+    <script src="/static/js/colorpicker.js"></script>
 {% endblock %}

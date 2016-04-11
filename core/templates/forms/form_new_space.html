@@ -1,34 +1,35 @@
 <form action="{% url 'new_space' %}" method="POST">
-	{% csrf_token %}
-	<div class="popup_container">
-		<div>
-			<div>
-				<input type="text" name="name" placeholder="Nazwa przestrzeni">
-			</div>
+    {% csrf_token %}
+    <div class="popup_container">
+        <div>
+            <div>
+                <input type="text" name="name" placeholder="Nazwa przestrzeni">
+            </div>
             <div>
                 Prywatna<input type="radio" name="type" value="1" required>
                 Publiczna<input type="radio" name="type" value="2">
-			</div>
-			<div>
-				<textarea name="description" placeholder="Opis przestrzeni"></textarea>
-			</div>
-		</div>
-		<div class="popup_users-list">
-        {%  if can_see_users %}
-            {% for su in space.space_users %}
-                {% if su.user != request.user %}
-                    <div class="checkbox-wrapper">
-                        <div class="checkbox-wrapper_input"><input type="checkbox" name="new_space_users_id" value="{{ su.user.id }}" id="{{ su }}"></div>
-                        <label> {{ su.user.username }}</label>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {%  endif %}
-		</div>
-	</div>
+            </div>
+            <div>
+                <textarea name="description" placeholder="Opis przestrzeni"></textarea>
+            </div>
+        </div>
+        <div class="popup_users-list">
+            {% if can_see_users %}
+                {% for su in space.space_users %}
+                    {% if su.user != request.user %}
+                        <div class="checkbox-wrapper">
+                            <div class="checkbox-wrapper_input"><input type="checkbox" name="new_space_users_id"
+                                                                       value="{{ su.user.id }}" id="{{ su }}"></div>
+                            <label> {{ su.user.username }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 
-	<input type="hidden" name="space" value="{{ space.uid }}">
-	<div class="text-right">
-		<input type="submit" value="Zapisz" class="btn">
-	</div>
+    <input type="hidden" name="space" value="{{ space.uid }}">
+    <div class="text-right">
+        <input type="submit" value="Zapisz" class="btn">
+    </div>
 </form>

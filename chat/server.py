@@ -1,14 +1,15 @@
 ﻿# -*- coding: utf-8 -*-
 import json
-import threading
 import logging
+import threading
+
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 
 from chat.chat import print_color, send_list, connected, send_online, get_or_create_conversation
-from core.models import ChatMessage, Conversation
-from embigo.settings import WEBSOCKET_PORT
-from django.contrib.sessions.models import Session
-from django.contrib.auth.models import User
 from core.crypto import *
+from core.models import ChatMessage
+from embigo.settings import WEBSOCKET_PORT
 
 # Called for every client connecting (after handshake)
 from websocket_server.websocket_server import WebsocketServer
@@ -39,7 +40,7 @@ def message_received(client, server, message):
             message = message[2:]
             index = message.index(";")
             target = message[:index]
-            message = message[(index+1):]
+            message = message[(index + 1):]
 
             print_color("Client(%d) said: %s" % (client['id'], message))
             conversation = get_or_create_conversation(user, target)
@@ -53,22 +54,24 @@ def message_received(client, server, message):
                         x = 'cu'  # current user
                     else:
                         x = 'ou'  # other user
-                    server.send_message(c, "m;" + str(conversation.id) + ";" + user.username + ";" + message)  # e.g. cu:root:test message
+                    server.send_message(c, "m;" + str(
+                        conversation.id) + ";" + user.username + ";" + message)  # e.g. cu:root:test message
         if message[0] == "n":
             message = message[2:]
             conversation = get_or_create_conversation(user, message)
             chat_messages = ChatMessage.objects.filter(conversation=conversation)
             data = {}
-            counter=0
+            counter = 0
             for current_message in chat_messages:
-                data[counter] = "m;" + str(conversation.id) + ";" + current_message.user.username + ";" + current_message.text
+                data[counter] = "m;" + str(
+                    conversation.id) + ";" + current_message.user.username + ";" + current_message.text
                 counter += 1
-            server.send_message(client, "a;"+str(conversation.id)+";"+json.dumps(data))
+            server.send_message(client, "a;" + str(conversation.id) + ";" + json.dumps(data))
     else:
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
             session = Session.objects.get(pk=session_id)
-            u=User.objects.get(id=session.get_decoded().get('_auth_user_id', None))
+            u = User.objects.get(id=session.get_decoded().get('_auth_user_id', None))
             connected.add(client['id'], u)
 
             send_list(server, client, u.username)

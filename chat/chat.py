@@ -1,11 +1,7 @@
-from itertools import chain
-
 from django.contrib.auth.models import User
-from django.utils.datastructures import OrderedSet
 
 from chat.connected_users import ConnectedUsers
 from core.models import Conversation
-
 
 YELLOW = '\033[93m'
 ENDC = '\033[0m'
@@ -15,13 +11,13 @@ last_update_time = -1
 
 
 def print_color(string):
-    print(YELLOW+str(string)+ENDC)
+    print(YELLOW + str(string) + ENDC)
 
 
 def send_online(server):  # TODO
     string = ';'.join(str(k.username) for (k, v) in connected.get_unique().items())
     for c in server.clients:
-        server.send_message(c, "o;"+string)
+        server.send_message(c, "o;" + string)
 
 
 def send_list(server, client, username):
@@ -38,7 +34,7 @@ def send_list(server, client, username):
 
     list = "l"
     for x in users_list:
-        list += ";"+str(get_or_create_conversation(username, x).id)+";"+x
+        list += ";" + str(get_or_create_conversation(username, x).id) + ";" + x
     server.send_message(client, list)
 
 
