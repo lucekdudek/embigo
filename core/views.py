@@ -3,6 +3,7 @@ import datetime
 import hashlib
 import json
 from random import random
+from urllib.parse import urlparse
 from uuid import uuid1
 
 from django.contrib.auth import login, logout, update_session_auth_hash
@@ -24,7 +25,7 @@ from core.helper import embigo_default_rights, embigo_main_space, user_is_space_
     owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space
 from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
 from core.rights import *
-from embigo.settings import WEBSOCKET_IP, WEBSOCKET_PORT
+from embigo.settings import WEBSOCKET_PORT
 
 
 @login_required(login_url='/in/')
@@ -119,7 +120,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
 
         user_key = encrypt(SECRET_KEY_WEBSOCKET, request.session.session_key)
 
-        websocket_server_address = 'ws://' + WEBSOCKET_IP + ':' + str(WEBSOCKET_PORT) + '/';
+        websocket_ip = urlparse("http://" + request.META["HTTP_HOST"]).hostname
+        websocket_server_address = 'ws://' + websocket_ip + ':' + str(WEBSOCKET_PORT) + '/';
 
         context = {
             'space': space,
@@ -155,6 +157,7 @@ def signin(request):
     **Template:**
     :template:`signin.html`
     """
+    print(urlparse("http://"+request.META["HTTP_HOST"]).hostname)
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -201,8 +204,8 @@ def register(request):
             embigo_user.save()
             email_subject = 'Embigo - Potwierdzenie Rejestracji '
             email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
-                         " 48 godzin kliknąć w poniższy link:\nhttp://87.206.25.188/confirm/%s" % (
-                         new_user.username, activation_key)
+                         " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
+                         new_user.username, request.META["HTTP_HOST"], activation_key)
 
             send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
             return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
@@ -441,7 +444,7 @@ def recover_password(request):
             embigo_user.save()
             email_subject = 'Embigo - odzyskiwanie hasła '
             email_body = "Witaj %s,\n aby zmienić swoje hasło w ciągu najbliższych 24 godzin kliknij w poniższy link:" \
-                         "\nhttp://87.206.25.188/new_password/%s" % (user.username, activation_key)
+                         "\nhttp://%s/new_password/%s" % (user.username, request.META["HTTP_HOST"], activation_key)
             send_mail(email_subject, email_body, 'embigo@interia.pl', [user.email], fail_silently=False)
             return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
     else:
