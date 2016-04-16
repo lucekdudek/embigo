@@ -12,18 +12,17 @@ from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.db.models import Model
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
-from chat.chat import get_or_create_conversation
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
-    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space
-from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
+    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space, \
+    user_default_rights_of_public_space
+from core.models import Space, SpaceUser, Message, EmbigoUser
 from core.rights import *
 from embigo.settings import WEBSOCKET_PORT
 
@@ -88,7 +87,11 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         try:
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
-            space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=space, user=user)
+            if space.is_embigo_space():
+                rights = embigo_default_rights()
+            else:
+                rights = user_default_rights_of_public_space()
+            space_user = SpaceUser(uid=uuid1(), rights=rights, space=space, user=user)
             space_user.save()
 
         children_list = [c for c in space.children.all() if c.is_active()]
@@ -157,7 +160,7 @@ def signin(request):
     **Template:**
     :template:`signin.html`
     """
-    print(urlparse("http://"+request.META["HTTP_HOST"]).hostname)
+    print(urlparse("http://" + request.META["HTTP_HOST"]).hostname)
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -205,7 +208,7 @@ def register(request):
             email_subject = 'Embigo - Potwierdzenie Rejestracji '
             email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
                          " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
-                         new_user.username, request.META["HTTP_HOST"], activation_key)
+                             new_user.username, request.META["HTTP_HOST"], activation_key)
 
             send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
             return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
