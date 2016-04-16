@@ -26,7 +26,7 @@ def user_default_rights():
 
 def user_default_rights_of_public_space():
     """
-    :return: rights of normal user of space
+    :return: rights of user that join public space
     """
     return "010000011011"
 
