@@ -194,9 +194,7 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            print(form)
             try:
-
                 salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
                 activation_key = hashlib.sha1((salt + form.cleaned_data["email"]).encode("utf-8")).hexdigest()
                 key_expires = datetime.datetime.now() + datetime.timedelta(2)
