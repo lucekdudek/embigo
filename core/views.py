@@ -3,6 +3,7 @@ import datetime
 import hashlib
 import json
 from random import random
+from smtplib import SMTPRecipientsRefused
 from urllib.parse import urlparse
 from uuid import uuid1
 
@@ -193,25 +194,30 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            new_user = form.save()
-            new_user.is_active = False
-            new_user.save()
-            new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(),
-                                       user=new_user)
-            new_space_user.save()
-            salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
-            activation_key = hashlib.sha1((salt + new_user.email).encode("utf-8")).hexdigest()
-            key_expires = datetime.datetime.now() + datetime.timedelta(2)
-            embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires,
-                                     hash_type='ACTIVATE_HASH')
-            embigo_user.save()
-            email_subject = 'Embigo - Potwierdzenie Rejestracji '
-            email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
-                         " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
-                             new_user.username, request.META["HTTP_HOST"], activation_key)
+            print(form)
+            try:
 
-            send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
-            return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
+                salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
+                activation_key = hashlib.sha1((salt + form.cleaned_data["email"]).encode("utf-8")).hexdigest()
+                key_expires = datetime.datetime.now() + datetime.timedelta(2)
+                email_subject = 'Embigo - Potwierdzenie Rejestracji '
+                email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
+                             " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
+                                 form.cleaned_data["username"], request.META["HTTP_HOST"], activation_key)
+                send_mail(email_subject, email_body, 'embigo@interia.pl', [form.cleaned_data["email"]], fail_silently=False)
+                new_user = form.save()
+                new_user.is_active = False
+                new_user.save()
+                new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(),
+                                           user=new_user)
+                new_space_user.save()
+                embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires,
+                                         hash_type='ACTIVATE_HASH')
+                embigo_user.save()
+
+                return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
+            except SMTPRecipientsRefused:
+                form.add_error("email","Błąd podczas wysyłania maila. Upewnij się czy wprowadzony adres e-mail jest poprawny.")
     else:
         form = RegistrationForm()
     context = {'form': form}
