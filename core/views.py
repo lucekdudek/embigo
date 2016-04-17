@@ -9,7 +9,7 @@ from uuid import uuid1
 
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
@@ -235,11 +235,11 @@ def edit_user(request):
     :template:`edit_user.html`
     """
     user = User.objects.get(id=request.user.id)
-    form = SetPasswordForm(None)
+    form = PasswordChangeForm(None)
     notification = None
     if request.method == 'POST':
         if request.POST.get('changePassword'):
-            form = SetPasswordForm(user, request.POST)
+            form = PasswordChangeForm(user, request.POST)
             if form.is_valid():
                 form.save()
                 notification = 'Hasło zostało zmienione! :)'
