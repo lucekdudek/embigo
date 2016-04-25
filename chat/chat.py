@@ -47,7 +47,8 @@ def send_group_list(server, client, username):
     conv_list = set()
     for conv in conversations:
         conv_list.add(conv)
-    users_list = sorted(conv_list)
+    # users_list = sorted(conv_list)
+    users_list = conv_list
 
     list = "L"
     for x in users_list:

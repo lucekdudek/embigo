@@ -88,10 +88,11 @@ def message_received(client, server, message):
             else:
                 print("ngroup")
                 new_members = (conversation.members.all() | User.objects.filter(username__in=users_list)).distinct()
-                conv = Conversation(isgroup=True)
-                conv.save()
-                conv.members.add(*new_members)
-                print(conv.members.all())
+                if len(new_members) > 2:
+                    conv = Conversation(isgroup=True)
+                    conv.save()
+                    conv.members.add(*new_members)
+                    print(conv.members.all())
 
     else:
         try:
