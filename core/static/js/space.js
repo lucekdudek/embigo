@@ -341,6 +341,10 @@ $(function () {
         event.preventDefault();
         openPopup('#popupAddCollaborators');
     })
+    $('#btnEditRights').on('click', function (event) {
+        event.preventDefault();
+        openPopup('#popupEditRights');
+    })
 
     $(".messages_list").mCustomScrollbar();
 });

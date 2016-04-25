@@ -101,6 +101,22 @@ class SpaceUser(models.Model):
     def can(self, right):
         return int(self.rights[right])
 
+    def setRights(self, rights):
+        self.rights = rights
+
+    def getRights(self):
+        tab = []
+        i = 0
+        for c in self.rights:
+            if len(tab) < 10:
+                if (i != 2) & (i != 3):
+                    if c == '1':
+                        tab.append(True)
+                    else:
+                        tab.append(False)
+            i = i + 1
+        return tab
+
 
 class Message(models.Model):
     class Meta:

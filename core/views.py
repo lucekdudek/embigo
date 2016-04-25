@@ -388,14 +388,45 @@ def edit_space(request):
     """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
-        space.name = request.POST.get('name')
-        space.description = request.POST.get('description')
-        space.type = request.POST.get('type')
-        space.save()
+        user = request.user
+        spaceUser = SpaceUser.objects.get(user=user, space=space)
+
         context = True
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+def edit_rights(request):
+    """
+    Display form for edit rights
+
+    **Context**
+        edit rights form
+
+    **Template:**
+    :template:`form_edit_rights.html`
+    """
+    if request.method == 'POST':
+
+        space = Space.objects.get(uid=request.POST.get('space'))
+        spaceusers=space.space_users()
+
+        for user in spaceusers:
+            temporary = ''
+            for iterator in range(0, 10):
+                if iterator == 2:
+                        temporary += '00'
+                if request.POST.get(user.user.username+';'+str(iterator)) == 'on':
+                    temporary += '1'
+                else:
+                    temporary += '0'
+            user.rights=temporary
+            user.save()
+
+        context = True
+    else:
+        context = None
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
 def activate(request, activation_key):
@@ -480,3 +511,4 @@ def new_password(request, activation_key):
     except ObjectDoesNotExist:
         context = {'message': "Błąd, podany link jest nieaktywny."}
     return render(request, 'confirmation.html', context)
+

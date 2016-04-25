@@ -1,0 +1,35 @@
+<form action="{% url 'edit_rights' %}" method="POST">
+    {% csrf_token %}
+
+    <div>
+        <table>
+            <tr>
+                <th>Nazwa użytkownika</th>
+                <th>Widzi podprzestrzenie</th>
+                <th>Tworzy przestrzenie</th>
+                <th>Edytuje przestrzenie</th>
+                <th>Archiwizuje przestrzenie</th>
+                <th>Usuwa przestrzenie</th>
+                <th>Dodaje użytkowników</th>
+                <th>Widzi użytkowników</th>
+                <th>Edytuje prawa</th>
+                <th>Dodaje wiadomości</th>
+                <th>Widzi wiadomości</th>
+            </tr>
+            {% for su in space.space_users %}
+            <tr>
+                <td>{{ su.user.username }}</td>
+                {% for right in su.getRights %}
+                    <td><input type="checkbox" name="{{ su.user.username }};{{ forloop.counter0 }}" {% if right %}checked{% endif %}></td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <input type="hidden" name="space" value="{{ space.uid }}">
+    <div class="text-right">
+        <br />
+        <input type="submit" value="Zapisz" class="btn">
+    </div>
+</form>
