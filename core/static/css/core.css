@@ -1279,3 +1279,10 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 #popupAddCollaborators .checkbox-wrapper {
     margin-bottom: 5px;
 }
+
+.popup table, th, td{
+    border: 1px solid black;
+}
+.popup th, td{
+    padding: 15px;
+}

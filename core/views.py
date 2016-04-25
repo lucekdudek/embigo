@@ -8,22 +8,21 @@ from uuid import uuid1
 
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.db.models import Model
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
-from chat.chat import get_or_create_conversation
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
-    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space
-from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
+    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space, \
+    user_default_rights_of_public_space
+from core.models import Space, SpaceUser, Message, EmbigoUser
 from core.rights import *
 from embigo.settings import WEBSOCKET_PORT
 
@@ -88,7 +87,11 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         try:
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
-            space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=space, user=user)
+            if space.is_embigo_space():
+                rights = embigo_default_rights()
+            else:
+                rights = user_default_rights_of_public_space()
+            space_user = SpaceUser(uid=uuid1(), rights=rights, space=space, user=user)
             space_user.save()
 
         children_list = [c for c in space.children.all() if c.is_active()]
@@ -189,25 +192,28 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            new_user = form.save()
-            new_user.is_active = False
-            new_user.save()
-            new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(),
-                                       user=new_user)
-            new_space_user.save()
-            salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
-            activation_key = hashlib.sha1((salt + new_user.email).encode("utf-8")).hexdigest()
-            key_expires = datetime.datetime.now() + datetime.timedelta(2)
-            embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires,
-                                     hash_type='ACTIVATE_HASH')
-            embigo_user.save()
-            email_subject = 'Embigo - Potwierdzenie Rejestracji '
-            email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
-                         " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
-                         new_user.username, request.META["HTTP_HOST"], activation_key)
+            try:
+                salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
+                activation_key = hashlib.sha1((salt + form.cleaned_data["email"]).encode("utf-8")).hexdigest()
+                key_expires = datetime.datetime.now() + datetime.timedelta(2)
+                email_subject = 'Embigo - Potwierdzenie Rejestracji '
+                email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
+                             " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
+                                 form.cleaned_data["username"], request.META["HTTP_HOST"], activation_key)
+                send_mail(email_subject, email_body, 'embigo@interia.pl', [form.cleaned_data["email"]], fail_silently=False)
+                new_user = form.save()
+                new_user.is_active = False
+                new_user.save()
+                new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(),
+                                           user=new_user)
+                new_space_user.save()
+                embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires,
+                                         hash_type='ACTIVATE_HASH')
+                embigo_user.save()
 
-            send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
-            return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
+                return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
+            except SMTPRecipientsRefused:
+                form.add_error("email","Błąd podczas wysyłania maila. Upewnij się czy wprowadzony adres e-mail jest poprawny.")
     else:
         form = RegistrationForm()
     context = {'form': form}
@@ -227,11 +233,11 @@ def edit_user(request):
     :template:`edit_user.html`
     """
     user = User.objects.get(id=request.user.id)
-    form = SetPasswordForm(None)
+    form = PasswordChangeForm(None)
     notification = None
     if request.method == 'POST':
         if request.POST.get('changePassword'):
-            form = SetPasswordForm(user, request.POST)
+            form = PasswordChangeForm(user, request.POST)
             if form.is_valid():
                 form.save()
                 notification = 'Hasło zostało zmienione! :)'
@@ -390,14 +396,45 @@ def edit_space(request):
     """
     if request.method == 'POST':
         space = Space.objects.get(uid=request.POST.get('space'))
-        space.name = request.POST.get('name')
-        space.description = request.POST.get('description')
-        space.type = request.POST.get('type')
-        space.save()
+        user = request.user
+        spaceUser = SpaceUser.objects.get(user=user, space=space)
+
         context = True
     else:
         context = None
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+def edit_rights(request):
+    """
+    Display form for edit rights
+
+    **Context**
+        edit rights form
+
+    **Template:**
+    :template:`form_edit_rights.html`
+    """
+    if request.method == 'POST':
+
+        space = Space.objects.get(uid=request.POST.get('space'))
+        spaceusers=space.space_users()
+
+        for user in spaceusers:
+            temporary = ''
+            for iterator in range(0, 10):
+                if iterator == 2:
+                        temporary += '00'
+                if request.POST.get(user.user.username+';'+str(iterator)) == 'on':
+                    temporary += '1'
+                else:
+                    temporary += '0'
+            user.rights=temporary
+            user.save()
+
+        context = True
+    else:
+        context = None
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
 def activate(request, activation_key):

@@ -5,7 +5,7 @@
     {% include "views/view_space.html" %}
 
     <div class="popup-bg"></div>
-    <div class="popup" id="popupEditSpace">
+    <div class="popup" id="popupEditSpace"">
         <button class="popup_btn-close">Zamknij</button>
         <h2>Edytuj przestrzeń</h2>
         <div id="editForm">
@@ -26,6 +26,15 @@
             {% include "forms/form_add_collaborators.html" %}
         </div>
     </div>
+
+    <div class="popup" id="popupEditRights" style="width:1350px;">
+        <button class="popup_btn-close">Zamknij</button>
+        <h2>Edytuj prawa użytkowników</h2>
+        <div id="editRightsForm">
+            {% include "forms/form_edit_rights.html" %}
+        </div>
+    </div>
+
     <div style="display: none;" class="communicator" data-port="{{ user_key }}" data-username="{{ user.username }}"
          data-wsaddress="{{ websocket_server_address }}">
         <div id="communicator_users" class="communicator_users">
