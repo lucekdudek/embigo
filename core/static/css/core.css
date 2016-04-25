@@ -991,6 +991,11 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
     padding: 0;
     margin: 0 5px;
     text-shadow: 0 0 2px black;
+    transition: text-shadow 150ms;
+}
+
+.communicator_head button:hover {
+    text-shadow: 0 0 5px black;
 }
 
 .communicator_list {

@@ -32,10 +32,13 @@ class ConnectedUsers:
         print("\033[93mConnected users: %s\033[0m" % self.get_unique())
 
     def is_online(self, username):
-        user = User.objects.get(username=username)
-        if user in self.users_unique:
-            return True
-        else:
+        try:
+            user = User.objects.get(username=username)
+            if user in self.users_unique:
+                return True
+            else:
+                return False
+        except User.DoesNotExist:
             return False
 
     def get(self, client_id):

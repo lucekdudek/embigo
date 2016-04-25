@@ -31,10 +31,33 @@ def send_list(server, client, username):
         for user in conv.members.all().exclude(username=username):
             users_list.add(user.username)
     users_list = sorted(users_list, key=str.lower)
+    print(conversations)
 
     list = "l"
     for x in users_list:
         list += ";" + str(get_or_create_conversation(username, x).id) + ";" + x
+    server.send_message(client, list)
+
+
+def send_group_list(server, client, username):
+    if not isinstance(username, User):
+        username = User.objects.get(username=username)
+    conversations = Conversation.objects.filter(isgroup=True, members=username)
+
+    conv_list = set()
+    for conv in conversations:
+        conv_list.add(conv)
+    users_list = sorted(conv_list)
+
+    list = "L"
+    for x in users_list:
+        list += ";" + str(x.id) + ";"
+        for i, j in enumerate(x.members.all()):
+            if i > 0:
+                list += ", "+j.username
+            else:
+                list += j.username
+    print(list)
     server.send_message(client, list)
 
 

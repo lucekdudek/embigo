@@ -2,13 +2,14 @@
 import json
 import logging
 import threading
+from itertools import chain
 
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 
-from chat.chat import print_color, send_list, connected, send_online, get_or_create_conversation
+from chat.chat import print_color, send_list, connected, send_online, get_or_create_conversation, send_group_list
 from core.crypto import *
-from core.models import ChatMessage
+from core.models import ChatMessage, Conversation
 from embigo.settings import WEBSOCKET_PORT
 
 # Called for every client connecting (after handshake)
@@ -56,17 +57,42 @@ def message_received(client, server, message):
                         x = 'ou'  # other user
                     server.send_message(c, "m;" + str(
                         conversation.id) + ";" + user.username + ";" + message)  # e.g. cu:root:test message
-        if message[0] == "n":
-            message = message[2:]
-            conversation = get_or_create_conversation(user, message)
-            chat_messages = ChatMessage.objects.filter(conversation=conversation)
-            data = {}
-            counter = 0
-            for current_message in chat_messages:
-                data[counter] = "m;" + str(
-                    conversation.id) + ";" + current_message.user.username + ";" + current_message.text
-                counter += 1
-            server.send_message(client, "a;" + str(conversation.id) + ";" + json.dumps(data))
+        if (message[0] == "n") or (message[0] == "o"):
+            user2 = message[2:]
+            if user.username != user2:
+                conversation = get_or_create_conversation(user, user2)
+                chat_messages = ChatMessage.objects.filter(conversation=conversation)
+                data = {}
+                counter = 0
+                for current_message in chat_messages:
+                    data[counter] = "m;" + str(
+                        conversation.id) + ";" + current_message.user.username + ";" + current_message.text
+                    counter += 1
+                if message[0] == "o":
+                    send_list(server, client, user.username)
+                    send_group_list(server, client, user.username)
+                    send_online(server)
+                    server.send_message(client, "w;" + message[2:])
+                if message[0] == "n":
+                    server.send_message(client, "a;" + str(conversation.id) + ";" + json.dumps(data))
+        if message[0] == "g":
+            id = message[2:].split(";")[0]
+            users_list = message[(3+len(id)):].split(";")
+
+            conversation = Conversation.objects.get(id=id)
+            if conversation.isgroup:
+                print("group")
+                new_members = User.objects.filter(username__in=users_list)
+                conversation.members.add(*new_members)
+                print(conversation.members.all())
+            else:
+                print("ngroup")
+                new_members = (conversation.members.all() | User.objects.filter(username__in=users_list)).distinct()
+                conv = Conversation(isgroup=True)
+                conv.save()
+                conv.members.add(*new_members)
+                print(conv.members.all())
+
     else:
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
@@ -75,6 +101,7 @@ def message_received(client, server, message):
             connected.add(client['id'], u)
 
             send_list(server, client, u.username)
+            send_group_list(server, client, u.username)
             send_online(server)
             server.send_message(client, "u;" + u.username)
         except Session.DoesNotExist:

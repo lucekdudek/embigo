@@ -157,7 +157,6 @@ def signin(request):
     **Template:**
     :template:`signin.html`
     """
-    print(urlparse("http://"+request.META["HTTP_HOST"]).hostname)
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():

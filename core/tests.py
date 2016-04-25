@@ -2,6 +2,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from chat.connected_users import ConnectedUsers
 from core.helper import get_space_user, user_is_space_user
 from core.models import Space, SpaceUser, Message
 from core.rights import *
@@ -85,3 +86,25 @@ class MessageModelTests(TestCase):
     def test_Message_str(self):
         message = Message(content="")
         self.assertEqual(str(message), "%s" % (message.content))
+
+class ChatTest(TestCase):
+    def test_add_and_get_Connected_User(self):
+        user = User(is_superuser=1, username="admin")
+        user.save()
+
+        user = User.objects.get(username="admin")
+        connected = ConnectedUsers()
+        connected.add(1, user)
+        self.assertEqual(str(connected.get(1)), "%s" % "admin")
+        connected.remove(1)
+
+    def test_is_online(self):
+        user = User(is_superuser=1, username="admin")
+        user.save()
+
+        user = User.objects.get(username="admin")
+        connected = ConnectedUsers()
+        connected.add(1, user)
+        print(connected.is_online("admin"))
+        self.assertEqual(connected.is_online("admin"), True)
+        self.assertEqual(connected.is_online("admin1"), False)

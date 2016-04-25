@@ -20,6 +20,16 @@ function init() {
                 break;
             }
         }
+        document.getElementById("add_to_conversation").style.display="none";
+    }
+
+    document.getElementById("add_btn").onclick = function () {
+        var elem=document.getElementById("add_to_conversation");
+        if(elem.style.display=="none"){
+            elem.style.display="block";
+        }else{
+            elem.style.display="none";
+        }
     }
 
     window.addEventListener('storage', storageEventHandler, false);
@@ -50,6 +60,14 @@ function connect() {
         //output("onopen");
         var user_key = document.getElementsByClassName("communicator")[0].getAttribute("data-port");
         ws.send(user_key);
+
+        var space_users = document.getElementsByClassName("current-space_users")[0].getElementsByClassName("user-avatar");
+        for (i = 0; i < space_users.length; i++) {
+            space_users[i].onclick = function (){
+                var username = this.getElementsByTagName("span")[0].innerHTML;
+                ws.send("o;" + username);
+            }
+        }
     };
 
     ws.onmessage = function (e) {
@@ -103,6 +121,43 @@ function connect() {
                 a.appendChild(text);
                 el.appendChild(li);
             }
+        } else if (e.data[0] == 'L') { //list of group conversations
+            var list = e.data.split(";");
+            var el = document.getElementById("group_conv_list");
+            while (el.firstChild) {
+                el.removeChild(el.firstChild);
+            }
+            for (i = 2; i < list.length; i += 2) {
+                var li = document.createElement("li");
+                var a = document.createElement("a");
+                a.className = "users-list_item";
+                a.href = "#";
+                a.setAttribute("data-id", list[i - 1]);
+                a.onclick = function () {
+                    alert("click");
+                    return false;
+                }
+
+                var text = document.createTextNode(list[i]);
+                li.appendChild(a);
+                a.appendChild(text);
+                el.appendChild(li);
+            }
+        } else if (e.data[0] == 'w') { // open chat window
+            uname = e.data.substring(2);
+            changeConv(uname);
+            var found = false;
+            for (x in conversations) {
+                if (conversations[x] == uname) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                conversations.push(uname);
+                refreshList();
+            }
+            localStorage.conversations = JSON.stringify(conversations);
         } else if (e.data[0] == 'a') { // list of messages
             data = e.data.split(";", 2); //data[1] - conversation id
             content = e.data.substring(data[0].length + data[1].length + 2);
@@ -171,6 +226,7 @@ function refreshList() {
 }
 
 function changeConv(name) {
+    document.getElementById("add_to_conversation").style.display="none";
     if (typeof name !== "undefined") {
         document.getElementById("conv-name").innerHTML = name;
 
@@ -240,5 +296,12 @@ formChat.onsubmit = function () {
 
     input.value = "";
 
+    return false;
+}
+
+var formAddUser = document.getElementById("add_to_conversation");
+
+formAddUser.onsubmit = function () {
+    ws.send("g;"+localStorage.current_conv+";"+this["users"].value);
     return false;
 }
