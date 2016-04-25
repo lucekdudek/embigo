@@ -205,12 +205,14 @@ $(function () {
 
         function add_collaborators() {
             var checkedUsers = [],
-                checkedUsersId = [];
+                checkedUsersId = [],
+                checkedUsersColor = [];
 
             users.each(function (index) {
                 if ($(this).prop('checked')) {
                     checkedUsers.push($(this).val());
                     checkedUsersId.push(index);
+                    checkedUsersColor.push($(this).attr('data-color'));
                 }
             });
 
@@ -225,7 +227,7 @@ $(function () {
                         $.each(checkedUsersId, function (index) {
                             var name = usersNames.eq(checkedUsersId[index]).text();
                             $('.checkbox-wrapper', form).eq(checkedUsersId[index]).css('display', 'none');
-                            $('.current-space_users').append('<div class="current-space_avatar"><strong>' + name.substr(1, 1) + '</strong><span>' + name + '</span></div>');
+                            $('.current-space_users').append('<div class="user-avatar" style="background-color: ' + checkedUsersColor[index] + ';"><strong>' + name.substr(1, 1) + '</strong><span>' + name + '</span></div>');
                         });
                         users.each(function (index) {
                             $(this).prop('checked', false);

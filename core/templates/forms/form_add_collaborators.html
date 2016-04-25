@@ -4,7 +4,7 @@
         {% if su.user != request.user %}
             <div class="checkbox-wrapper">
                 <div class="checkbox-wrapper_input"><input type="checkbox" name="new_collaborators_id"
-                                                           value="{{ su.user.id }}" id="{{ su }}"></div>
+                                                           value="{{ su.user.id }}" id="{{ su }}" data-color="{{ su.user.get_color }}"></div>
                 <label> {{ su.user.username }}</label>
             </div>
         {% endif %}
