@@ -21,7 +21,14 @@ def user_default_rights():
     """
     :return: rights of normal user of space
     """
-    return "111100011011"
+    return "010010011011"
+
+
+def user_default_rights_of_public_space():
+    """
+    :return: rights of user that join public space
+    """
+    return "010000011011"
 
 
 def embigo_main_space():
@@ -81,7 +88,7 @@ def user_see_child(user, parent_user, child):
     """
     if parent_user:
         return child.is_public() or child.is_private() and (
-        user_is_space_user(user, child) or parent_user.can(SEE_UNDERSPACES))
+            user_is_space_user(user, child) or parent_user.can(SEE_UNDERSPACES))
     else:
         return child.is_public() or child.is_private() and user_is_space_user(user, child)
 

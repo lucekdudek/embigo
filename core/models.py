@@ -84,6 +84,12 @@ class Space(models.Model):
         else:
             return False
 
+    def is_embigo_space(self):
+        if self.uid == '00000000-0000-0000-0000-000000000000':
+            return True
+        else:
+            return False
+
 
 class SpaceUser(models.Model):
     class Meta:

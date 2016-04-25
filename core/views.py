@@ -3,28 +3,29 @@ import datetime
 import hashlib
 import json
 from random import random
+from smtplib import SMTPRecipientsRefused
+from urllib.parse import urlparse
 from uuid import uuid1
 
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.db.models import Model
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.utils import timezone
 
-from chat.chat import get_or_create_conversation
 from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
-    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space
-from core.models import Space, SpaceUser, Message, EmbigoUser, ChatMessage
+    owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space, \
+    user_default_rights_of_public_space
+from core.models import Space, SpaceUser, Message, EmbigoUser
 from core.rights import *
-from embigo.settings import WEBSOCKET_IP, WEBSOCKET_PORT
+from embigo.settings import WEBSOCKET_PORT
 
 
 @login_required(login_url='/in/')
@@ -87,7 +88,11 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
         try:
             space_user = get_space_user(user, space)
         except SpaceUser.DoesNotExist:
-            space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=space, user=user)
+            if space.is_embigo_space():
+                rights = embigo_default_rights()
+            else:
+                rights = user_default_rights_of_public_space()
+            space_user = SpaceUser(uid=uuid1(), rights=rights, space=space, user=user)
             space_user.save()
 
         children_list = [c for c in space.children.all() if c.is_active()]
@@ -119,7 +124,8 @@ def space(request, space_id='00000000-0000-0000-0000-000000000000'):
 
         user_key = encrypt(SECRET_KEY_WEBSOCKET, request.session.session_key)
 
-        websocket_server_address = 'ws://' + WEBSOCKET_IP + ':' + str(WEBSOCKET_PORT) + '/';
+        websocket_ip = urlparse("http://" + request.META["HTTP_HOST"]).hostname
+        websocket_server_address = 'ws://' + websocket_ip + ':' + str(WEBSOCKET_PORT) + '/';
 
         context = {
             'space': space,
@@ -155,6 +161,7 @@ def signin(request):
     **Template:**
     :template:`signin.html`
     """
+    print(urlparse("http://" + request.META["HTTP_HOST"]).hostname)
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -187,25 +194,28 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            new_user = form.save()
-            new_user.is_active = False
-            new_user.save()
-            new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(),
-                                       user=new_user)
-            new_space_user.save()
-            salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
-            activation_key = hashlib.sha1((salt + new_user.email).encode("utf-8")).hexdigest()
-            key_expires = datetime.datetime.now() + datetime.timedelta(2)
-            embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires,
-                                     hash_type='ACTIVATE_HASH')
-            embigo_user.save()
-            email_subject = 'Embigo - Potwierdzenie Rejestracji '
-            email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
-                         " 48 godzin kliknąć w poniższy link:\nhttp://87.206.25.188/confirm/%s" % (
-                         new_user.username, activation_key)
+            try:
+                salt = hashlib.sha1(str(random()).encode("utf-8")).hexdigest()[:5]
+                activation_key = hashlib.sha1((salt + form.cleaned_data["email"]).encode("utf-8")).hexdigest()
+                key_expires = datetime.datetime.now() + datetime.timedelta(2)
+                email_subject = 'Embigo - Potwierdzenie Rejestracji '
+                email_body = "Witaj %s, dziękujemy za rejestrację w Embigo. By zakończyć proces rejestracji musisz, w przeciągu" \
+                             " 48 godzin kliknąć w poniższy link:\nhttp://%s/confirm/%s" % (
+                                 form.cleaned_data["username"], request.META["HTTP_HOST"], activation_key)
+                send_mail(email_subject, email_body, 'embigo@interia.pl', [form.cleaned_data["email"]], fail_silently=False)
+                new_user = form.save()
+                new_user.is_active = False
+                new_user.save()
+                new_space_user = SpaceUser(uid=uuid1(), rights=embigo_default_rights(), space=embigo_main_space(),
+                                           user=new_user)
+                new_space_user.save()
+                embigo_user = EmbigoUser(user=new_user, activation_key=activation_key, key_expires=key_expires,
+                                         hash_type='ACTIVATE_HASH')
+                embigo_user.save()
 
-            send_mail(email_subject, email_body, 'embigo@interia.pl', [new_user.email], fail_silently=False)
-            return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
+                return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
+            except SMTPRecipientsRefused:
+                form.add_error("email","Błąd podczas wysyłania maila. Upewnij się czy wprowadzony adres e-mail jest poprawny.")
     else:
         form = RegistrationForm()
     context = {'form': form}
@@ -225,11 +235,11 @@ def edit_user(request):
     :template:`edit_user.html`
     """
     user = User.objects.get(id=request.user.id)
-    form = SetPasswordForm(None)
+    form = PasswordChangeForm(None)
     notification = None
     if request.method == 'POST':
         if request.POST.get('changePassword'):
-            form = SetPasswordForm(user, request.POST)
+            form = PasswordChangeForm(user, request.POST)
             if form.is_valid():
                 form.save()
                 notification = 'Hasło zostało zmienione! :)'
@@ -472,7 +482,7 @@ def recover_password(request):
             embigo_user.save()
             email_subject = 'Embigo - odzyskiwanie hasła '
             email_body = "Witaj %s,\n aby zmienić swoje hasło w ciągu najbliższych 24 godzin kliknij w poniższy link:" \
-                         "\nhttp://87.206.25.188/new_password/%s" % (user.username, activation_key)
+                         "\nhttp://%s/new_password/%s" % (user.username, request.META["HTTP_HOST"], activation_key)
             send_mail(email_subject, email_body, 'embigo@interia.pl', [user.email], fail_silently=False)
             return HttpResponseRedirect(request.GET.get("next", "/"), RequestContext(request))
     else:

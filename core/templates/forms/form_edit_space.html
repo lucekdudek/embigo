@@ -4,8 +4,13 @@
         <input type="text" name="name" value="{{ space.name }}">
     </div>
     <div>
-        Prywatna<input type="radio" name="type" value="1" required>
-        Publiczna<input type="radio" name="type" value="2">
+        {% if space.is_public %}
+            Prywatna<input type="radio" name="type" value="1" checked="checked" required>
+            Publiczna<input type="radio" name="type" value="2">
+        {% elif space.is_private %}
+            Prywatna<input type="radio" name="type" value="1" required>
+            Publiczna<input type="radio" name="type" value="2" checked="checked">
+        {% endif %}
     </div>
     <div>
         <textarea name="description">{{ space.description }}</textarea>
