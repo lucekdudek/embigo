@@ -1,7 +1,20 @@
+html {
+    height: 100%;
+}
 body {
     background: #3C3C3C;
     font-family: 'Fira Sans', sans-serif;
+    min-height: 100%;
 }
+
+.body--logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    .body--logout .content {
+        padding: 0 !important;
+    }
 
 button, input, textarea {
     outline: 0;
@@ -612,7 +625,6 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
 
 .form-signin {
     background: #F7E27B;
-    margin: 220px auto 0;
     width: 350px;
     border-radius: 10px;
     padding: 30px;

@@ -17,7 +17,7 @@
     <script src="/static/lib/malihu-custom-scrollbar-plugin-master/jquery.mCustomScrollbar.min.js"></script>
     <script src="/static/js/core.js"></script>
 </head>
-<body>
+<body class="{% if not user.is_authenticated %}body--logout{% endif %}">
 {% if user.is_authenticated %}
     <div class="header">
         <div class="content">
