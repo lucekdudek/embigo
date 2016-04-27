@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os.path
+import random
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -28,7 +29,9 @@ def get_color(self):
     try:
         color = self.embigouser.color
     except ObjectDoesNotExist:
-        embigo_user = EmbigoUser(user=self, color="#FFFFFF")
+        colors = ["#FEE6AA","#FDD777","#FCC845","#FBBA13","#FEAAAA","#FD7777","#FC4545","#FB1313","#EBAAFE","#E077FD","#D545FC","#C913FB","#B9AAFE","#9077FD","#6745FC","#3E13FB","#AAE0FE","#77CEFD","#45BCFC","#13AAFB","#AAFECA","#77FDAB","#45FC8B","#13FB6C"]
+        color = random.sample(colors,  1)[0];
+        embigo_user = EmbigoUser(user=self, color=color)
         embigo_user.save()
         color = self.embigouser.color
     return color

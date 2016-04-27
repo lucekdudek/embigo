@@ -22,7 +22,7 @@
                 <form action="{% url 'edit_user' %}?next={{ request.GET.next }}" method="POST">
                     {% csrf_token %}
                     <div class="colors">
-                        <div class="colors_current" style="background-color: {{ user.get_color }};"><span>a</span></div>
+                        <div class="colors_current" style="background-color: {{ user.get_color }};"><span>{{ user.username|make_list|first }}</span></div>
                         <div class="colors_others">
                             <div class="colors_column">
                                 <button style="background-color: hsl(43, 97%, 83%);"></button>
