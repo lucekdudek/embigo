@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from chat.connected_users import ConnectedUsers
-from core.helper import get_space_user, user_is_space_user
+from core.helper import get_space_user, user_is_space_user, embigo_main_space, create_embigo_space, get_space_user_or_none, user_see_child, user_see_space
 from core.models import Space, SpaceUser, Message
 from core.rights import *
 
@@ -11,14 +11,46 @@ from core.rights import *
 class HelperTests(TestCase):
     def test_get_space_user(self):
         space = Space()
+        space.save()
         user = User()
+        user.save()
         with self.assertRaises(SpaceUser.DoesNotExist): get_space_user(user, space)
-
+        space_user = SpaceUser(user=user, space=space)
+        space_user.save()
+        self.assertEqual(get_space_user_or_none(user, space), space_user)
+    
     def test_user_is_space_user(self):
         space = Space()
         user = User()
         self.assertFalse(user_is_space_user(user, space))
-
+    
+    def test_create_embigo_space(self):
+        create_embigo_space()
+        embigo = embigo_main_space()
+        self.assertEqual(embigo.name, "embigo")
+    
+    def test_get_space_user_or_none(self):
+        space = Space()
+        space.save()
+        user = User()
+        user.save()
+        self.assertEqual(get_space_user_or_none(user, space), None)
+        space_user = SpaceUser(user=user, space=space)
+        space_user.save()
+        self.assertEqual(get_space_user_or_none(user, space), space_user)
+    
+    def test_user_see_child(self):
+        user = User()
+        child = Space()
+        space_user = SpaceUser()
+        self.assertFalse(user_see_child(user, space_user, child))
+        #TODO more asserts
+    
+    def test_user_see_space(self):
+        user = User()
+        space = Space()
+        self.assertFalse(user_see_space(user, space))
+        #TODO more asserts
 
 class SpaceModelTests(TestCase):
     def test_Space_str(self):

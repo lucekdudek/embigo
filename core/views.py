@@ -21,7 +21,7 @@ from core.crypto import encrypt, SECRET_KEY_WEBSOCKET
 from core.forms import RegistrationForm, RecoveryForm
 from core.helper import embigo_default_rights, embigo_main_space, user_is_space_user, get_space_user, \
     owner_default_rights, user_default_rights, user_see_child, get_space_user_or_none, user_see_space, \
-    user_default_rights_of_public_space
+    user_default_rights_of_public_space, create_embigo_space
 from core.models import Space, SpaceUser, Message, EmbigoUser
 from core.rights import *
 from embigo.settings import WEBSOCKET_PORT
@@ -36,13 +36,7 @@ def index(request):
     try:
         emgibo_space = Space.objects.get(uid='00000000-0000-0000-0000-000000000000')
     except Space.DoesNotExist:
-        emgibo_space = Space(
-            uid='00000000-0000-0000-0000-000000000000',
-            name='embigo',
-            type=1,
-            status=1,
-        )
-        emgibo_space.save()
+		create_embigo_space()
     try:
         get_space_user(request.user, emgibo_space)
     except SpaceUser.DoesNotExist:

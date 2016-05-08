@@ -37,6 +37,14 @@ def embigo_main_space():
     """
     return Space.objects.get(uid="00000000-0000-0000-0000-000000000000")
 
+def create_embigo_space():
+	emgibo_space = Space(
+		uid='00000000-0000-0000-0000-000000000000',
+		name='embigo',
+		type=1,
+		status=1,
+	)
+	emgibo_space.save()
 
 def user_is_space_user(user, space):
     """
