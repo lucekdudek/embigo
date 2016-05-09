@@ -416,16 +416,31 @@ def edit_rights(request):
         space = Space.objects.get(uid=request.POST.get('space'))
         spaceusers=space.space_users()
 
+        can_uncheck = False
+
+        for user in spaceusers:
+            if request.POST.get(user.user.username + ';7') == 'on':
+                can_uncheck = True
+                break
+
         for user in spaceusers:
             temporary = ''
+
             for iterator in range(0, 10):
+                if iterator == 7 and not can_uncheck:
+                    temporary += user.rights[9]
+                elif request.POST.get(user.user.username+';'+str(iterator)) == 'on' and iterator == 7:
+                    temporary += '1'
+                elif iterator == 7:
+                    temporary += '0'
+
                 if iterator == 2:
                         temporary += '00'
-                if request.POST.get(user.user.username+';'+str(iterator)) == 'on':
+                if request.POST.get(user.user.username+';'+str(iterator)) == 'on' and iterator != 7:
                     temporary += '1'
-                else:
+                elif iterator != 7:
                     temporary += '0'
-            user.rights=temporary
+            user.rights = temporary
             user.save()
 
         context = True
