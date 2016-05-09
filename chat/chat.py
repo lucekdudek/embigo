@@ -66,8 +66,14 @@ def get_or_create_conversation(user1, user2):
     if not isinstance(user1, User):
         user1 = User.objects.get(username=user1)
     if not isinstance(user2, User):
-        user2 = User.objects.get(username=user2)
-
+        if user2.find(",") == -1:
+            user2 = User.objects.get(username=user2)
+        else:
+            conversation = Conversation.objects.filter(isgroup=True, members=user1)
+            for user_name in user2.split(", "):
+                conversation = conversation.filter(members=User.objects.get(username=user_name))
+            conversation = conversation[0]
+            return conversation
     conversations = Conversation.objects.filter(isgroup=False, members=user1)
     try:
         return conversations.get(members=user2)

@@ -47,6 +47,13 @@ function init() {
                     break;
                 }
             }
+            list = document.getElementById("group_conv_list").getElementsByTagName("a");
+            for (i = 0; i < list.length; i++) {
+                if (localStorage.current_conv == list[i].getAttribute("data-id")) {
+                    changeConv(list[i].innerHTML);
+                    break;
+                }
+            }
         }
     }
 }
@@ -134,7 +141,19 @@ function connect() {
                 a.href = "#";
                 a.setAttribute("data-id", list[i - 1]);
                 a.onclick = function () {
-                    alert("click");
+                    changeConv(this.innerHTML);
+                    var found = false;
+                    for (x in conversations) {
+                        if (conversations[x] == this.innerHTML) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        conversations.push(this.innerHTML);
+                        refreshList();
+                    }
+                    localStorage.conversations = JSON.stringify(conversations);
                     return false;
                 }
 
@@ -231,6 +250,14 @@ function changeConv(name) {
         document.getElementById("conv-name").innerHTML = name;
 
         list = document.getElementById("users_list").getElementsByTagName("a");
+        for (i = 0; i < list.length; i++) {
+            if (name == list[i].innerHTML) {
+                localStorage.current_conv = list[i].getAttribute("data-id");
+                break;
+            }
+        }
+
+        list = document.getElementById("group_conv_list").getElementsByTagName("a");
         for (i = 0; i < list.length; i++) {
             if (name == list[i].innerHTML) {
                 localStorage.current_conv = list[i].getAttribute("data-id");

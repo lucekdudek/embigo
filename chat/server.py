@@ -34,6 +34,7 @@ def client_left(client, server):
 # Called when a client sends a message
 def message_received(client, server, message):
     message = decode_utf_8(message)
+    print(message)
 
     user = connected.get(client["id"])
     if user is not None:
@@ -45,6 +46,8 @@ def message_received(client, server, message):
 
             print_color("Client(%d) said: %s" % (client['id'], message))
             conversation = get_or_create_conversation(user, target)
+            print(target)
+            print(conversation)
 
             new_chat_message = ChatMessage(user=user, conversation=conversation, text=message)
             new_chat_message.save()
@@ -84,6 +87,7 @@ def message_received(client, server, message):
                 print("group")
                 new_members = User.objects.filter(username__in=users_list)
                 conversation.members.add(*new_members)
+                send_group_list(server, client, user.username)
                 print(conversation.members.all())
             else:
                 print("ngroup")
@@ -92,6 +96,7 @@ def message_received(client, server, message):
                     conv = Conversation(isgroup=True)
                     conv.save()
                     conv.members.add(*new_members)
+                    send_group_list(server, client, user.username)
                     print(conv.members.all())
 
     else:
