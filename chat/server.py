@@ -102,8 +102,9 @@ def message_received(client, server, message):
             id = message[2:].split(";")[0]
             new_name = message[(3 + len(id)):]
             conv = get_or_create_conversation(id, user)
-            conv.name = new_name
-            conv.save()
+            if conv.isgroup:
+                conv.name = new_name
+                conv.save()
 
     else:
         try:

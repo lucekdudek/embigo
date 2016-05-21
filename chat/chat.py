@@ -36,7 +36,6 @@ def send_list(server, client, username):
     for x in users_list:
         user2 = User.objects.get(username=x)
         list += ";" + str(conversations.get(members=user2).id) + ";" + user2.get_color() + ";" + x
-    print(list)
     server.send_message(client, list)
 
 
@@ -64,7 +63,6 @@ def send_group_list(server, client, username):
                 list += j.username
         if len(x.name) > 0:
             list += ")"
-    print(list)
     server.send_message(client, list)
 
 
