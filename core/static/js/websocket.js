@@ -12,9 +12,11 @@ function init() {
     document.getElementById("close_btn").onclick = function () {
         var name = getConv();
         for (i in conversations) {
-            if (conversations[i] == name) {
+            if (conversations[i][0] == name) {
                 conversations.splice(i, 1);
-                changeConv(conversations[0]);
+                if(conversations.length > 0){
+                    changeConv(conversations[0][0], conversations[0][1]);
+                }
                 localStorage.conversations = JSON.stringify(conversations);
                 refreshList();
                 break;
@@ -37,20 +39,20 @@ function init() {
     function storageEventHandler(evt) {
         if (evt.key == "conversations") {
             conversations = JSON.parse(localStorage.conversations);
-            changeConv(conversations[0]);
+            //changeConv(conversations[0][0], conversations[0][1]);
             refreshList();
         } else if (evt.key == "current_conv") {
             list = document.getElementById("users_list").getElementsByTagName("a");
             for (i = 0; i < list.length; i++) {
                 if (localStorage.current_conv == list[i].getAttribute("data-id")) {
-                    changeConv(list[i].innerHTML);
+                    changeConv(list[i].innerHTML, localStorage.current_conv);
                     break;
                 }
             }
             list = document.getElementById("group_conv_list").getElementsByTagName("a");
             for (i = 0; i < list.length; i++) {
                 if (localStorage.current_conv == list[i].getAttribute("data-id")) {
-                    changeConv(list[i].innerHTML);
+                    changeConv(list[i].innerHTML, localStorage.current_conv);
                     break;
                 }
             }
@@ -72,6 +74,7 @@ function connect() {
         for (i = 0; i < space_users.length; i++) {
             space_users[i].onclick = function (){
                 var username = this.getElementsByTagName("span")[0].innerHTML;
+                alert(username);
                 ws.send("o;" + username);
             }
         }
@@ -100,23 +103,24 @@ function connect() {
             while (el.firstChild) {
                 el.removeChild(el.firstChild);
             }
-            for (i = 2; i < list.length; i += 2) {
+            for (i = 3; i < list.length; i += 3) {
                 var li = document.createElement("li");
                 var a = document.createElement("a");
                 a.className = "users-list_item";
                 a.href = "#";
-                a.setAttribute("data-id", list[i - 1]);
+                a.setAttribute("data-id", list[i - 2]);
+                a.setAttribute("data-color", list[i - 1]);
                 a.onclick = function () {
-                    changeConv(this.innerHTML);
+                    changeConv(this.innerHTML, this.getAttribute("data-id"));
                     var found = false;
                     for (x in conversations) {
-                        if (conversations[x] == this.innerHTML) {
+                        if (conversations[x][1] == this.getAttribute("data-id")) {
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-                        conversations.push(this.innerHTML);
+                        conversations.push([this.innerHTML, this.getAttribute("data-id"), this.getAttribute("data-color")]);
                         refreshList();
                     }
                     localStorage.conversations = JSON.stringify(conversations);
@@ -141,16 +145,16 @@ function connect() {
                 a.href = "#";
                 a.setAttribute("data-id", list[i - 1]);
                 a.onclick = function () {
-                    changeConv(this.innerHTML);
+                    changeConv(this.innerHTML, this.getAttribute("data-id"));
                     var found = false;
                     for (x in conversations) {
-                        if (conversations[x] == this.innerHTML) {
+                        if (conversations[x][1] == this.getAttribute("data-id")) {
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-                        conversations.push(this.innerHTML);
+                        conversations.push([this.innerHTML, this.getAttribute("data-id"), "#FFFFFF"]);
                         refreshList();
                     }
                     localStorage.conversations = JSON.stringify(conversations);
@@ -163,8 +167,9 @@ function connect() {
                 el.appendChild(li);
             }
         } else if (e.data[0] == 'w') { // open chat window
-            uname = e.data.substring(2);
-            changeConv(uname);
+            uname = e.data.substring(2).split(";");
+            changeConv(uname[0],uname[1]);
+            alert(uname);
             var found = false;
             for (x in conversations) {
                 if (conversations[x] == uname) {
@@ -173,7 +178,7 @@ function connect() {
                 }
             }
             if (!found) {
-                conversations.push(uname);
+                conversations.push([uname[0],uname[1], uname[2]]);
                 refreshList();
             }
             localStorage.conversations = JSON.stringify(conversations);
@@ -188,7 +193,7 @@ function connect() {
             username = e.data.substring(2);
             if (typeof localStorage.conversations !== "undefined") {
                 conversations = JSON.parse(localStorage.conversations);
-                changeConv(conversations[0]);
+                changeConv(conversations[0][0], conversations[0][1]);
                 refreshList();
             }
         } else {
@@ -226,11 +231,13 @@ function refreshList() {
     for (var nr = 0; nr < conv_list.length; nr++) {
         if (nr < conversations.length) {
             conv_list[nr].style.display = "block";
-            conv_list[nr].getElementsByTagName("strong")[0].innerHTML = conversations[nr][0];
-            conv_list[nr].setAttribute("data-name", conversations[nr]);
+            conv_list[nr].getElementsByTagName("strong")[0].innerHTML = conversations[nr][0][0];
+            conv_list[nr].setAttribute("data-name", conversations[nr][0]);
+            conv_list[nr].setAttribute("data-id", conversations[nr][1]);
+            conv_list[nr].style.background = conversations[nr][2];
 
             conv_list[nr].onclick = function () {
-                changeConv(this.getAttribute("data-name"));
+                changeConv(this.getAttribute("data-name"), this.getAttribute("data-id"));
             }
         } else {
             conv_list[nr].style.display = "none";
@@ -244,12 +251,13 @@ function refreshList() {
     }
 }
 
-function changeConv(name) {
+function changeConv(name, conv_id) {
     document.getElementById("add_to_conversation").style.display="none";
     if (typeof name !== "undefined") {
         document.getElementById("conv-name").innerHTML = name;
+        localStorage.current_conv = conv_id;
 
-        list = document.getElementById("users_list").getElementsByTagName("a");
+        /*list = document.getElementById("users_list").getElementsByTagName("a");
         for (i = 0; i < list.length; i++) {
             if (name == list[i].innerHTML) {
                 localStorage.current_conv = list[i].getAttribute("data-id");
@@ -263,10 +271,10 @@ function changeConv(name) {
                 localStorage.current_conv = list[i].getAttribute("data-id");
                 break;
             }
-        }
+        }*/
 
         clear();
-        ws.send("n;" + name);
+        ws.send("n;" + conv_id);
     }
 }
 
@@ -312,7 +320,7 @@ formChat.onsubmit = function () {
 
     var username = document.getElementsByClassName("communicator")[0].getAttribute("data-username");
 
-    ws.send("m;" + getConv() + ";" + input.value);
+    ws.send("m;" + localStorage.current_conv + ";" + input.value);
 
     var elem = document.createElement('li');
     elem.innerHTML = '<span class="communicator_author" title="TODO">' + username + '</span>' + input.value;

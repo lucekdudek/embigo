@@ -31,11 +31,12 @@ def send_list(server, client, username):
         for user in conv.members.all().exclude(username=username):
             users_list.add(user.username)
     users_list = sorted(users_list, key=str.lower)
-    print(conversations)
 
     list = "l"
     for x in users_list:
-        list += ";" + str(get_or_create_conversation(username, x).id) + ";" + x
+        user2 = User.objects.get(username=x)
+        list += ";" + str(conversations.get(members=user2).id) + ";" + user2.get_color() + ";" + x
+    print(list)
     server.send_message(client, list)
 
 
@@ -53,33 +54,32 @@ def send_group_list(server, client, username):
     list = "L"
     for x in users_list:
         list += ";" + str(x.id) + ";"
+
+        if len(x.name) > 0:
+            list += x.name + " ("
         for i, j in enumerate(x.members.all()):
             if i > 0:
                 list += ", "+j.username
             else:
                 list += j.username
+        if len(x.name) > 0:
+            list += ")"
     print(list)
     server.send_message(client, list)
 
 
-def get_or_create_conversation(user1, user2):
-    if not isinstance(user1, User):
-        user1 = User.objects.get(username=user1)
-    if not isinstance(user2, User):
-        if user2.find(",") == -1:
-            user2 = User.objects.get(username=user2)
-        else:
-            conversation = Conversation.objects.filter(isgroup=True, members=user1)
-            for user_name in user2.split(", "):
-                conversation = conversation.filter(members=User.objects.get(username=user_name))
-            conversation = conversation[0]
-            return conversation
-    conversations = Conversation.objects.filter(isgroup=False, members=user1)
+def get_or_create_conversation(conv_id, user2):
     try:
-        return conversations.get(members=user2)
-    except Conversation.DoesNotExist:
-        conv = Conversation(isgroup=False)
-        conv.save()
-        conv.members.add(user1)
-        conv.members.add(user2)
-        return conv
+        int(conv_id)
+        return Conversation.objects.get(id=conv_id)
+    except ValueError:
+        print(conv_id)
+        user1 = User.objects.get(username=conv_id)
+        try:
+            return Conversation.objects.filter(isgroup=False, members=user2).get(members=user1)
+        except Conversation.DoesNotExist:
+            conv = Conversation(isgroup=False)
+            conv.save()
+            conv.members.add(user1)
+            conv.members.add(user2)
+            return conv
