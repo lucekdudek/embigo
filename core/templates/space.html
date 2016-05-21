@@ -57,12 +57,17 @@
         </div>
         <div class="communicator_head">
             <div id="conv-name"
-                 style="float:left; width: 200px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; text-align: left;"></div>
+                 style="float:left; width: 170px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; text-align: left;"></div>
+            <button id="rename_btn" class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
             <button id="add_btn" class="communicator_btn-add"><i class="fa fa-user-plus"></i></button>
             <button id="close_btn" class="communicator_btn-close"><i class="fa fa-times"></i></button>
             <form id="add_to_conversation" style="display: none;border: 0; background: none;">
                 <input type="text" name="users" autocomplete="off" style="height: 20px; width:200px; padding: 2px; border: 1px solid rgba(0, 0, 0, 0.3);" pattern="(.+;)*([^;]+){1}$" required>
                 <input type="submit" value="Dodaj" style="background: #a39b76; border: 0 none; font-size: 12px; height: 26px; line-height: 26px;">
+            </form>
+            <form id="rename_conversation" style="display: none;border: 0; background: none;">
+                <input type="text" name="name" autocomplete="off" style="height: 20px; width:165px; padding: 2px; border: 1px solid rgba(0, 0, 0, 0.3);" required>
+                <input type="submit" value="Zmień nazwę" style="background: #a39b76; border: 0 none; font-size: 12px; height: 26px; line-height: 26px;">
             </form>
         </div>
         <ul class="communicator_list">

@@ -26,7 +26,18 @@ function init() {
     }
 
     document.getElementById("add_btn").onclick = function () {
+        document.getElementById("rename_conversation").style.display="none";
         var elem=document.getElementById("add_to_conversation");
+        if(elem.style.display=="none"){
+            elem.style.display="block";
+        }else{
+            elem.style.display="none";
+        }
+    }
+
+    document.getElementById("rename_btn").onclick = function () {
+        document.getElementById("add_to_conversation").style.display="none";
+        var elem=document.getElementById("rename_conversation");
         if(elem.style.display=="none"){
             elem.style.display="block";
         }else{
@@ -334,9 +345,11 @@ formChat.onsubmit = function () {
     return false;
 }
 
-var formAddUser = document.getElementById("add_to_conversation");
-
-formAddUser.onsubmit = function () {
+document.getElementById("add_to_conversation").onsubmit = function () {
     ws.send("g;"+localStorage.current_conv+";"+this["users"].value);
+    return false;
+}
+document.getElementById("rename_conversation").onsubmit = function () {
+    ws.send("r;"+localStorage.current_conv+";"+this["name"].value);
     return false;
 }
