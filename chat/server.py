@@ -45,7 +45,7 @@ def message_received(client, server, message):
             message = message[(index + 1):]
 
             print_color("Client(%d) said: %s" % (client['id'], message))
-            conversation = get_or_create_conversation(user, target)
+            conversation = get_or_create_conversation(target, user)
             print(target)
             print(conversation)
 
@@ -61,9 +61,9 @@ def message_received(client, server, message):
                     server.send_message(c, "m;" + str(
                         conversation.id) + ";" + user.username + ";" + message)  # e.g. cu:root:test message
         if (message[0] == "n") or (message[0] == "o"):
-            user2 = message[2:]
-            if user.username != user2:
-                conversation = get_or_create_conversation(user, user2)
+            param1 = message[2:]
+            if user.username != param1:
+                conversation = get_or_create_conversation(param1, user)
                 chat_messages = ChatMessage.objects.filter(conversation=conversation)
                 data = {}
                 counter = 0
@@ -75,7 +75,7 @@ def message_received(client, server, message):
                     send_list(server, client, user.username)
                     send_group_list(server, client, user.username)
                     send_online(server)
-                    server.send_message(client, "w;" + message[2:])
+                    server.send_message(client, "w;" + message[2:] + ";" + str(get_or_create_conversation(message[2:], user).id) + ";" + User.objects.get(username=message[2:]).get_color())
                 if message[0] == "n":
                     server.send_message(client, "a;" + str(conversation.id) + ";" + json.dumps(data))
         if message[0] == "g":
@@ -98,6 +98,13 @@ def message_received(client, server, message):
                     conv.members.add(*new_members)
                     send_group_list(server, client, user.username)
                     print(conv.members.all())
+        if message[0] == "r":
+            id = message[2:].split(";")[0]
+            new_name = message[(3 + len(id)):]
+            conv = get_or_create_conversation(id, user)
+            if conv.isgroup:
+                conv.name = new_name
+                conv.save()
 
     else:
         try:

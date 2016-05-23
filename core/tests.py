@@ -1,11 +1,37 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 
 from chat.connected_users import ConnectedUsers
 from core.helper import get_space_user, user_is_space_user, embigo_main_space, create_embigo_space, get_space_user_or_none, user_see_child, user_see_space
 from core.models import Space, SpaceUser, Message
 from core.rights import *
+from core.views import signin, register
+
+
+class ViewsTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='jacob', email='jacob@…', password='top_secret')
+
+    def test_signin(self):
+        request = self.factory.get('/in')
+        request.user = self.user
+        response = signin(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_register(self):
+        request = self.factory.get('/register')
+        request.user = self.user
+        response = register(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_user(self):
+        request = self.factory.get('/edit_user')
+        request.user = self.user
+        response = register(request)
+        self.assertEqual(response.status_code, 200)
 
 
 class HelperTests(TestCase):
@@ -39,18 +65,32 @@ class HelperTests(TestCase):
         space_user.save()
         self.assertEqual(get_space_user_or_none(user, space), space_user)
     
-    def test_user_see_child(self):
+    def test_user_see_child_01(self):
         user = User()
+        user.save()
         child = Space()
+        child.save()
         space_user = SpaceUser()
         self.assertFalse(user_see_child(user, space_user, child))
-        #TODO more asserts
-    
+
+    def test_user_see_child_02(self):
+        user = User()
+        user.save()
+        parent = Space()
+        parent.save()
+        child = Space(type=1)
+        child.parent = parent
+        child.save()
+        space_user = SpaceUser()
+        space_user.user = user
+        space_user.space = parent
+        space_user.save()
+        self.assertTrue(user_see_child(user, space_user, child))
+
     def test_user_see_space(self):
         user = User()
         space = Space()
         self.assertFalse(user_see_space(user, space))
-        #TODO more asserts
 
 class SpaceModelTests(TestCase):
     def test_Space_str(self):
