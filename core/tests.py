@@ -65,18 +65,32 @@ class HelperTests(TestCase):
         space_user.save()
         self.assertEqual(get_space_user_or_none(user, space), space_user)
     
-    def test_user_see_child(self):
+    def test_user_see_child_01(self):
         user = User()
+        user.save()
         child = Space()
+        child.save()
         space_user = SpaceUser()
         self.assertFalse(user_see_child(user, space_user, child))
-        #TODO more asserts
-    
+
+    def test_user_see_child_02(self):
+        user = User()
+        user.save()
+        parent = Space()
+        parent.save()
+        child = Space(type=1)
+        child.parent = parent
+        child.save()
+        space_user = SpaceUser()
+        space_user.user = user
+        space_user.space = parent
+        space_user.save()
+        self.assertTrue(user_see_child(user, space_user, child))
+
     def test_user_see_space(self):
         user = User()
         space = Space()
         self.assertFalse(user_see_space(user, space))
-        #TODO more asserts
 
 class SpaceModelTests(TestCase):
     def test_Space_str(self):
