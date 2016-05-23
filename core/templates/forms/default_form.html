@@ -1,0 +1,14 @@
+<span class="error">
+        {{ form.non_field_errors|striptags }}
+    </span>
+    {% for f in form %}
+        <p>{{ f.label_tag }}
+            {{ f }}
+            <span class="helptext">{{ f.help_text }}</span>
+            {% if f.errors %}
+                <span class="error">
+                    {{ f.errors|striptags }}
+                </span>
+            {% endif %}
+        </p>
+    {% endfor %}
