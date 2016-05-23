@@ -140,3 +140,45 @@ class ChatTest(TestCase):
         print(connected.is_online("admin"))
         self.assertEqual(connected.is_online("admin"), True)
         self.assertEqual(connected.is_online("admin1"), False)
+
+class RegistrationTest(TestCase):
+    def test_call_view_empty_form(self):
+        response = self.client.post('/register/', {}) # blank data dictionary
+        self.assertFormError(response, 'form', 'username', 'To pole jest wymagane.')
+        self.assertFormError(response, 'form', 'email', 'To pole jest wymagane.')
+        self.assertFormError(response, 'form', 'password1', 'To pole jest wymagane.')
+        self.assertFormError(response, 'form', 'password2', 'To pole jest wymagane.')
+
+    def test_call_view_invalid_email(self):
+        response = self.client.post('/register/', {'email': "abcd"})
+        self.assertFormError(response, 'form', 'email', 'Wprowadź poprawny adres email.')
+
+    def test_call_view_existing_email(self):
+        user = User()
+        user.email = 'aaaa@gmail.com'
+        user.save()
+        response = self.client.post('/register/', {'email': "aaaa@gmail.com"})
+        self.assertFormError(response, 'form', 'email', 'Ten adres email jest już zarejestrowany.Proszę wprowadź inny adres email.')
+
+    def test_call_view_different_password(self):
+        response = self.client.post('/register/', {'password1': "abcd", 'password2': "abcde"})
+        self.assertFormError(response, 'form', 'password2', 'Hasła się nie zgadzają.')
+
+    def test_call_view_short_common_password(self):
+        response = self.client.post('/register/', {'password1': "abcd", 'password2': "abcd"})
+        self.assertFormError(response, 'form', 'password2', ['To hasło jest za krótkie. Musi zawierać co najmniej 8 znaków.', 'To hasło jest zbyt powszechne.'])
+
+    def test_call_view_short_password(self):
+        response = self.client.post('/register/', {'password1': "a2cd", 'password2': "a2cd"})
+        self.assertFormError(response, 'form', 'password2', 'To hasło jest za krótkie. Musi zawierać co najmniej 8 znaków.')
+
+    def test_call_view_common_password(self):
+        response = self.client.post('/register/', {'password1': "aaaaaaaa", 'password2': "aaaaaaaa"})
+        self.assertFormError(response, 'form', 'password2', 'To hasło jest zbyt powszechne.')
+
+    def test_call_view_existing_user(self):
+        user = User()
+        user.username = 'aaaa'
+        user.save()
+        response = self.client.post('/register/', {'username': "aaaa"})
+        self.assertFormError(response, 'form', 'username', 'Użytkownik o tej nazwie już istnieje.')
