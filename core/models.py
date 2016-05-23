@@ -116,6 +116,7 @@ class SpaceUser(models.Model):
     def getRights(self):
         tab = []
         i = 0
+        i = 0
         for c in self.rights:
             if len(tab) < 10:
                 if (i != 2) & (i != 3):

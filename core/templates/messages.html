@@ -28,7 +28,9 @@
         <h2>Brak komentarzy</h2>
         <div class="messages_list messages_list--empty"></div>
     {% endif %}
-    <div class="messages_form" id="messageForm">
-        {% include "forms/form_new_message.html" %}
-    </div>
+    {% if can_add_message %}
+        <div class="messages_form" id="messageForm">
+            {% include "forms/form_new_message.html" %}
+        </div>
+    {% endif %}
 </div>
