@@ -38,6 +38,7 @@ def index(request):
         emgibo_space = Space.objects.get(uid='00000000-0000-0000-0000-000000000000')
     except Space.DoesNotExist:
         create_embigo_space()
+        emgibo_space = Space.objects.get(uid='00000000-0000-0000-0000-000000000000')
     try:
         get_space_user(request.user, emgibo_space)
     except SpaceUser.DoesNotExist:
