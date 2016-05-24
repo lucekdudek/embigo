@@ -5,14 +5,17 @@ from django.contrib.auth.models import User
 
 class ConnectedUsers:
     users_webs = {}
+    clients_webs = {}
     users_unique = {}
 
     def get_unique(self):
         return self.users_unique
 
-    def add(self, client_id, user):
+    def add(self, client, user):
+        client_id = client['id']
         if client_id not in self.users_webs:
             self.users_webs[client_id] = user
+            self.clients_webs[client_id] = client
             if user not in self.users_unique:
                 self.users_unique[user] = [client_id]
             else:
@@ -25,6 +28,7 @@ class ConnectedUsers:
             user = self.users_webs[client_id]
 
             del self.users_webs[client_id]
+            del self.clients_webs[client_id]
             if user in self.users_unique:
                 self.users_unique[user].remove(client_id)
                 if len(self.users_unique[user]) == 0:
@@ -44,3 +48,15 @@ class ConnectedUsers:
     def get(self, client_id):
         if client_id in self.users_webs:
             return self.users_webs[client_id]
+
+    def get_id(self, user):
+        if user in self.users_unique:
+            return self.users_unique[user]
+        else:
+            return []
+
+    def get_client(self, client_id):
+        if client_id in self.clients_webs:
+            return self.clients_webs[client_id]
+        else:
+            return []

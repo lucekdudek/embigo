@@ -7,7 +7,8 @@ from itertools import chain
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 
-from chat.chat import print_color, send_list, connected, send_online, get_or_create_conversation, send_group_list
+from chat.chat import print_color, send_list, connected, send_online, get_or_create_conversation, send_group_list, \
+    get_conv_name
 from core.crypto import *
 from core.models import ChatMessage, Conversation
 from embigo.settings import WEBSOCKET_PORT
@@ -31,7 +32,8 @@ def client_left(client, server):
             logging.error("user doesn't exist")
 
 
-# Called when a client sends a message
+
+
 def message_received(client, server, message):
     message = decode_utf_8(message)
     print(message)
@@ -105,13 +107,20 @@ def message_received(client, server, message):
             if conv.isgroup:
                 conv.name = new_name
                 conv.save()
-
+                for u in conv.members.all():
+                    print(u.username)
+                    for x in connected.get_id(u):
+                        client_temp = connected.get_client(x)
+                        server.send_message(client_temp, "r;" + str(conv.id) + ";" + get_conv_name(conv))
+                        send_list(server, client_temp, u.username)
+                        send_group_list(server, client_temp, u.username)
+                send_online(server)
     else:
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
             session = Session.objects.get(pk=session_id)
             u = User.objects.get(id=session.get_decoded().get('_auth_user_id', None))
-            connected.add(client['id'], u)
+            connected.add(client, u)
 
             send_list(server, client, u.username)
             send_group_list(server, client, u.username)

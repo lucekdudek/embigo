@@ -39,6 +39,24 @@ def send_list(server, client, username):
     server.send_message(client, list)
 
 
+def get_conv_name(conversation):
+    x = conversation
+
+    list = ""
+
+    if len(x.name) > 0:
+        list += x.name + " ("
+    for i, j in enumerate(x.members.all()):
+        if i > 0:
+            list += ", "+j.username
+        else:
+            list += j.username
+    if len(x.name) > 0:
+        list += ")"
+
+    return list
+
+
 def send_group_list(server, client, username):
     if not isinstance(username, User):
         username = User.objects.get(username=username)
