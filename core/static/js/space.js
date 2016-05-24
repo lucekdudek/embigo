@@ -247,6 +247,22 @@ $(function () {
         });
     });
 
+
+    var initArchiveSpace = (function(){
+        $('#popupArchiveSpace .btn-no').on('click', function(event) {
+            event.preventDefault();
+            closePopup('#popupArchiveSpace');
+        });
+    });
+
+    var initDeleteSpace = (function(){
+        $('#popupDeleteSpace .btn-no').on('click', function() {
+            event.preventDefault();
+            closePopup('#popupDeleteSpace');
+        });
+    });
+
+
     /**
      * Koloruje userów
      */
@@ -294,6 +310,8 @@ $(function () {
     initDeleteMessageForm();
     initNewSpaceForm();
     initEditForm();
+    initArchiveSpace();
+    initDeleteSpace();
     initAddCollaborators();
     initUsers();
     initCommunicator();
@@ -346,6 +364,16 @@ $(function () {
     $('#btnEditRights').on('click', function (event) {
         event.preventDefault();
         openPopup('#popupEditRights');
+    })
+    $('#btnArchiveSpace').on('click', function (event) {
+        event.preventDefault();
+        $('#popupArchiveSpace .btn-yes').attr('href', event.currentTarget.href);
+        openPopup('#popupArchiveSpace');
+    })
+    $('#btnDeleteSpace').on('click', function (event) {
+        event.preventDefault();
+        $('#popupDeleteSpace .btn-yes').attr('href', event.currentTarget.href);
+        openPopup('#popupDeleteSpace');
     })
 
     $(".messages_list").mCustomScrollbar();

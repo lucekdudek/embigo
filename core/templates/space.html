@@ -5,7 +5,7 @@
     {% include "views/view_space.html" %}
 
     <div class="popup-bg"></div>
-    <div class="popup" id="popupEditSpace"">
+    <div class="popup" id="popupEditSpace">
         <button class="popup_btn-close">Zamknij</button>
         <h2>Edytuj przestrzeń</h2>
         <div id="editForm">
@@ -19,6 +19,24 @@
             {% include "forms/form_new_space.html" %}
         </div>
     </div>
+    <div class="popup" id="popupDeleteSpace">
+        <button class="popup_btn-close">Zamknij</button>
+        <h2>Usuń przestrzeń</h2>
+        <span>Czy na pewno chcesz usunąć przestrzeń?</span>
+        <br><br>
+        <a href="" class="btn btn-yes">Tak</a>
+        <a href="" class="btn btn-no">Nie</a>
+    </div>
+    <div class="popup" id="popupArchiveSpace">
+        <button class="popup_btn-close">Zamknij</button>
+        <h2>Archiwizuj przestrzeń</h2>
+        <span>Czy na pewno chcesz zarchiwizować przestrzeń?</span>
+        <br><br>
+        <a href="" class="btn btn-yes">Tak</a>
+        <a href="" class="btn btn-no">Nie</a>
+    </div>
+
+
     <div class="popup" id="popupAddCollaborators">
         <button class="popup_btn-close">Zamknij</button>
         <h2>Dodaj użytkowników</h2>
