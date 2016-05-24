@@ -63,6 +63,8 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
     width: 100%;
     height: 100%;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     cursor: pointer;
 }
 
@@ -484,6 +486,16 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
         filter: alpha(opacity=100);
     }
 }
+@keyframes initSpace {
+    from {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    to {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
 
 .list-space {
     margin-bottom: 20px;
@@ -613,15 +625,26 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
         opacity: 0;
         filter: alpha(opacity=0);
         -webkit-transform: translate3d(0, 10px, 0);
-        transform: translate3d(0, 10px, 0);
     }
     to {
         opacity: 1;
         filter: alpha(opacity=100);
         -webkit-transform: translate3d(0, 0px, 0);
+    }
+}
+@keyframes initSignIn {
+    from {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translate3d(0, 10px, 0);
+    }
+    to {
+        opacity: 1;
+        filter: alpha(opacity=100);
         transform: translate3d(0, 0px, 0);
     }
 }
+
 
 .form-signin {
     background: #F7E27B;
@@ -630,6 +653,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
     padding: 30px;
     box-sizing: border-box;
     -webkit-animation: initSignIn 0.7s ease-out;
+    animation: initSignIn 0.7s ease-out;
 }
 
 .form-signin_logo {
@@ -758,6 +782,16 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
         filter: alpha(opacity=100);
     }
 }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    to {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
 
 .notification {
     background: #EEFFEC;
@@ -768,6 +802,7 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
     font-size: 14px;
     line-height: 14px;
     margin-bottom: 30px;
+    -webkit-animation: fadeIn 0.5s;
     animation: fadeIn 0.5s;
 }
 
@@ -819,7 +854,29 @@ form.is-error input:not([type="submit"]), form.is-error textarea, form.is-error 
     }
 }
 
+@keyframes initMessage {
+    from {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    to {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
 @-webkit-keyframes deleteMessage {
+    from {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+    to {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+}
+
+@keyframes deleteMessage {
     from {
         opacity: 1;
         filter: alpha(opacity=100);
