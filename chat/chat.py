@@ -89,7 +89,6 @@ def get_or_create_conversation(conv_id, user2):
         int(conv_id)
         return Conversation.objects.get(id=conv_id)
     except ValueError:
-        print(conv_id)
         user1 = User.objects.get(username=conv_id)
         try:
             return Conversation.objects.filter(isgroup=False, members=user2).get(members=user1)

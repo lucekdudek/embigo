@@ -36,7 +36,6 @@ def client_left(client, server):
 
 def message_received(client, server, message):
     message = decode_utf_8(message)
-    print(message)
 
     user = connected.get(client["id"])
     if user is not None:
@@ -48,14 +47,11 @@ def message_received(client, server, message):
 
             print_color("Client(%d) said: %s" % (client['id'], message))
             conversation = get_or_create_conversation(target, user)
-            print(target)
-            print(conversation)
 
             new_chat_message = ChatMessage(user=user, conversation=conversation, text=message)
             new_chat_message.save()
             for c in server.clients:
                 if c['id'] != client['id']:
-                    print(connected.get(c['id']))
                     if connected.get(c['id']) == user:
                         x = 'cu'  # current user
                     else:
@@ -92,7 +88,6 @@ def message_received(client, server, message):
 
             conversation = Conversation.objects.get(id=id)
             if conversation.isgroup:
-                print("group")
                 new_members = User.objects.filter(username__in=users_list)
                 conversation.members.add(*new_members)
                 for u in conversation.members.all():
@@ -100,9 +95,7 @@ def message_received(client, server, message):
                         client_temp = connected.get_client(x)
                         send_list(server, client_temp, u.username)
                         send_group_list(server, client_temp, u.username)
-                print(conversation.members.all())
             else:
-                print("ngroup")
                 new_members = (conversation.members.all() | User.objects.filter(username__in=users_list)).distinct()
                 if len(new_members) > 2:
                     conv = Conversation(isgroup=True)
@@ -113,7 +106,6 @@ def message_received(client, server, message):
                             client_temp = connected.get_client(x)
                             send_list(server, client_temp, u.username)
                             send_group_list(server, client_temp, u.username)
-                    print(conv.members.all())
         if message[0] == "r":
             id = message[2:].split(";")[0]
             new_name = message[(3 + len(id)):]
@@ -122,7 +114,6 @@ def message_received(client, server, message):
                 conv.name = new_name
                 conv.save()
                 for u in conv.members.all():
-                    print(u.username)
                     for x in connected.get_id(u):
                         client_temp = connected.get_client(x)
                         server.send_message(client_temp, "r;" + str(conv.id) + ";" + get_conv_name(conv))
