@@ -324,19 +324,24 @@ function clear() {
     document.getElementsByClassName("communicator_list")[0].innerHTML = "";
 }
 function makeNotification(name, conv_id) {
-    var notification = new Notification('Nowa wiadomość od '+name);
+    var names = name.split(":");
+    var notification = new Notification('Nowa wiadomość od '+names[1]);
     notification.onclick = function () {
         var found = false;
         for (x in conversations) {
-            if (conversations[x][0] == name) {
+            if (conversations[x][1] == conv_id) {
                 found = true;
                 break;
             }
         }
         if (!found) {
-            ws.send("o;" + name);
+            if(names[0] == names[1]){
+                ws.send("o;" + names[0]);
+            }else{
+                ws.send("O;" + conv_id);
+            }
         }else{
-            changeConv(name, conv_id);
+            changeConv(names[1], conv_id);
         }
     };
 }
@@ -345,8 +350,8 @@ function output(str) {
     if (data[1] == localStorage.current_conv) {
         content = str.substring(data[0].length + data[1].length + data[2].length + 3);
         var elem = document.createElement('li');
-        elem.innerHTML = '<span class="communicator_author">' + data[2] + '</span>' + content;
-        if (data[2] == username)
+        elem.innerHTML = '<span class="communicator_author">' + data[2].split(":")[0] + '</span>' + content;
+        if (data[2].split(":")[0] == username)
             elem.className = "communicator_sender";
         var list = document.getElementsByClassName("communicator_list")[0];
         list.appendChild(elem);

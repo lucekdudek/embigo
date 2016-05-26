@@ -52,12 +52,11 @@ def message_received(client, server, message):
             new_chat_message.save()
             for c in server.clients:
                 if c['id'] != client['id']:
-                    if connected.get(c['id']) == user:
-                        x = 'cu'  # current user
+                    if conversation.isgroup:
+                        name = get_conv_name(conversation)
                     else:
-                        x = 'ou'  # other user
-                    server.send_message(c, "m;" + str(
-                        conversation.id) + ";" + user.username + ";" + message)  # e.g. cu:root:test message
+                        name = user.username
+                    server.send_message(c, "m;" + str(conversation.id) + ";" + user.username + ":" + name + ";" + message)
         if (message[0] == "n") or (message[0] == "o"):
             param1 = message[2:]
             if user.username != param1:
@@ -120,6 +119,9 @@ def message_received(client, server, message):
                         send_list(server, client_temp, u.username)
                         send_group_list(server, client_temp, u.username)
                 send_online(server)
+        if message[0] == "O":
+            conversation = get_or_create_conversation(message[2:], user)
+            server.send_message(client, "w;" + get_conv_name(conversation) + ";" + message[2:] + "; #ffffff")
     else:
         try:
             session_id = decrypt(SECRET_KEY_WEBSOCKET, message)
