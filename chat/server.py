@@ -78,6 +78,12 @@ def message_received(client, server, message):
                     send_group_list(server, client, user.username)
                     send_online(server)
                     server.send_message(client, "w;" + message[2:] + ";" + str(get_or_create_conversation(message[2:], user).id) + ";" + User.objects.get(username=message[2:]).get_color())
+
+                    u = User.objects.get(username=message[2:])
+                    for x in connected.get_id(u):
+                        client_temp = connected.get_client(x)
+                        send_list(server, client_temp, u.username)
+                        send_group_list(server, client_temp, u.username)
                 if message[0] == "n":
                     server.send_message(client, "a;" + str(conversation.id) + ";" + json.dumps(data))
         if message[0] == "g":
@@ -89,7 +95,11 @@ def message_received(client, server, message):
                 print("group")
                 new_members = User.objects.filter(username__in=users_list)
                 conversation.members.add(*new_members)
-                send_group_list(server, client, user.username)
+                for u in conversation.members.all():
+                    for x in connected.get_id(u):
+                        client_temp = connected.get_client(x)
+                        send_list(server, client_temp, u.username)
+                        send_group_list(server, client_temp, u.username)
                 print(conversation.members.all())
             else:
                 print("ngroup")
@@ -98,7 +108,11 @@ def message_received(client, server, message):
                     conv = Conversation(isgroup=True)
                     conv.save()
                     conv.members.add(*new_members)
-                    send_group_list(server, client, user.username)
+                    for u in conv.members.all():
+                        for x in connected.get_id(u):
+                            client_temp = connected.get_client(x)
+                            send_list(server, client_temp, u.username)
+                            send_group_list(server, client_temp, u.username)
                     print(conv.members.all())
         if message[0] == "r":
             id = message[2:].split(";")[0]

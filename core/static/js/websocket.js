@@ -69,6 +69,10 @@ function init() {
             }
         }
     }
+
+    Notification.requestPermission().then(function (result) {
+        console.log(result);
+    });
 }
 
 function connect() {
@@ -85,8 +89,17 @@ function connect() {
         for (i = 0; i < space_users.length; i++) {
             space_users[i].onclick = function (){
                 var username = this.getElementsByTagName("span")[0].innerHTML;
-                alert(username);
-                ws.send("o;" + username);
+
+                var found = false;
+                for (x in conversations) {
+                    if (conversations[x][0] == username) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    ws.send("o;" + username);
+                }
             }
         }
     };
@@ -180,7 +193,6 @@ function connect() {
         } else if (e.data[0] == 'w') { // open chat window
             uname = e.data.substring(2).split(";");
             changeConv(uname[0],uname[1]);
-            alert(uname);
             var found = false;
             for (x in conversations) {
                 if (conversations[x] == uname) {
@@ -207,22 +219,28 @@ function connect() {
                 changeConv(conversations[0][0], conversations[0][1]);
                 refreshList();
             }
+        } else if (e.data[0] == 'r') { // get username
+            data = e.data.split(";", 3);
+            for (x in conversations) {
+                if(conversations[x][1] == data[1]){
+                    conversations[x][0] = data[2];
+                }
+                if(localStorage.current_conv == data[1]){
+                    changeConv(data[2], localStorage.current_conv);
+                }
+
+                var conv_list = document.getElementById("communicator_users").getElementsByTagName("div");
+                for (var nr = 0; nr < conv_list.length; nr++) {
+                    if (nr < conversations.length) {
+                        if(conversations[nr][1] == data[1]){
+                            conv_list[nr].setAttribute("data-name", conversations[nr][0]);
+                        }
+                    }
+                }
+                localStorage.conversations = JSON.stringify(conversations);
+            }
         } else {
-            //TODO
-            /*var id=e.data.split(";",2)[1];
-             if(current_conv!=id){
-             list = document.getElementById("users_list").getElementsByTagName("a");
-             for (i = 0; i < list.length; i++) {
-             if(id==list[i].getAttribute("data-id")){
-             changeConv(list[i].innerHTML);
-             conversations.push(list[i].innerHTML);
-             alert("x");
-             refreshList();
-             break;
-             }
-             }
-             }*/
-            output(e.data); // text message
+            output(e.data);
         }
     };
 
@@ -305,7 +323,23 @@ function onCloseClick() {
 function clear() {
     document.getElementsByClassName("communicator_list")[0].innerHTML = "";
 }
-
+function makeNotification(name, conv_id) {
+    var notification = new Notification('Nowa wiadomość od '+name);
+    notification.onclick = function () {
+        var found = false;
+        for (x in conversations) {
+            if (conversations[x][0] == name) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            ws.send("o;" + name);
+        }else{
+            changeConv(name, conv_id);
+        }
+    };
+}
 function output(str) {
     data = str.split(";", 3);
     if (data[1] == localStorage.current_conv) {
@@ -317,6 +351,18 @@ function output(str) {
         var list = document.getElementsByClassName("communicator_list")[0];
         list.appendChild(elem);
         list.scrollTop = list.scrollHeight;
+    }else{
+        if (!('Notification' in window)) {
+            alert('This browser does not support desktop notification');
+        } else if (Notification.permission === 'granted') {
+            makeNotification(data[2], data[1]);
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                if (permission === 'granted') {
+                    makeNotification(data[2], data[1]);
+                }
+            });
+        }
     }
 }
 
