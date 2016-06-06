@@ -222,3 +222,23 @@ class RegistrationTest(TestCase):
         user.save()
         response = self.client.post('/register/', {'username': "aaaa"})
         self.assertFormError(response, 'form', 'username', 'Użytkownik o tej nazwie już istnieje.')
+
+class LoginTest(TestCase):
+    def test_call_view_empty_form(self):
+        response = self.client.post('/in/', {}) # blank data dictionary
+        self.assertFormError(response, 'form', 'username', 'To pole jest wymagane.')
+        self.assertFormError(response, 'form', 'password', 'To pole jest wymagane.')
+
+    def test_call_view_invalid_login(self):
+        user = User()
+        user.username = 'aaaa'
+        user.save()
+        response = self.client.post('/in/', {'username': "abcd", 'password': "xxx"})
+        self.assertFormError(response, 'form', None, 'Wprowadź poprawną użytkownik oraz hasło. Uwaga: wielkość liter ma znaczenie.')
+
+    def test_call_view_invalid_password(self):
+        user = User()
+        user.username = 'aaaa'
+        user.save()
+        response = self.client.post('/in/', {'username': "aaaa", 'password': "xxx"})
+        self.assertFormError(response, 'form', None, 'Wprowadź poprawną użytkownik oraz hasło. Uwaga: wielkość liter ma znaczenie.')
